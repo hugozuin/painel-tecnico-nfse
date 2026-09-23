@@ -48,6 +48,7 @@ export function montarTelaRota(container, rota, contexto) {
       entrada.tipo === "formulario" ? null : contador
     ]),
     criar("div", { class: "card-body" }, [
+      contexto.controles || null,
       criar("p", { class: "rota-endereco mono", texto: `${rota.metodo || "GET"} ${contexto.descricaoBase || ""}${rota.caminho}` }),
       rota.observacao ? criar("p", { class: "aviso-caixa", texto: rota.observacao }) : null,
       ...(areaEntrada ? [
@@ -201,7 +202,7 @@ export function montarTelaRota(container, rota, contexto) {
     if (tipo === "arquivo") {
       if (resposta.ok && resposta.blob) {
         const prefixo = rota.resultado.prefixo || rota.id;
-        baixarArquivo(resposta.blob, `${prefixo}-${item}.${rota.resultado.extensao}`, resposta.blob.type);
+        baixarArquivo(resposta.blob, `${prefixo}-${item}.${rota.resultado.extensao || extensaoDoTipo(resposta.blob.type)}`, resposta.blob.type);
         registrarLog(`${rota.titulo}: arquivo de ${item} baixado.`, "success");
       }
       estado.registros.push({ item, status: resposta.status, mensagem: resposta.ok ? "Arquivo baixado" : resposta.mensagem });
@@ -240,6 +241,12 @@ export function montarTelaRota(container, rota, contexto) {
   atualizarContador();
 }
 
+const EXTENSOES = { "image/png": "png", "image/jpeg": "jpg", "image/jpg": "jpg", "application/pdf": "pdf", "application/xml": "xml", "text/xml": "xml" };
+
+function extensaoDoTipo(tipo) {
+  return EXTENSOES[String(tipo || "").split(";")[0].trim().toLowerCase()] || "bin";
+}
+
 function rotuloAcao(rota) {
   if (rota.resultado?.tipo === "arquivo") return "Baixar arquivos";
   if ((rota.metodo || "GET") === "GET") return "Consultar";
@@ -259,7 +266,7 @@ function montarCampos(rota, campos) {
       entrada = criar("input", { type: "checkbox", checked: Boolean(definicao.padrao) });
     } else {
       entrada = criar("input", {
-        type: definicao.tipo === "data" ? "date" : definicao.tipo === "competencia" ? "month" : "text",
+        type: { data: "date", competencia: "month" }[definicao.tipo] || "text",
         class: "text-input",
         placeholder: definicao.exemplo || "",
         spellcheck: false
@@ -319,7 +326,8 @@ function montarEndereco(rota, contexto, item, dados) {
 
   const base = contexto.base(rota);
   const url = `${base}${caminho}${consulta.toString() ? `?${consulta}` : ""}`;
-  const corpo = (rota.metodo || "GET") === "GET" ? undefined : dados.corpo;
+  const semCorpo = (rota.metodo || "GET") === "GET" || Object.keys(dados.corpo).length === 0;
+  const corpo = semCorpo ? undefined : dados.corpo;
 
   return { url, corpo };
 }

@@ -1021,3 +1021,6 @@ body {
 .painel-logs-topo h2 { font-size: 1.1rem; color: var(--text-strong); }
 .painel-logs-topo .info-popup-fechar { margin-left: auto; font-size: 1.5rem; }
 .painel-logs .logs-panel { flex: 1; min-height: 0; max-height: none; overflow: auto; }
+
+.variantes-controles { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: 1px dashed var(--border); }
+.variantes-controles .switch-row { max-width: 420px; }

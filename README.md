@@ -11,10 +11,16 @@ servidor desta ferramenta.
 ## Telas
 
 **Notas, Arquivos e Ciclo de vida.** Uma tela por rota da API PlugNotas:
-resolve em lote com conferência da situação antes e depois, consultas,
+resolve em lote com conferência da situação antes e depois, a consulta de notas numa tela só (por ID, idIntegracao ou período, com opção de consulta completa pelo ID),
 download de XML e PDF, regeração de PDF, e-mail, cancelamento e status,
 eventos, sincronização e interrupção. As que alteram dado pedem confirmação
 e aparecem marcadas no menu.
+
+**Empresa.** Cadastro da empresa (por CNPJ, todas da conta e logotipo),
+Webhook (da empresa ou da organização, com envio de teste) e Certificado (por ID
+ou CPF/CNPJ, ou todos da conta). São telas de leitura; a única ação é o envio de
+teste do webhook, que pede confirmação. Os caminhos foram conferidos na
+documentação do PlugNotas.
 
 **Nacional.** Consultas públicas do ADN e da Sefin (convênio, alíquota,
 benefício, CNC, NFSe por chave, DPS e DANFSe), com escolha entre produção e

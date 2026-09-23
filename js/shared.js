@@ -39,6 +39,7 @@ export const CHAVES_ARMAZENAMENTO = {
   verificacoes: "resolve-tools:verificacoes",
   intervaloVerificacao: "resolve-tools:intervaloVerificacao",
   ambienteNacional: "resolve-tools:ambienteNacional",
+  variantes: "resolve-tools:variantes",
   usuario: "resolve-tools:usuario",
   tema: "resolve-tools:tema"
 };

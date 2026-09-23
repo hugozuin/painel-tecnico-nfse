@@ -14,6 +14,7 @@ import { montarTelaNacional } from "./telas/nacional.js";
 import { montarTelaDePara } from "./telas/depara.js";
 import { montarTelaIbsCbs } from "./telas/ibscbs.js";
 import { montarTelaValidador } from "./telas/validador.js";
+import { montarTelaVariantes } from "./telas/variantes.js";
 
 export const NOME_APLICACAO = "Painel Técnico NFS-e";
 
@@ -32,7 +33,7 @@ const telasFixas = [
   }
 ];
 
-const ordemGrupos = ["Notas", "Arquivos", "Ciclo de vida", "Nacional", "Ferramentas"];
+const ordemGrupos = ["Notas", "Arquivos", "Ciclo de vida", "Empresa", "Nacional", "Ferramentas"];
 
 let catalogo = [];
 let navegacao = 0;
@@ -50,10 +51,11 @@ function desenharMenu() {
     const indice = ordemGrupos.indexOf(grupo);
     return indice === -1 ? ordemGrupos.length : indice;
   };
-  const grupos = [...new Set(catalogo.map((rota) => rota.grupo))].sort((a, b) => posicao(a) - posicao(b));
+  const visiveis = catalogo.filter((rota) => !rota.oculta);
+  const grupos = [...new Set(visiveis.map((rota) => rota.grupo))].sort((a, b) => posicao(a) - posicao(b));
 
   grupos.forEach((grupo) => {
-    const itens = catalogo
+    const itens = visiveis
       .filter((rota) => rota.grupo === grupo)
       .sort((primeira, segunda) => (primeira.ordem || 99) - (segunda.ordem || 99));
     menu.appendChild(criar("div", { class: "menu-grupo" }, [
@@ -64,6 +66,15 @@ function desenharMenu() {
       ]))
     ]));
   });
+}
+
+function contextoPlugNotas() {
+  return {
+    exigeApiKey: true,
+    concorrencia: 5,
+    descricaoBase: definicoes.rotas?.base || "",
+    base: () => definicoes.rotas?.base || ""
+  };
 }
 
 function cabecalhoDaPagina(rota) {
@@ -99,14 +110,15 @@ function abrirRota(id) {
   else if (rota.tela === "depara") montagem = montarTelaDePara(tela);
   else if (rota.tela === "ibscbs") montagem = montarTelaIbsCbs(tela);
   else if (rota.tela === "validador") montagem = montarTelaValidador(tela);
+  else if (rota.tela === "variantes") {
+    montagem = montarTelaVariantes(tela, rota, {
+      rotaPorId: (id) => catalogo.find((item) => item.id === id),
+      montarSubtela: (area, subrota, controles) => montarTelaRota(area, subrota, { ...contextoPlugNotas(), controles })
+    });
+  }
   else if (rota.origem === "nacional") montagem = montarTelaNacional(tela, rota);
   else {
-    montagem = montarTelaRota(tela, rota, {
-      exigeApiKey: true,
-      concorrencia: 5,
-      descricaoBase: definicoes.rotas?.base || "",
-      base: () => definicoes.rotas?.base || ""
-    });
+    montagem = montarTelaRota(tela, rota, contextoPlugNotas());
   }
   Promise.resolve(montagem).catch((erro) => {
     if (marca === navegacao) registrarLog(`Falha ao montar a tela ${rota.titulo}: ${erro.message}`, "error");

@@ -14,6 +14,38 @@
       "id": "consulta",
       "grupo": "Notas",
       "titulo": "Consulta de notas",
+      "resumo": "Consulta as notas pelo ID, pelo idIntegracao ou por período. Pelo ID, escolha entre a consulta simplificada e a completa.",
+      "tela": "variantes",
+      "variantes": [
+        {
+          "id": "id",
+          "rotulo": "ID da nota",
+          "rota": "consulta-id",
+          "alternativa": "consulta-id-completa"
+        },
+        {
+          "id": "integracao",
+          "rotulo": "idIntegracao",
+          "rota": "consulta-integracao"
+        },
+        {
+          "id": "periodo",
+          "rotulo": "Período",
+          "rota": "consulta-periodo"
+        }
+      ],
+      "ordem": 2,
+      "alternancia": {
+        "rotulo": "Consulta completa",
+        "ligada": "Traz o documento inteiro gravado na emissão.",
+        "desligada": "Desligado, traz o resumo com situação, número e mensagem.",
+        "indisponivel": "A consulta por {variante} tem uma forma só."
+      }
+    },
+    {
+      "id": "consulta-id",
+      "grupo": "Notas",
+      "titulo": "Consulta simplificada por ID",
       "resumo": "Consulta resumida pela rota /nfse/consultar. Aceita id da nota ou protocolo.",
       "metodo": "GET",
       "caminho": "/nfse/consultar/{item}",
@@ -56,29 +88,29 @@
           }
         ]
       },
-      "ordem": 2
+      "oculta": true
     },
     {
-      "id": "consulta-completa",
+      "id": "consulta-id-completa",
       "grupo": "Notas",
-      "titulo": "Consulta completa",
+      "titulo": "Consulta completa por ID",
       "resumo": "Retorna o documento inteiro pela rota /nfse/{id}, útil para conferir o que foi gravado na emissão.",
       "metodo": "GET",
       "caminho": "/nfse/{item}",
       "entrada": {
         "tipo": "lote",
-        "rotulo": "IDs das notas",
-        "exemplo": "ID da nota, um por linha"
+        "rotulo": "IDs das notas ou protocolos",
+        "exemplo": "ID da nota ou protocolo, um por linha"
       },
       "resultado": {
         "tipo": "json"
       },
-      "ordem": 3
+      "oculta": true
     },
     {
       "id": "consulta-integracao",
       "grupo": "Notas",
-      "titulo": "Consulta por idIntegração",
+      "titulo": "Consulta por idIntegracao",
       "resumo": "Consulta a nota pelo idIntegracao e pelo CNPJ do prestador.",
       "metodo": "GET",
       "caminho": "/nfse/consultar/{item}/{cnpj}",
@@ -119,7 +151,7 @@
           }
         ]
       },
-      "ordem": 4
+      "oculta": true
     },
     {
       "id": "consulta-periodo",
@@ -144,14 +176,14 @@
           "id": "dataInicial",
           "rotulo": "Data inicial",
           "tipo": "data",
-          "obrigatorio": true,
+          "obrigatorio": false,
           "destino": "consulta.dataInicial"
         },
         {
           "id": "dataFinal",
           "rotulo": "Data final",
           "tipo": "data",
-          "obrigatorio": true,
+          "obrigatorio": false,
           "destino": "consulta.dataFinal"
         },
         {
@@ -165,8 +197,8 @@
       "resultado": {
         "tipo": "json"
       },
-      "observacao": "A coleção do Postman traz os parâmetros no corpo. Como o navegador não envia corpo em GET, a ferramenta manda por query string. Se a API esperar outro formato, ajuste o destino dos campos neste arquivo.",
-      "ordem": 5
+      "observacao": "Traz até 25 notas por vez; para a próxima página, informe o hashProximaPagina devolvido. Só com o CPF ou CNPJ, traz todas as notas. O intervalo máximo é de 31 dias, a data considerada é a de recebimento da nota pelo PlugNotas e o retorno pode vir de um cache de até 300 segundos.",
+      "oculta": true
     },
     {
       "id": "xml",
@@ -430,8 +462,234 @@
       },
       "confirmar": "As notas informadas param de ser processadas. A ação não tem volta.",
       "sensivel": true,
-      "observacao": "A coleção do Postman registra esta rota como GET com corpo, o que o navegador não permite. A ferramenta envia POST. Se a API exigir outro método, troque o campo metodo neste arquivo.",
       "ordem": 5
+    },
+    {
+      "id": "empresa",
+      "grupo": "Empresa",
+      "titulo": "Cadastro da empresa",
+      "tela": "variantes",
+      "ordem": 1,
+      "resumo": "Consulta o cadastro de uma empresa pelo CNPJ, lista as empresas da conta ou baixa o logotipo usado nos PDFs.",
+      "rotuloVariantes": "Consultar",
+      "variantes": [
+        {
+          "id": "cnpj",
+          "rotulo": "Por CNPJ",
+          "rota": "empresa-cnpj"
+        },
+        {
+          "id": "todas",
+          "rotulo": "Todas da conta",
+          "rota": "empresa-lista"
+        },
+        {
+          "id": "logotipo",
+          "rotulo": "Logotipo",
+          "rota": "empresa-logotipo"
+        }
+      ]
+    },
+    {
+      "id": "empresa-cnpj",
+      "grupo": "Empresa",
+      "titulo": "Consultar empresa",
+      "oculta": true,
+      "metodo": "GET",
+      "caminho": "/empresa/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "CNPJs das empresas",
+        "exemplo": "CNPJ da empresa, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      }
+    },
+    {
+      "id": "empresa-lista",
+      "grupo": "Empresa",
+      "titulo": "Listar empresas",
+      "oculta": true,
+      "metodo": "GET",
+      "caminho": "/empresa",
+      "entrada": {
+        "tipo": "formulario"
+      },
+      "campos": [
+        {
+          "id": "hashProximaPagina",
+          "rotulo": "hashProximaPagina",
+          "tipo": "texto",
+          "destino": "consulta.hashProximaPagina",
+          "dica": "Para a próxima página, informe o ID da última empresa retornada."
+        }
+      ],
+      "resultado": {
+        "tipo": "json"
+      },
+      "observacao": "A lista traz até 150 empresas por vez."
+    },
+    {
+      "id": "empresa-logotipo",
+      "grupo": "Empresa",
+      "titulo": "Baixar logotipo",
+      "oculta": true,
+      "metodo": "GET",
+      "caminho": "/empresa/{item}/logotipo",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "CNPJs das empresas",
+        "exemplo": "CNPJ da empresa, um por linha"
+      },
+      "resultado": {
+        "tipo": "arquivo",
+        "prefixo": "logotipo"
+      }
+    },
+    {
+      "id": "webhook",
+      "grupo": "Empresa",
+      "titulo": "Webhook",
+      "tela": "variantes",
+      "ordem": 2,
+      "resumo": "Consulta o webhook configurado para uma empresa ou para a organização e envia uma notificação de teste ao endpoint configurado.",
+      "rotuloVariantes": "Webhook da",
+      "alternancia": {
+        "rotulo": "Enviar um teste",
+        "ligada": "Envia um exemplo de notificação ao endpoint configurado e mostra o status e o corpo que ele devolveu.",
+        "desligada": "Desligado, só consulta a configuração do webhook.",
+        "indisponivel": ""
+      },
+      "variantes": [
+        {
+          "id": "empresa",
+          "rotulo": "Empresa",
+          "rota": "webhook-empresa",
+          "alternativa": "webhook-empresa-teste"
+        },
+        {
+          "id": "organizacao",
+          "rotulo": "Organização",
+          "rota": "webhook-organizacao",
+          "alternativa": "webhook-organizacao-teste"
+        }
+      ]
+    },
+    {
+      "id": "webhook-empresa",
+      "grupo": "Empresa",
+      "titulo": "Consultar webhook da empresa",
+      "oculta": true,
+      "metodo": "GET",
+      "caminho": "/empresa/{item}/webhook",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "CNPJs das empresas",
+        "exemplo": "CNPJ da empresa, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      }
+    },
+    {
+      "id": "webhook-empresa-teste",
+      "grupo": "Empresa",
+      "titulo": "Testar webhook da empresa",
+      "oculta": true,
+      "metodo": "POST",
+      "caminho": "/empresa/{item}/webhook/verify",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "CNPJs das empresas",
+        "exemplo": "CNPJ da empresa, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "sensivel": true,
+      "confirmar": "Um exemplo de notificação será enviado ao endpoint configurado para cada CNPJ informado."
+    },
+    {
+      "id": "webhook-organizacao",
+      "grupo": "Empresa",
+      "titulo": "Consultar webhook da organização",
+      "oculta": true,
+      "metodo": "GET",
+      "caminho": "/webhook",
+      "entrada": {
+        "tipo": "formulario"
+      },
+      "resultado": {
+        "tipo": "json"
+      }
+    },
+    {
+      "id": "webhook-organizacao-teste",
+      "grupo": "Empresa",
+      "titulo": "Testar webhook da organização",
+      "oculta": true,
+      "metodo": "POST",
+      "caminho": "/webhook/verify",
+      "entrada": {
+        "tipo": "formulario"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "sensivel": true,
+      "confirmar": "Um exemplo de notificação será enviado ao endpoint configurado para a organização."
+    },
+    {
+      "id": "certificado",
+      "grupo": "Empresa",
+      "titulo": "Certificado",
+      "tela": "variantes",
+      "ordem": 3,
+      "resumo": "Consulta um certificado digital pelo ID ou pelo CPF ou CNPJ da empresa, ou lista os certificados da conta com o vencimento.",
+      "rotuloVariantes": "Consultar",
+      "variantes": [
+        {
+          "id": "um",
+          "rotulo": "Por ID ou CNPJ",
+          "rota": "certificado-consulta"
+        },
+        {
+          "id": "todos",
+          "rotulo": "Todos da conta",
+          "rota": "certificado-lista"
+        }
+      ]
+    },
+    {
+      "id": "certificado-consulta",
+      "grupo": "Empresa",
+      "titulo": "Consultar certificado",
+      "oculta": true,
+      "metodo": "GET",
+      "caminho": "/certificado/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs dos certificados ou CPF/CNPJ das empresas",
+        "exemplo": "ID do certificado ou CPF/CNPJ da empresa, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      }
+    },
+    {
+      "id": "certificado-lista",
+      "grupo": "Empresa",
+      "titulo": "Listar certificados",
+      "oculta": true,
+      "metodo": "GET",
+      "caminho": "/certificado",
+      "entrada": {
+        "tipo": "formulario"
+      },
+      "resultado": {
+        "tipo": "json"
+      }
     }
   ]
 }
