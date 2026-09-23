@@ -31,6 +31,11 @@
         <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
         Repositório
       </a>
+      <button type="button" id="abrirLogs" class="btn btn-header" title="Abrir os logs da sessão">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        Logs
+        <span class="contador-header" id="logCounter">0</span>
+      </button>
       <a href="documentacao.pdf" target="_blank" rel="noopener" class="btn btn-header" title="Abrir o manual de uso">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         Documentação
@@ -57,6 +62,26 @@
     <span><strong class="rodape-destaque">Painel Técnico NFS-e · Consultoria Técnica NFS-e</strong> · TecnoSpeed</span>
     <span class="assinatura">Desenvolvido por Hugo Zuin</span>
   </footer>
+
+  <div class="painel-logs-fundo" id="painelLogsFundo" hidden>
+    <aside class="painel-logs" role="dialog" aria-modal="true" aria-labelledby="painelLogsTitulo">
+      <header class="painel-logs-topo">
+        <h2 id="painelLogsTitulo">Logs da sessão</h2>
+        <span class="badge badge-neutral" id="logContagemPainel">0 registros</span>
+        <button type="button" id="fecharLogs" class="info-popup-fechar" aria-label="Fechar os logs">×</button>
+      </header>
+      <p class="field-hint">Registro de tudo o que foi feito desde que a página foi aberta, em todas as abas.</p>
+      <div class="logs-actions">
+        <button type="button" id="usuarioChip" class="btn btn-outline btn-sm">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span id="usuarioChipLabel">Identificar-se</span>
+        </button>
+        <button type="button" id="exportLogsBtn" class="btn btn-outline btn-sm">Exportar logs (TXT)</button>
+        <button type="button" id="clearLogsBtn" class="btn btn-ghost btn-sm">Limpar logs</button>
+      </div>
+      <pre class="logs-panel" id="logsPanel" aria-live="polite"></pre>
+    </aside>
+  </div>
 
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
@@ -125,30 +150,6 @@
     </section>
   </template>
 
-  <template id="tplLogs">
-    <section class="card" id="cardLogs">
-      <details id="logsDetails">
-        <summary class="logs-summary">
-          <span class="card-step">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-          </span>
-          <h2>Logs da sessão</h2>
-          <span class="badge badge-neutral" id="logCounter">0 registros</span>
-        </summary>
-        <div class="card-body">
-          <div class="logs-actions">
-            <button type="button" id="usuarioChip" class="btn btn-outline btn-sm">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <span id="usuarioChipLabel">Identificar-se</span>
-            </button>
-            <button type="button" id="exportLogsBtn" class="btn btn-outline btn-sm">Exportar logs (TXT)</button>
-            <button type="button" id="clearLogsBtn" class="btn btn-ghost btn-sm">Limpar logs</button>
-          </div>
-          <pre class="logs-panel" id="logsPanel" aria-live="polite"></pre>
-        </div>
-      </details>
-    </section>
-  </template>
 
   <script type="module" src="js/app.js"></script>
 </body>

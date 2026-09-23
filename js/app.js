@@ -3,7 +3,7 @@
 
 import {
   elemento, criar, iniciarTema, identificacao, atualizarRotuloUsuario,
-  mostrarAviso, baixarArquivo, carimboDeTempo, restaurarLogs, limparLogs, textoDosLogs, registrarLog
+  mostrarAviso, baixarArquivo, carimboDeTempo, limparLogs, textoDosLogs, registrarLog
 } from "./shared.js";
 import { carregarDefinicoes, definicoes, enderecoRepositorio } from "./definicoes.js";
 import { iniciarCredencial } from "./credencial.js";
@@ -93,10 +93,6 @@ function abrirRota(id) {
 
   const tela = criar("div", { class: "tela", dados: { rota: rota.id } });
   conteudo.appendChild(tela);
-  conteudo.appendChild(elemento("tplLogs").content.cloneNode(true));
-  ligarLogs();
-  restaurarLogs();
-  atualizarRotuloUsuario();
 
   let montagem;
   if (rota.tela === "resolve") montagem = montarTelaResolve(tela);
@@ -121,6 +117,23 @@ function abrirRota(id) {
 }
 
 function ligarLogs() {
+  const fundo = elemento("painelLogsFundo");
+  const abrir = () => {
+    fundo.hidden = false;
+    const painel = elemento("logsPanel");
+    painel.scrollTop = painel.scrollHeight;
+    elemento("fecharLogs").focus();
+  };
+  const fechar = () => { fundo.hidden = true; };
+
+  elemento("abrirLogs").addEventListener("click", () => (fundo.hidden ? abrir() : fechar()));
+  elemento("fecharLogs").addEventListener("click", fechar);
+  fundo.addEventListener("click", (evento) => { if (evento.target === fundo) fechar(); });
+  document.addEventListener("keydown", (evento) => {
+    const modalAberto = !elemento("usuarioModal").hidden || !elemento("confirmModal").hidden;
+    if (evento.key === "Escape" && !fundo.hidden && !modalAberto) fechar();
+  });
+
   elemento("usuarioChip").addEventListener("click", () => identificacao.solicitar());
   elemento("clearLogsBtn").addEventListener("click", limparLogs);
   elemento("exportLogsBtn").addEventListener("click", () => {
@@ -158,6 +171,8 @@ function ligarNavegacao() {
 async function iniciar() {
   iniciarTema();
   iniciarInfo();
+  ligarLogs();
+  atualizarRotuloUsuario();
   ligarNavegacao();
   await carregarDefinicoes();
   montarCatalogo();

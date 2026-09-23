@@ -1012,3 +1012,12 @@ body {
 .certificado-emissor { color: var(--text-soft); }
 
 .retorno-vazio { padding: 6px 2px; }
+
+/* ---------- Logs da sessão no cabeçalho ---------- */
+.contador-header { min-width: 20px; padding: 1px 7px; border-radius: 999px; background: rgba(255, 255, 255, 0.22); font-size: 0.72rem; font-weight: 700; text-align: center; }
+.painel-logs-fundo { position: fixed; inset: 0; z-index: 89; display: flex; justify-content: flex-end; background: rgba(20, 18, 60, 0.35); }
+.painel-logs { width: min(560px, 100vw); height: 100%; display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; background: var(--bg-card); box-shadow: -12px 0 32px rgba(20, 18, 60, 0.25); }
+.painel-logs-topo { display: flex; align-items: center; gap: 10px; }
+.painel-logs-topo h2 { font-size: 1.1rem; color: var(--text-strong); }
+.painel-logs-topo .info-popup-fechar { margin-left: auto; font-size: 1.5rem; }
+.painel-logs .logs-panel { flex: 1; min-height: 0; max-height: none; overflow: auto; }

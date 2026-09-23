@@ -143,10 +143,11 @@ function montarLinhaLog({ horario, mensagem, nivel }) {
 }
 
 function atualizarContadorLogs() {
-  const contador = elemento("logCounter");
-  if (!contador) return;
   const total = historicoLogs.length;
-  contador.textContent = `${total} registro${total === 1 ? "" : "s"}`;
+  const noCabecalho = elemento("logCounter");
+  if (noCabecalho) noCabecalho.textContent = String(total);
+  const noPainel = elemento("logContagemPainel");
+  if (noPainel) noPainel.textContent = `${total} registro${total === 1 ? "" : "s"}`;
 }
 
 export function restaurarLogs() {
