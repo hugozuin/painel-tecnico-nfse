@@ -1,0 +1,211 @@
+{
+  "versao": 2,
+  "descricao": "Regras aplicadas pelo validador além das conferências calculadas em código. Cada regra informa a fonte em que se apoia. O campo tags usa o caminho completo da tag no leiaute do anexo VI e liga o achado ao popup de regras de negócio.",
+  "apelidos": {
+    "cpfcnpj": "cpfCnpj",
+    "cpfCNPJ": "cpfCnpj",
+    "cnpjCpf": "cpfCnpj",
+    "razaosocial": "razaoSocial",
+    "inscricaomunicipal": "inscricaoMunicipal",
+    "codigocidade": "codigoCidade",
+    "descriminacao": "discriminacao",
+    "tipotributacao": "tipoTributacao",
+    "codigoTributacaoMunicipio": "codigoTributacao"
+  },
+  "regras": [
+    {
+      "id": "prestador-documento-obrigatorio",
+      "campo": "prestador.cpfCnpj",
+      "tipo": "obrigatorio",
+      "severidade": "erro",
+      "titulo": "CPF ou CNPJ do prestador ausente",
+      "mensagem": "O script do Nacional lê o CPF ou CNPJ do prestador e recusa valores que não tenham 11 ou 14 dígitos.",
+      "fonte": "Script do Nacional (LoadEnvio.txt)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/prest/CNPJ", "NFSe/infNFSe/DPS/infDPS/prest/CPF"]
+    },
+    {
+      "id": "prestador-documento-digitos",
+      "campo": "prestador.cpfCnpj",
+      "tipo": "digitos",
+      "quantidade": [11, 14],
+      "severidade": "erro",
+      "titulo": "CPF ou CNPJ do prestador com quantidade de dígitos inválida",
+      "mensagem": "O script do Nacional aceita apenas 11 dígitos (CPF) ou 14 dígitos (CNPJ) para o prestador.",
+      "fonte": "Script do Nacional (LoadEnvio.txt)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/prest/CNPJ", "NFSe/infNFSe/DPS/infDPS/prest/CPF"]
+    },
+    {
+      "id": "servico-codigo-obrigatorio",
+      "campo": "servico[].codigo",
+      "tipo": "obrigatorio",
+      "severidade": "erro",
+      "titulo": "Código do serviço ausente",
+      "mensagem": "O campo codigo do serviço chega a cTribNac, que tem ocorrência 1-1 no anexo VI. O script do Nacional também recusa o envio sem ele.",
+      "fonte": "Anexo VI (cTribNac) e script do Nacional (LoadEnvio.txt)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/serv/cServ/cTribNac"]
+    },
+    {
+      "id": "servico-codigo-digitos",
+      "campo": "servico[].codigo",
+      "tipo": "digitos",
+      "quantidade": 6,
+      "severidade": "erro",
+      "titulo": "Código do serviço sem 6 dígitos",
+      "mensagem": "O script do Nacional remove a máscara e exige exatamente 6 dígitos, como no exemplo 010101 da própria mensagem de erro do script.",
+      "fonte": "Script do Nacional (LoadEnvio.txt) e anexo VI (cTribNac, tamanho 6)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/serv/cServ/cTribNac"]
+    },
+    {
+      "id": "servico-valor-obrigatorio",
+      "campo": "servico[].valor.servico",
+      "tipo": "obrigatorio",
+      "severidade": "erro",
+      "titulo": "Valor do serviço ausente",
+      "mensagem": "O campo valor.servico chega a vServ, que tem ocorrência 1-1 no anexo VI.",
+      "fonte": "Anexo VI (vServ)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/valores/vServPrest/vServ"]
+    },
+    {
+      "id": "descricao-obrigatoria",
+      "campo": "servico[].discriminacao",
+      "tipo": "obrigatorio",
+      "severidade": "erro",
+      "titulo": "Descrição do serviço ausente",
+      "mensagem": "O campo discriminacao chega a xDescServ, que tem ocorrência 1-1 no anexo VI.",
+      "fonte": "Anexo VI (xDescServ)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/serv/cServ/xDescServ"]
+    },
+    {
+      "id": "prestador-cidade-digitos",
+      "campo": "prestador.endereco.codigoCidade",
+      "tipo": "digitos",
+      "quantidade": 7,
+      "severidade": "alerta",
+      "titulo": "Código de cidade do prestador fora do leiaute",
+      "mensagem": "O anexo VI define cMun como numérico com tamanho 7. O script remove a máscara antes de gravar.",
+      "fonte": "Anexo VI (cMun do prestador) e script do Nacional (LoadEnvio.txt)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/prest/end/endNac/cMun"]
+    },
+    {
+      "id": "tomador-cidade-digitos",
+      "campo": "tomador.endereco.codigoCidade",
+      "tipo": "digitos",
+      "quantidade": 7,
+      "severidade": "alerta",
+      "titulo": "Código de cidade do tomador fora do leiaute",
+      "mensagem": "O anexo VI define cMun como numérico com tamanho 7.",
+      "fonte": "Anexo VI (cMun do tomador)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/toma/end/endNac/cMun"]
+    },
+    {
+      "id": "prestador-cep-digitos",
+      "campo": "prestador.endereco.cep",
+      "tipo": "digitos",
+      "quantidade": 8,
+      "severidade": "alerta",
+      "titulo": "CEP do prestador fora do leiaute",
+      "mensagem": "O anexo VI define o CEP com tamanho 8, e o script remove a máscara antes de gravar.",
+      "fonte": "Anexo VI (CEP do prestador) e script do Nacional (LoadEnvio.txt)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/prest/end/endNac/CEP"]
+    },
+    {
+      "id": "tomador-cep-digitos",
+      "campo": "tomador.endereco.cep",
+      "tipo": "digitos",
+      "quantidade": 8,
+      "severidade": "alerta",
+      "titulo": "CEP do tomador fora do leiaute",
+      "mensagem": "O anexo VI define o CEP com tamanho 8, e o script remove a máscara antes de gravar.",
+      "fonte": "Anexo VI (CEP do tomador) e script do Nacional (LoadEnvio.txt)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/toma/end/endNac/CEP"]
+    },
+    {
+      "id": "tomador-sem-identificacao",
+      "campo": "tomador",
+      "tipo": "umDeles",
+      "alternativas": ["cpfCnpj", "codigoEstrangeiro"],
+      "severidade": "alerta",
+      "titulo": "Tomador sem identificação",
+      "mensagem": "No anexo VI, CNPJ, CPF, NIF e cNaoNIF do grupo toma aparecem como elementos de escolha (CE) com ocorrência 1-1.",
+      "fonte": "Anexo VI (grupo toma)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/toma/CNPJ", "NFSe/infNFSe/DPS/infDPS/toma/CPF", "NFSe/infNFSe/DPS/infDPS/toma/NIF"]
+    },
+    {
+      "id": "iss-tributacao-valores",
+      "campo": "servico[].iss.tipoTributacao",
+      "tipo": "enumerado",
+      "valores": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "severidade": "alerta",
+      "titulo": "tipoTributacao fora da tabela do PlugNotas",
+      "mensagem": "A tabela de tipo de tributação do serviço na lib vai de 0 a 9.",
+      "fonte": "Lib do PlugNotas (getIssProps.js)"
+    },
+    {
+      "id": "iss-exigibilidade-valores",
+      "campo": "servico[].iss.exigibilidade",
+      "tipo": "enumerado",
+      "valores": [1, 2, 3, 4, 5, 6, 7],
+      "severidade": "alerta",
+      "titulo": "exigibilidade fora da tabela do PlugNotas",
+      "mensagem": "A tabela de exigibilidade do ISS na lib vai de 1 a 7.",
+      "fonte": "Lib do PlugNotas (getIssProps.js)"
+    },
+    {
+      "id": "suspensao-exige-processo",
+      "tipo": "condicional",
+      "campo": "servico[].iss.exigibilidade",
+      "quandoValorEm": [6, 7],
+      "exige": "servico[].iss.processoSuspensao",
+      "severidade": "erro",
+      "titulo": "Exigibilidade suspensa sem número de processo",
+      "mensagem": "Com exigibilidade 6 ou 7 a lib envia processoSuspensao como NumeroProcessoSuspensao, que chega a nProcesso. No anexo VI, nProcesso tem ocorrência 1-1 no grupo exigSusp.",
+      "fonte": "Lib do PlugNotas (getIssProps.js) e anexo VI (nProcesso)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/exigSusp/nProcesso"]
+    },
+    {
+      "id": "imunidade-sem-tipo",
+      "tipo": "condicional",
+      "campo": "servico[].iss.tipoTributacao",
+      "quandoValorEm": [2],
+      "exige": "servico[].iss.tipoImunidade",
+      "severidade": "informacao",
+      "titulo": "Tributação imune sem tipo de imunidade",
+      "mensagem": "Com tipoTributacao 2 a lib envia iss.tipoImunidade como TipoImunidade, que chega a tpImunidade. Sem ele o campo vai vazio. Veja as regras de tpImunidade.",
+      "fonte": "Lib do PlugNotas (getIssProps.js) e anexo VI (tpImunidade)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/tpImunidade"]
+    },
+    {
+      "id": "ibscbs-indop-digitos",
+      "campo": "ibscbs.codigoOperacao",
+      "tipo": "digitos",
+      "quantidade": 6,
+      "severidade": "alerta",
+      "titulo": "indOp fora do tamanho do leiaute",
+      "mensagem": "O anexo VI define cIndOp como numérico com tamanho 6.",
+      "fonte": "Anexo VI (cIndOp)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/IBSCBS/cIndOp"]
+    },
+    {
+      "id": "ibscbs-cst-digitos",
+      "campo": "ibscbs.valores.tributacao.cst",
+      "tipo": "digitos",
+      "quantidade": 3,
+      "severidade": "alerta",
+      "titulo": "CST do IBS e da CBS fora do tamanho do leiaute",
+      "mensagem": "O anexo VI define o CST do grupo gIBSCBS como numérico com tamanho 3.",
+      "fonte": "Anexo VI (CST do grupo gIBSCBS)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/IBSCBS/valores/trib/gIBSCBS/CST"]
+    },
+    {
+      "id": "ibscbs-cct-digitos",
+      "campo": "ibscbs.valores.tributacao.cct",
+      "tipo": "digitos",
+      "quantidade": 6,
+      "severidade": "alerta",
+      "titulo": "cClassTrib fora do tamanho do leiaute",
+      "mensagem": "O anexo VI define cClassTrib como numérico com tamanho 6.",
+      "fonte": "Anexo VI (cClassTrib)",
+      "tags": ["NFSe/infNFSe/DPS/infDPS/IBSCBS/valores/trib/gIBSCBS/cClassTrib"]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Técnico NFS-e</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-brand">
+      <button type="button" id="alternarMenu" class="btn btn-header menu-toggle" aria-label="Abrir ou fechar o menu">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+      <div class="marca">
+        <img src="assets/logo.svg" alt="" class="marca-logo" width="156" height="27" />
+        <span class="marca-divisor" aria-hidden="true"></span>
+        <div class="header-titles">
+          <h1>Painel Técnico NFS-e</h1>
+          <p>Consultoria Técnica NFS-e · PlugNotas e Ambiente Nacional</p>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="#" id="linkRepositorio" hidden class="btn btn-header" target="_blank" rel="noopener" title="Abrir o repositório da ferramenta">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+        Repositório
+      </a>
+      <a href="documentacao.pdf" target="_blank" rel="noopener" class="btn btn-header" title="Abrir o manual de uso">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Documentação
+      </a>
+      <button id="themeToggle" class="theme-toggle" type="button" title="Alternar tema claro ou escuro" aria-label="Alternar tema">
+        <span class="theme-toggle-thumb"></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <nav class="menu-lateral" id="menuLateral" aria-label="Rotas e ferramentas"></nav>
+
+    <main class="app-main" id="conteudo">
+      <section class="card">
+        <div class="card-body">
+          <p class="field-hint">Carregando definições…</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="app-footer">
+    <span>Painel Técnico NFS-e · Consultoria Técnica NFS-e · TecnoSpeed</span>
+    <span class="assinatura">Desenvolvido por Hugo Zuin</span>
+  </footer>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <div class="modal-backdrop" id="confirmModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">Confirmar ação</h3>
+      <p id="confirmMessage">Tem certeza?</p>
+      <div class="modal-actions">
+        <button type="button" id="confirmCancel" class="btn btn-ghost">Cancelar</button>
+        <button type="button" id="confirmOk" class="btn btn-primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="usuarioModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="usuarioModalTitle">
+      <h3 id="usuarioModalTitle">Quem está usando a ferramenta</h3>
+      <p>Informe seu usuário da TecnoSpeed. Ele aparece no cabeçalho dos logs exportados e nos resumos copiados para o ticket.</p>
+      <input type="text" id="usuarioInput" class="text-input" placeholder="hugo.zuin" spellcheck="false" autocomplete="off" />
+      <div class="modal-actions">
+        <button type="button" id="usuarioCancel" class="btn btn-ghost">Cancelar</button>
+        <button type="button" id="usuarioOk" class="btn btn-primary">Salvar identificação</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="tplCredencial">
+    <section class="card card-credencial" id="cardCredencial">
+      <div class="card-header">
+        <span class="card-step">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><line x1="10.85" y1="12.15" x2="19" y2="4"/><line x1="18" y1="5" x2="20" y2="7"/><line x1="15" y1="8" x2="17" y2="10"/></svg>
+        </span>
+        <h2>Credencial da conta</h2>
+        <span class="badge badge-neutral" id="perfilAtivoBadge">Nenhum perfil salvo</span>
+      </div>
+      <div class="card-body">
+        <label class="field-label" for="apiKeyInput">API Key (header x-api-key)</label>
+        <div class="input-group">
+          <input type="password" id="apiKeyInput" class="text-input" placeholder="Informe a API Key da conta" autocomplete="off" spellcheck="false" />
+          <button type="button" id="toggleApiKey" class="btn btn-icon" title="Mostrar ou ocultar API Key" aria-label="Mostrar ou ocultar API Key">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="config-row">
+          <div class="config-field">
+            <label class="field-label" for="perfilSelect">Perfis salvos neste navegador</label>
+            <select id="perfilSelect" class="text-input select-input">
+              <option value="">Chave digitada agora</option>
+            </select>
+          </div>
+          <div class="config-field">
+            <label class="field-label" for="perfilNomeInput">Apelido para salvar a chave atual</label>
+            <div class="input-group">
+              <input type="text" id="perfilNomeInput" class="text-input" placeholder="Ex.: cliente Alfa produção" spellcheck="false" />
+              <button type="button" id="salvarPerfilBtn" class="btn btn-outline btn-sm">Salvar</button>
+              <button type="button" id="removerPerfilBtn" class="btn btn-ghost btn-sm">Remover</button>
+            </div>
+          </div>
+        </div>
+        <label class="checkbox-row">
+          <input type="checkbox" id="rememberApiKey" />
+          <span>Manter a chave digitada após fechar o navegador</span>
+        </label>
+        <p class="field-hint">Sem essa opção a chave vive apenas na sessão atual. Ela nunca é enviada ao servidor desta ferramenta: as requisições saem direto do seu navegador para a API PlugNotas.</p>
+      </div>
+    </section>
+  </template>
+
+  <template id="tplLogs">
+    <section class="card" id="cardLogs">
+      <details id="logsDetails">
+        <summary class="logs-summary">
+          <span class="card-step">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </span>
+          <h2>Logs da sessão</h2>
+          <span class="badge badge-neutral" id="logCounter">0 registros</span>
+        </summary>
+        <div class="card-body">
+          <div class="logs-actions">
+            <button type="button" id="usuarioChip" class="btn btn-outline btn-sm">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span id="usuarioChipLabel">Identificar-se</span>
+            </button>
+            <button type="button" id="exportLogsBtn" class="btn btn-outline btn-sm">Exportar logs (TXT)</button>
+            <button type="button" id="clearLogsBtn" class="btn btn-ghost btn-sm">Limpar logs</button>
+          </div>
+          <pre class="logs-panel" id="logsPanel" aria-live="polite"></pre>
+        </div>
+      </details>
+    </section>
+  </template>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "painel-tecnico-nfse",
+  "version": "4.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Painel Técnico NFS-e: operações da API PlugNotas e do Ambiente Nacional, de-para do XML, relação IBS e CBS e validador de JSON",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "npx serve -l 3500 ."
+  }
+}

@@ -1,0 +1,437 @@
+{
+  "versao": 1,
+  "base": "https://api.plugnotas.com.br",
+  "rotas": [
+    {
+      "id": "resolve",
+      "grupo": "Notas",
+      "titulo": "Resolve em lote",
+      "resumo": "Sincroniza a situação das notas com a prefeitura e confere o desfecho na rota de consulta.",
+      "tela": "resolve",
+      "ordem": 1
+    },
+    {
+      "id": "consulta",
+      "grupo": "Notas",
+      "titulo": "Consulta de notas",
+      "resumo": "Consulta resumida pela rota /nfse/consultar. Aceita id da nota ou protocolo.",
+      "metodo": "GET",
+      "caminho": "/nfse/consultar/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas ou protocolos",
+        "exemplo": "ID da nota ou protocolo, um por linha"
+      },
+      "resultado": {
+        "tipo": "tabela",
+        "colunas": [
+          {
+            "titulo": "Situação",
+            "campo": "situacao",
+            "estilo": "situacao"
+          },
+          {
+            "titulo": "Número",
+            "campo": "numeroNfse"
+          },
+          {
+            "titulo": "Série",
+            "campo": "serie"
+          },
+          {
+            "titulo": "Lote",
+            "campo": "lote"
+          },
+          {
+            "titulo": "Cód. verificação",
+            "campo": "codigoVerificacao"
+          },
+          {
+            "titulo": "Autorização",
+            "campo": "autorizacao"
+          },
+          {
+            "titulo": "Mensagem",
+            "campo": "mensagem"
+          }
+        ]
+      },
+      "ordem": 2
+    },
+    {
+      "id": "consulta-completa",
+      "grupo": "Notas",
+      "titulo": "Consulta completa",
+      "resumo": "Retorna o documento inteiro pela rota /nfse/{id}, útil para conferir o que foi gravado na emissão.",
+      "metodo": "GET",
+      "caminho": "/nfse/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "ordem": 3
+    },
+    {
+      "id": "consulta-integracao",
+      "grupo": "Notas",
+      "titulo": "Consulta por idIntegração",
+      "resumo": "Consulta a nota pelo idIntegracao e pelo CNPJ do prestador.",
+      "metodo": "GET",
+      "caminho": "/nfse/consultar/{item}/{cnpj}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Valores de idIntegracao",
+        "exemplo": "idIntegracao, um por linha"
+      },
+      "campos": [
+        {
+          "id": "cnpj",
+          "rotulo": "CNPJ do prestador",
+          "tipo": "texto",
+          "obrigatorio": true,
+          "destino": "caminho.cnpj",
+          "somenteNumeros": true
+        }
+      ],
+      "resultado": {
+        "tipo": "tabela",
+        "colunas": [
+          {
+            "titulo": "Situação",
+            "campo": "situacao",
+            "estilo": "situacao"
+          },
+          {
+            "titulo": "Número",
+            "campo": "numeroNfse"
+          },
+          {
+            "titulo": "Cód. verificação",
+            "campo": "codigoVerificacao"
+          },
+          {
+            "titulo": "Mensagem",
+            "campo": "mensagem"
+          }
+        ]
+      },
+      "ordem": 4
+    },
+    {
+      "id": "consulta-periodo",
+      "grupo": "Notas",
+      "titulo": "Consulta por período",
+      "resumo": "Lista as notas de um prestador em um intervalo de datas.",
+      "metodo": "GET",
+      "caminho": "/nfse/consultar/periodo",
+      "entrada": {
+        "tipo": "formulario"
+      },
+      "campos": [
+        {
+          "id": "cpfCnpj",
+          "rotulo": "CPF ou CNPJ do prestador",
+          "tipo": "texto",
+          "obrigatorio": true,
+          "destino": "consulta.cpfCnpj",
+          "somenteNumeros": true
+        },
+        {
+          "id": "dataInicial",
+          "rotulo": "Data inicial",
+          "tipo": "data",
+          "obrigatorio": true,
+          "destino": "consulta.dataInicial"
+        },
+        {
+          "id": "dataFinal",
+          "rotulo": "Data final",
+          "tipo": "data",
+          "obrigatorio": true,
+          "destino": "consulta.dataFinal"
+        },
+        {
+          "id": "hashProximaPagina",
+          "rotulo": "Hash da próxima página",
+          "tipo": "texto",
+          "destino": "consulta.hashProximaPagina",
+          "dica": "Preencha com o hash devolvido na consulta anterior para paginar."
+        }
+      ],
+      "resultado": {
+        "tipo": "json"
+      },
+      "observacao": "A coleção do Postman traz os parâmetros no corpo. Como o navegador não envia corpo em GET, a ferramenta manda por query string. Se a API esperar outro formato, ajuste o destino dos campos neste arquivo.",
+      "ordem": 5
+    },
+    {
+      "id": "xml",
+      "grupo": "Arquivos",
+      "titulo": "Download de XML",
+      "resumo": "Baixa o XML autorizado de cada nota informada.",
+      "metodo": "GET",
+      "caminho": "/nfse/xml/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "resultado": {
+        "tipo": "arquivo",
+        "extensao": "xml",
+        "prefixo": "nfse"
+      },
+      "ordem": 1
+    },
+    {
+      "id": "pdf",
+      "grupo": "Arquivos",
+      "titulo": "Download de PDF",
+      "resumo": "Baixa o PDF da nota. Aceita id da nota ou protocolo.",
+      "metodo": "GET",
+      "caminho": "/nfse/pdf/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota ou protocolo, um por linha"
+      },
+      "resultado": {
+        "tipo": "arquivo",
+        "extensao": "pdf",
+        "prefixo": "nfse"
+      },
+      "ordem": 2
+    },
+    {
+      "id": "pdf-regerar",
+      "grupo": "Arquivos",
+      "titulo": "Regerar PDF",
+      "resumo": "Solicita a geração de um novo PDF quando o arquivo saiu com dados desatualizados.",
+      "metodo": "POST",
+      "caminho": "/nfse/pdf/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "resultado": {
+        "tipo": "mensagem"
+      },
+      "confirmar": "O PDF das notas informadas será gerado novamente.",
+      "ordem": 3
+    },
+    {
+      "id": "email",
+      "grupo": "Arquivos",
+      "titulo": "Envio de e-mail",
+      "resumo": "Reenvia a nota por e-mail para os destinatários informados.",
+      "metodo": "POST",
+      "caminho": "/nfse/email/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "campos": [
+        {
+          "id": "destinatarios",
+          "rotulo": "Destinatários",
+          "tipo": "lista",
+          "obrigatorio": true,
+          "destino": "corpo.destinatarios",
+          "dica": "Separe por vírgula. Todos recebem a nota de cada id informado."
+        },
+        {
+          "id": "reenvio",
+          "rotulo": "Marcar como reenvio",
+          "tipo": "booleano",
+          "padrao": true,
+          "destino": "corpo.reenvio"
+        }
+      ],
+      "resultado": {
+        "tipo": "mensagem"
+      },
+      "confirmar": "Um e-mail será enviado para os destinatários informados, com a nota de cada id da lista.",
+      "sensivel": true,
+      "ordem": 4
+    },
+    {
+      "id": "cancelar",
+      "grupo": "Ciclo de vida",
+      "titulo": "Cancelamento",
+      "resumo": "Solicita o cancelamento das notas e devolve o protocolo para acompanhamento.",
+      "metodo": "POST",
+      "caminho": "/nfse/cancelar/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "campos": [
+        {
+          "id": "motivo",
+          "rotulo": "Motivo do cancelamento",
+          "tipo": "texto",
+          "destino": "corpo.motivo",
+          "dica": "Obrigatório em parte dos padrões. Deixe em branco quando a prefeitura não exigir."
+        },
+        {
+          "id": "codigo",
+          "rotulo": "Código do motivo",
+          "tipo": "texto",
+          "destino": "corpo.codigo",
+          "dica": "Usado pelos padrões que trabalham com código de cancelamento."
+        }
+      ],
+      "resultado": {
+        "tipo": "tabela",
+        "colunas": [
+          {
+            "titulo": "Protocolo",
+            "campo": "protocolo"
+          },
+          {
+            "titulo": "Situação",
+            "campo": "situacao",
+            "estilo": "situacao"
+          },
+          {
+            "titulo": "Mensagem",
+            "campo": "mensagem"
+          }
+        ]
+      },
+      "confirmar": "O cancelamento é definitivo na prefeitura. Confirme que os ids estão corretos antes de continuar.",
+      "sensivel": true,
+      "ordem": 1
+    },
+    {
+      "id": "cancelar-status",
+      "grupo": "Ciclo de vida",
+      "titulo": "Status do cancelamento",
+      "resumo": "Consulta o andamento do cancelamento pelo protocolo devolvido na solicitação.",
+      "metodo": "GET",
+      "caminho": "/nfse/cancelar/status/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Protocolos de cancelamento",
+        "exemplo": "Protocolo do cancelamento, um por linha"
+      },
+      "resultado": {
+        "tipo": "tabela",
+        "colunas": [
+          {
+            "titulo": "Situação",
+            "campo": "situacao",
+            "estilo": "situacao"
+          },
+          {
+            "titulo": "Mensagem",
+            "campo": "mensagem"
+          }
+        ]
+      },
+      "ordem": 2
+    },
+    {
+      "id": "eventos",
+      "grupo": "Ciclo de vida",
+      "titulo": "Eventos do Nacional",
+      "resumo": "Envia ou consulta eventos de manifestação no ambiente Nacional.",
+      "metodo": "POST",
+      "caminho": "/nfse/eventos/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "campos": [
+        {
+          "id": "tipo",
+          "rotulo": "Tipo do evento",
+          "tipo": "selecao",
+          "obrigatorio": true,
+          "destino": "corpo.tipo",
+          "opcoes": [
+            {
+              "valor": "consulta",
+              "rotulo": "Consulta de eventos"
+            },
+            {
+              "valor": "envio",
+              "rotulo": "Envio de evento"
+            }
+          ]
+        },
+        {
+          "id": "modelo",
+          "rotulo": "Modelo",
+          "tipo": "texto",
+          "destino": "corpo.modelo"
+        },
+        {
+          "id": "codigo",
+          "rotulo": "Código do evento",
+          "tipo": "texto",
+          "destino": "corpo.codigo"
+        },
+        {
+          "id": "motivo",
+          "rotulo": "Motivo",
+          "tipo": "texto",
+          "destino": "corpo.motivo"
+        }
+      ],
+      "resultado": {
+        "tipo": "json"
+      },
+      "confirmar": "Eventos de envio alteram a nota no ambiente Nacional.",
+      "sensivel": true,
+      "ordem": 3
+    },
+    {
+      "id": "sincronizar",
+      "grupo": "Ciclo de vida",
+      "titulo": "Sincronização",
+      "resumo": "Envia a lista inteira em uma única chamada para a rota de sincronização.",
+      "metodo": "POST",
+      "caminho": "/nfse/sincronizar",
+      "entrada": {
+        "tipo": "lote-conjunto",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "confirmar": "Todos os ids serão enviados de uma vez para a sincronização.",
+      "sensivel": true,
+      "ordem": 4
+    },
+    {
+      "id": "interromper",
+      "grupo": "Ciclo de vida",
+      "titulo": "Interrupção",
+      "resumo": "Interrompe o processamento das notas informadas.",
+      "metodo": "POST",
+      "caminho": "/nfse/interromper",
+      "entrada": {
+        "tipo": "lote-conjunto",
+        "rotulo": "IDs das notas",
+        "exemplo": "ID da nota, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "confirmar": "As notas informadas param de ser processadas. A ação não tem volta.",
+      "sensivel": true,
+      "observacao": "A coleção do Postman registra esta rota como GET com corpo, o que o navegador não permite. A ferramenta envia POST. Se a API exigir outro método, troque o campo metodo neste arquivo.",
+      "ordem": 5
+    }
+  ]
+}

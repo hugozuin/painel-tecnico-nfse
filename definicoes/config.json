@@ -1,0 +1,8 @@
+{
+  "repositorio": "hugozuin/painel-tecnico-nfse",
+  "branch": "main",
+  "pasta": "definicoes",
+  "atualizacaoRemota": false,
+  "botaoRepositorio": false,
+  "observacao": "Repositório privado: a leitura remota fica desligada porque o GitHub só entrega arquivos de repositório público, e as atualizações entram pelo deploy automático de cada commit. O botão Repositório fica oculto; para exibi-lo, mude botaoRepositorio para true e confira o endereço em repositorio."
+}

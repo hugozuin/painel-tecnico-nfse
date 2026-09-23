@@ -1,0 +1,194 @@
+{
+  "versao": 1,
+  "ambientes": [
+    {
+      "id": "producao",
+      "rotulo": "Produção",
+      "adn": "https://adn.nfse.gov.br",
+      "sefin": "https://sefin.nfse.gov.br"
+    },
+    {
+      "id": "restrita",
+      "rotulo": "Produção restrita",
+      "adn": "https://adn.producaorestrita.nfse.gov.br",
+      "sefin": "https://sefin.producaorestrita.nfse.gov.br"
+    }
+  ],
+  "rotas": [
+    {
+      "id": "convenio",
+      "grupo": "Nacional",
+      "titulo": "Convênio do município",
+      "resumo": "Mostra se o município aderiu ao Nacional e como está o convênio dele.",
+      "metodo": "GET",
+      "servidor": "adn",
+      "caminho": "/parametrizacao/{item}/convenio",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Códigos IBGE dos municípios",
+        "exemplo": "4115200"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "ordem": 1
+    },
+    {
+      "id": "aliquota",
+      "grupo": "Nacional",
+      "titulo": "Alíquota do município",
+      "resumo": "Consulta a alíquota vigente para um item de serviço em uma competência.",
+      "metodo": "GET",
+      "servidor": "adn",
+      "caminho": "/parametrizacao/{item}/{codigoTributacao}/{competencia}/aliquota",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Códigos IBGE dos municípios",
+        "exemplo": "4115200"
+      },
+      "campos": [
+        {
+          "id": "codigoTributacao",
+          "rotulo": "Código de tributação",
+          "tipo": "texto",
+          "obrigatorio": true,
+          "destino": "caminho.codigoTributacao",
+          "dica": "No formato do layout Nacional, por exemplo 06.04.01.002."
+        },
+        {
+          "id": "competencia",
+          "rotulo": "Competência",
+          "tipo": "competencia",
+          "obrigatorio": true,
+          "destino": "caminho.competencia",
+          "dica": "AAAA-MM"
+        }
+      ],
+      "resultado": {
+        "tipo": "json"
+      },
+      "ordem": 2
+    },
+    {
+      "id": "beneficio",
+      "grupo": "Nacional",
+      "titulo": "Benefício municipal",
+      "resumo": "Consulta benefícios concedidos a um contribuinte em uma competência.",
+      "metodo": "GET",
+      "servidor": "adn",
+      "caminho": "/parametrizacao/{item}/{inscricaoFederal}/{competencia}/beneficio",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Códigos IBGE dos municípios",
+        "exemplo": "3106200"
+      },
+      "campos": [
+        {
+          "id": "inscricaoFederal",
+          "rotulo": "CPF ou CNPJ",
+          "tipo": "texto",
+          "obrigatorio": true,
+          "destino": "caminho.inscricaoFederal",
+          "somenteNumeros": true
+        },
+        {
+          "id": "competencia",
+          "rotulo": "Competência",
+          "tipo": "competencia",
+          "obrigatorio": true,
+          "destino": "caminho.competencia",
+          "dica": "AAAA-MM"
+        }
+      ],
+      "resultado": {
+        "tipo": "json"
+      },
+      "ordem": 3
+    },
+    {
+      "id": "cnc",
+      "grupo": "Nacional",
+      "titulo": "Cadastro nacional do contribuinte",
+      "resumo": "Consulta o contribuinte no CNC por município e inscrição federal.",
+      "metodo": "GET",
+      "servidor": "adn",
+      "caminho": "/cnc/consulta/cad",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Inscrições federais",
+        "exemplo": "CPF ou CNPJ, um por linha"
+      },
+      "campos": [
+        {
+          "id": "codMunicipio",
+          "rotulo": "Código IBGE do município",
+          "tipo": "texto",
+          "obrigatorio": true,
+          "destino": "consulta.codMunicipio",
+          "somenteNumeros": true
+        }
+      ],
+      "parametroItem": "consulta.inscricaoFederal",
+      "resultado": {
+        "tipo": "json"
+      },
+      "ordem": 4
+    },
+    {
+      "id": "nfse-chave",
+      "grupo": "Nacional",
+      "titulo": "NFSe por chave de acesso",
+      "resumo": "Busca a nota no Nacional pela chave de acesso.",
+      "metodo": "GET",
+      "servidor": "sefin",
+      "caminho": "/SefinNacional/nfse/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Chaves de acesso",
+        "exemplo": "Chave de acesso, uma por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "ordem": 5
+    },
+    {
+      "id": "dps",
+      "grupo": "Nacional",
+      "titulo": "DPS por identificador",
+      "resumo": "Consulta a declaração de prestação de serviço pelo identificador.",
+      "metodo": "GET",
+      "servidor": "sefin",
+      "caminho": "/SefinNacional/dps/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Identificadores de DPS",
+        "exemplo": "Identificador da DPS, um por linha"
+      },
+      "resultado": {
+        "tipo": "json"
+      },
+      "ordem": 6
+    },
+    {
+      "id": "danfse",
+      "grupo": "Nacional",
+      "titulo": "DANFSe em PDF",
+      "resumo": "Baixa o DANFSe pela chave de acesso.",
+      "metodo": "GET",
+      "servidor": "adn",
+      "caminho": "/danfse/{item}",
+      "entrada": {
+        "tipo": "lote",
+        "rotulo": "Chaves de acesso",
+        "exemplo": "Chave de acesso, uma por linha"
+      },
+      "resultado": {
+        "tipo": "arquivo",
+        "extensao": "pdf",
+        "prefixo": "danfse"
+      },
+      "ordem": 7
+    }
+  ]
+}
