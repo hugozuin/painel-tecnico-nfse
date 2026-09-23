@@ -163,15 +163,13 @@ export function montarTelaRota(container, rota, contexto) {
     await estado.pool.executar(itens, async (item, posicao) => {
       const alvo = montarEndereco(rota, contexto, item, dados);
       const resposta = await requisitar({
-        url: alvo.url,
-        metodo: rota.metodo || "GET",
-        corpo: alvo.corpo,
+        ...prepararPedido(rota, contexto, alvo),
         apiKey: credencial,
         sessao: estado.sessao,
         comoBlob: rota.resultado?.tipo === "arquivo"
       });
 
-      registrarResultado({ item, resposta, posicao, tabela });
+      registrarResultado({ item, resposta: { ...resposta, destino: alvo.url }, posicao, tabela });
       concluidos++;
       barraProgresso.style.width = `${Math.round((concluidos / itens.length) * 100)}%`;
       if (rota.sensivel) await pausar(150);
@@ -181,15 +179,14 @@ export function montarTelaRota(container, rota, contexto) {
   async function executarConjunto(itens, dados, credencial) {
     const alvo = montarEndereco(rota, contexto, "", dados);
     const resposta = await requisitar({
-      url: alvo.url,
-      metodo: rota.metodo || "POST",
-      corpo: itens,
+      ...prepararPedido(rota, contexto, { ...alvo, corpo: itens }),
       apiKey: credencial,
       sessao: estado.sessao
     });
     barraProgresso.style.width = "100%";
-    estado.registros.push({ item: `${itens.length} item(ns)`, status: resposta.status, mensagem: resposta.mensagem, dados: resposta.dados });
-    areaResultado.appendChild(blocoJson(`${itens.length} item(ns) enviados`, resposta));
+    const rotulo = `${itens.length} item(ns) enviados`;
+    estado.registros.push({ item: rotulo, status: resposta.status, mensagem: resposta.mensagem, dados: resposta.dados, texto: resposta.texto });
+    areaResultado.appendChild(blocoRetorno(rotulo, { ...resposta, destino: alvo.url }, rota.metodo || "POST"));
   }
 
   function registrarResultado({ item, resposta, posicao, tabela }) {
@@ -215,8 +212,8 @@ export function montarTelaRota(container, rota, contexto) {
     }
 
     if (tipo === "json") {
-      estado.registros.push({ item, status: resposta.status, mensagem: resposta.mensagem, dados: resposta.dados });
-      areaResultado.appendChild(blocoJson(item, resposta));
+      estado.registros.push({ item, status: resposta.status, mensagem: resposta.mensagem, dados: resposta.dados, texto: resposta.texto });
+      areaResultado.appendChild(blocoRetorno(item, resposta, rota.metodo || "GET"));
       return;
     }
 
@@ -318,7 +315,12 @@ function montarEndereco(rota, contexto, item, dados) {
   const url = `${base}${caminho}${consulta.toString() ? `?${consulta}` : ""}`;
   const corpo = (rota.metodo || "GET") === "GET" ? undefined : dados.corpo;
 
-  return { url: contexto.transformarUrl ? contexto.transformarUrl(url) : url, corpo };
+  return { url, corpo };
+}
+
+function prepararPedido(rota, contexto, alvo) {
+  if (contexto.prepararPedido) return contexto.prepararPedido(alvo, rota);
+  return { url: alvo.url, metodo: rota.metodo || "GET", corpo: alvo.corpo };
 }
 
 function primeiroDocumento(dados) {
@@ -405,24 +407,43 @@ function linhaSimples(item, mensagem, ok) {
   ]);
 }
 
-function blocoJson(item, resposta) {
-  const conteudo = resposta.dados !== null && resposta.dados !== undefined
-    ? JSON.stringify(resposta.dados, null, 2)
-    : resposta.mensagem || "";
+export function textoDoRetorno(resposta) {
+  if (resposta.dados !== null && resposta.dados !== undefined) return JSON.stringify(resposta.dados, null, 2);
+  return resposta.texto || resposta.mensagem || "";
+}
 
-  return criar("details", { class: "bloco-json", open: false }, [
-    criar("summary", {}, [
+function blocoRetorno(item, resposta, metodo) {
+  const corpo = textoDoRetorno(resposta);
+  const campo = criar("textarea", {
+    class: "text-area code-area retorno-corpo",
+    readOnly: true,
+    spellcheck: false,
+    rows: Math.min(18, Math.max(4, corpo.split("\n").length + 1)),
+    value: corpo || "(retorno vazio)"
+  });
+  return criar("section", { class: `retorno ${resposta.ok ? "retorno-ok" : "retorno-erro"}` }, [
+    criar("header", {}, [
       criar("span", { class: "mono", texto: item }),
-      criar("span", { class: `badge ${resposta.ok ? "badge-success" : "badge-error"}`, texto: `HTTP ${resposta.status ?? "sem resposta"}` })
+      criar("span", { class: `badge ${resposta.ok ? "badge-success" : "badge-error"}`, texto: resposta.status ? `HTTP ${resposta.status}` : "Sem resposta" }),
+      resposta.tipo ? criar("span", { class: "retorno-meta", texto: resposta.tipo }) : null,
+      Number.isFinite(resposta.duracaoMs) ? criar("span", { class: "retorno-meta", texto: `${resposta.duracaoMs} ms` }) : null,
+      criar("button", {
+        type: "button", class: "btn btn-outline btn-xs", texto: "Copiar retorno",
+        aoClicar: async () => {
+          const copiou = await copiarTexto(corpo);
+          mostrarAviso(copiou ? "Retorno copiado." : "Não foi possível copiar.", copiou ? "success" : "error");
+        }
+      })
     ]),
-    criar("pre", { texto: conteudo })
+    resposta.destino ? criar("p", { class: "retorno-url", texto: `${metodo} ${resposta.destino}` }) : null,
+    campo
   ]);
 }
 
 function textoDoResultado(estado, rota) {
   return estado.registros.map((registro) => {
     if (rota.resultado?.tipo === "json") {
-      return `${registro.item}\n${JSON.stringify(registro.dados, null, 2)}`;
+      return `${registro.item}\n${textoDoRetorno(registro)}`;
     }
     const partes = Object.entries(registro)
       .filter(([chave]) => chave !== "item" && chave !== "dados")

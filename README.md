@@ -18,7 +18,12 @@ e aparecem marcadas no menu.
 
 **Nacional.** Consultas públicas do ADN e da Sefin (convênio, alíquota,
 benefício, CNC, NFSe por chave, DPS e DANFSe), com escolha entre produção e
-produção restrita.
+produção restrita. Cada consulta mostra o retorno completo num campo
+próprio, com status HTTP, tipo do conteúdo, tempo e a URL chamada. Algumas
+consultas exigem certificado digital na conexão: o consultor carrega um A1
+ICP-Brasil (.pfx ou .p12) e a senha na tela. O arquivo e a senha são lidos no
+navegador, e só a chave e o certificado seguem para o repasse durante a
+consulta, sem serem guardados.
 
 **De-para do Nacional.** Cada tag do XML aparece pelo nome do leiaute e pela
 descrição do anexo VI, por exemplo tpRetISSQN, Tipo de retencao do ISSQN. A
@@ -95,7 +100,7 @@ Deploy na Vercel a partir do repositório privado, com Framework Preset Other e
 sem variável de ambiente. Em Deployment Protection, a Vercel Authentication fica
 em Standard Protection: o domínio de produção abre sem login e as prévias de
 outros branches continuam protegidas. A pasta `api/` vira função serverless; o
-repasse do Nacional aceita apenas GET e apenas os domínios do gov.br listados em
+repasse do Nacional aceita GET, ou POST com o certificado do consultor, e apenas os domínios do gov.br listados em
 `api/proxy.js`. O `.vercelignore` deixa o gerador, os anexos e os READMEs fora do
 site.
 

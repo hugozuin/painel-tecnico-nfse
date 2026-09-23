@@ -993,3 +993,19 @@ body {
   .marca-divisor { display: none; }
   .cabecalho-pagina h1 { font-size: 1.3rem; }
 }
+
+/* ---------- Retorno das requisições ---------- */
+.retorno { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid var(--border); border-left-width: 4px; border-radius: var(--radius-sm); background: var(--bg-muted); }
+.retorno-ok { border-left-color: var(--success); }
+.retorno-erro { border-left-color: var(--danger); }
+.retorno header { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.retorno header .btn { margin-left: auto; }
+.retorno-meta { font-size: 0.74rem; color: var(--text-soft); }
+.retorno-url { font-family: "Consolas", "Menlo", monospace; font-size: 0.74rem; color: var(--indigo-700); word-break: break-all; }
+.retorno-corpo { min-height: 90px; background: var(--bg-card); resize: vertical; }
+
+/* ---------- Certificado digital ---------- */
+.certificado-situacao { font-size: 0.82rem; padding: 8px 12px; border-radius: var(--radius-sm); background: var(--bg-muted); color: var(--text-soft); }
+.certificado-situacao.ativo { color: var(--text-base); border-left: 3px solid var(--success); }
+.certificado-situacao.vencido { color: var(--danger); border-left: 3px solid var(--danger); }
+.certificado-emissor { color: var(--text-soft); }

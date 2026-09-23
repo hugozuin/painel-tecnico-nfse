@@ -58,6 +58,7 @@ export async function requisitar({ url, metodo = "GET", corpo, apiKey, sessao, c
     const base = {
       ok: resposta.ok,
       status: resposta.status,
+      tipo: resposta.headers?.get?.("content-type") || "",
       esperaSugerida: lerRetryAfter(resposta),
       duracaoMs: Math.round(performance.now() - inicio)
     };
@@ -80,7 +81,7 @@ export async function requisitar({ url, metodo = "GET", corpo, apiKey, sessao, c
       mensagem = resposta.statusText || "";
     }
 
-    return { ...base, dados, mensagem };
+    return { ...base, dados, mensagem, texto: bruto };
   } catch (erro) {
     const excedeuTempo = controlador.signal.reason === "tempoLimite";
     return {
@@ -120,6 +121,7 @@ export function extrairMensagem(dados) {
     if (primeiro?.mensagem) return String(primeiro.mensagem);
   }
   if (dados.mensagem) return String(dados.mensagem);
+  if (dados.erro) return [dados.erro, dados.dica].filter(Boolean).join(" ");
   return JSON.stringify(dados).slice(0, 200);
 }
 

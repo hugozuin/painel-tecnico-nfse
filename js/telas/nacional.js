@@ -1,17 +1,17 @@
 /* Telas do Ambiente Nacional. As consultas passam pelo repasse em api/proxy
-   porque os servidores do gov.br não liberam CORS para o navegador. */
+   porque os servidores do gov.br não liberam CORS para o navegador. Com um
+   certificado carregado, o repasse o usa na conexão TLS. */
 
 import { criar, CHAVES_ARMAZENAMENTO, registrarLog } from "../shared.js";
 import { definicoes } from "../definicoes.js";
 import { montarTelaRota } from "./lote.js";
+import { certificadoAtual, montarCartaoCertificado } from "../certificado.js";
 
 export function montarTelaNacional(container, rota) {
   const ambientes = definicoes.rotasNacional?.ambientes || [];
-  const salvo = localStorage.getItem(CHAVES_ARMAZENAMENTO.ambienteNacional) || ambientes[0]?.id;
-
   const seletor = criar("select", { class: "text-input select-input" },
     ambientes.map((ambiente) => criar("option", { value: ambiente.id, texto: ambiente.rotulo })));
-  seletor.value = salvo;
+  seletor.value = localStorage.getItem(CHAVES_ARMAZENAMENTO.ambienteNacional) || ambientes[0]?.id;
 
   seletor.addEventListener("change", () => {
     localStorage.setItem(CHAVES_ARMAZENAMENTO.ambienteNacional, seletor.value);
@@ -22,14 +22,13 @@ export function montarTelaNacional(container, rota) {
     criar("div", { class: "card-header" }, [criar("h2", { texto: "Ambiente do Nacional" })]),
     criar("div", { class: "card-body" }, [
       criar("div", { class: "config-row" }, [
-        criar("div", { class: "config-field" }, [
-          criar("label", { class: "field-label", texto: "Servidor usado nas consultas" }),
-          seletor
-        ])
+        criar("div", { class: "config-field" }, [criar("label", { class: "field-label", texto: "Servidor usado nas consultas" }), seletor])
       ]),
-      criar("p", { class: "field-hint", texto: "As consultas do Nacional são públicas e não usam a API Key do PlugNotas. Elas passam pelo repasse da própria aplicação porque os servidores do gov.br não liberam chamadas direto do navegador." })
+      criar("p", { class: "field-hint", texto: "As consultas do Nacional não usam a API Key do PlugNotas. Elas passam pelo repasse da própria aplicação, porque os servidores do gov.br não aceitam chamadas direto do navegador." })
     ])
   ]));
+
+  montarCartaoCertificado(container);
 
   montarTelaRota(container, rota, {
     exigeApiKey: false,
@@ -39,6 +38,14 @@ export function montarTelaNacional(container, rota) {
       const ambiente = ambientes.find((item) => item.id === seletor.value) || ambientes[0];
       return ambiente?.[rota.servidor] || "";
     },
-    transformarUrl: (url) => `api/proxy?url=${encodeURIComponent(url)}`
+    prepararPedido: (alvo) => {
+      const certificado = certificadoAtual();
+      if (!certificado) return { url: `api/proxy?url=${encodeURIComponent(alvo.url)}`, metodo: "GET" };
+      return {
+        url: "api/proxy",
+        metodo: "POST",
+        corpo: { url: alvo.url, certificado: { chave: certificado.chave, certificado: certificado.certificado } }
+      };
+    }
   });
 }
