@@ -71,8 +71,8 @@ ajuste o nome no topo do gerador.
 
 ## Como a ferramenta se atualiza
 
-O repositório é privado e o site fica protegido pela Vercel Authentication:
-só abre o painel quem entra com conta da Vercel e tem acesso ao projeto.
+O repositório é privado, então o código do painel e o gerador ficam acessíveis
+só a quem for adicionado como colaborador. O site é aberto, sem login.
 
 Cada commit no branch main gera um deploy automático, em geral em cerca de um
 minuto. Isso vale para código, catálogos de rotas, regras do validador e para o
@@ -93,9 +93,11 @@ repasse em `api/proxy`, que só existe no ambiente publicado.
 
 Deploy na Vercel a partir do repositório privado, com Framework Preset Other e
 sem variável de ambiente. Em Deployment Protection, a Vercel Authentication fica
-em All Deployments. A pasta `api/` vira função serverless; o repasse do Nacional
-aceita apenas GET e apenas os domínios do gov.br listados em `api/proxy.js`. O
-`.vercelignore` deixa o gerador e os anexos fora do site.
+em Standard Protection: o domínio de produção abre sem login e as prévias de
+outros branches continuam protegidas. A pasta `api/` vira função serverless; o
+repasse do Nacional aceita apenas GET e apenas os domínios do gov.br listados em
+`api/proxy.js`. O `.vercelignore` deixa o gerador, os anexos e os READMEs fora do
+site.
 
 ## Estrutura
 
