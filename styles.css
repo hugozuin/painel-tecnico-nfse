@@ -986,7 +986,8 @@ body {
 .regra-inciso .table-wrapper { padding: 0 18px 18px; }
 
 /* ---------- Rodapé ---------- */
-.app-footer .assinatura { font-weight: 600; }
+.rodape-destaque { font-weight: 700; color: var(--text-base); }
+.app-footer .assinatura { font-weight: 400; font-size: 0.72rem; opacity: 0.7; }
 
 @media (max-width: 720px) {
   .marca-logo { height: 20px; }
@@ -1009,3 +1010,5 @@ body {
 .certificado-situacao.ativo { color: var(--text-base); border-left: 3px solid var(--success); }
 .certificado-situacao.vencido { color: var(--danger); border-left: 3px solid var(--danger); }
 .certificado-emissor { color: var(--text-soft); }
+
+.retorno-vazio { padding: 6px 2px; }

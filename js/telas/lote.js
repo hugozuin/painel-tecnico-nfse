@@ -77,22 +77,29 @@ export function montarTelaRota(container, rota, contexto) {
     ])
   ]));
 
-  container.appendChild(criar("section", { class: "card", hidden: true }, [
+  const cartaoResultado = criar("section", { class: "card cartao-retorno" }, [
     criar("div", { class: "card-header" }, [
-      criar("h2", { texto: "Resultado" }),
+      criar("h2", { texto: "Retorno" }),
       botaoExportar,
       criar("button", {
-        type: "button", class: "btn btn-outline btn-sm", texto: "Copiar resultado",
+        type: "button", class: "btn btn-outline btn-sm", texto: "Copiar retorno",
         aoClicar: async () => {
+          if (estado.registros.length === 0) {
+            mostrarAviso(`Clique em ${rotuloAcao(rota)} antes de copiar.`, "info");
+            return;
+          }
           const copiou = await copiarTexto(textoDoResultado(estado, rota));
-          mostrarAviso(copiou ? "Resultado copiado." : "Não foi possível copiar.", copiou ? "success" : "error");
+          mostrarAviso(copiou ? "Retorno copiado." : "Não foi possível copiar.", copiou ? "success" : "error");
         }
       })
     ]),
     criar("div", { class: "card-body" }, [areaResultado])
-  ]));
-
-  const cartaoResultado = container.querySelectorAll(".card")[1];
+  ]);
+  areaResultado.appendChild(criar("p", {
+    class: "field-hint retorno-vazio",
+    texto: `Nenhuma requisição executada ainda. O retorno aparece aqui depois de clicar em ${rotuloAcao(rota)}.`
+  }));
+  container.appendChild(cartaoResultado);
 
   function atualizarContador() {
     const total = separarIdentificadores(areaEntrada?.value || "").length;
@@ -140,7 +147,6 @@ export function montarTelaRota(container, rota, contexto) {
     estado.executando = true;
     alternar(true);
     areaResultado.textContent = "";
-    cartaoResultado.hidden = false;
 
     registrarLog(`${rota.titulo}: iniciando com ${entrada.tipo === "formulario" ? "1 requisição" : `${itens.length} item(ns)`}.`);
 
