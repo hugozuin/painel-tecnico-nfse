@@ -245,8 +245,28 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   `api/proxy`: `GET ?url=` sem certificado, ou `POST` com
   `{ url, certificado: { chave, certificado } }` em PEM.
 - O repasse só aceita `https` e os domínios exatos de `DOMINIOS_LIBERADOS`
-  (adn e sefin, produção e produção restrita). Tempo limite de 30 s. Erros viram
-  502 com `erro`, `codigo`, `dica` e `certificadoEnviado`.
+  (adn e sefin, produção e produção restrita), na porta padrão e sem usuário ou
+  senha na URL (o Node os transformaria em cabeçalho `Authorization`). Prazo
+  total de 30 s por consulta, não só de ociosidade. Erros viram 502 com `erro`,
+  `codigo`, `dica` e `certificadoEnviado`.
+- Entrada: corpo do POST até 64 KB (`content-length` conferido antes de ler o
+  corpo; 413 acima disso), objeto JSON com `url` em texto. A chave precisa ser
+  PEM `RSA PRIVATE KEY`, `PRIVATE KEY` ou `EC PRIVATE KEY`, sem cifra, e a
+  cadeia de 1 a 10 blocos `CERTIFICATE`, com fim de linha LF ou CRLF
+  (`problemaNoCertificado`). O domínio é conferido antes do PEM. O corpo da
+  requisição nunca é registrado (o repasse não tem `console`; há teste). O corpo
+  gerado pela tela com os PFX de teste tem de 3 a 4 KB.
+- Saída: respostas do Nacional acima de 4 MB viram 502 com código
+  `ERESPOSTAGRANDE`. A Vercel corta respostas de função em 4,5 MB com um 500
+  genérico.
+- Limitação de uso: não há limitador no código. Um contador em memória valeria
+  por instância (a Vercel sobe várias e as zera a cada deploy), não protege
+  custo (a invocação já foi cobrada) e, com os consultores saindo pelo mesmo IP
+  e os lotes sem novas tentativas (seção 8), um limite baixo viraria itens com
+  falha. A proteção recomendada é uma regra de rate limit no WAF da Vercel para
+  `/api/proxy`, por IP (o Hobby permite 1 regra, e o pedido bloqueado nem chega
+  à função), começando na ação Log para medir e depois 429 com limite folgado.
+  A regra fica no painel, fora do Git (ver seção 9).
 - Toda resposta do repasse, inclusive as de erro, sai com
   `Content-Security-Policy: default-src 'none'; sandbox`,
   `X-Content-Type-Options: nosniff` e `Cache-Control: no-store`
@@ -333,7 +353,9 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 4. **Certificado A1.** Nunca persistir em `localStorage`, `sessionStorage`,
    cookies ou logs. A senha não sai do navegador. O repasse usa chave e cadeia
    só durante a conexão e não registra o corpo da requisição.
-5. **Repasse.** Somente `https`, domínios exatos da lista, métodos GET e POST.
+5. **Repasse.** Somente `https`, domínios exatos da lista na porta padrão, sem
+   usuário ou senha na URL, métodos GET e POST, corpo até 64 KB e certificado em
+   PEM validado. Toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`.
    Qualquer domínio novo exige alteração explícita da lista e teste.
 6. **DOM.** Proibido `innerHTML`, `outerHTML`, `insertAdjacentHTML`,
    `document.write`, `eval` e `new Function` com dados dinâmicos. Use `criar()`
@@ -416,7 +438,10 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
 - Raízes do JSON como a do intermediário não estão confirmadas.
 - Teste real do Nacional com certificado ainda pendente. Se falhar por cadeia
   do servidor, falta a cadeia ICP-Brasil no repasse; se falhar por tempo,
-  avaliar a região da função.
+  avaliar a região da função. Confirmar também que o PEM de um A1 ICP-Brasil
+  real passa na validação do repasse (só foi medido com os PFX de teste).
+- Regra de rate limit do WAF da Vercel para `/api/proxy` ainda não criada no
+  painel (seção 5.5). Ao criar, registrar aqui a janela, o limite e a ação.
 - A documentação traz status de sincronização e de interrupção por protocolo e
   regeração de PDF por idIntegracao; oferecidos, ainda não decididos.
 - O anexo VI tem regras com código provisório (`EXXX`); são exibidas como estão.

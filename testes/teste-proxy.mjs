@@ -30,6 +30,16 @@ conferir("POST sem url", (await executar({ method: "POST", body: {} })).status =
 conferir("POST com certificado incompleto", (await executar({ method: "POST", body: { url: "https://adn.nfse.gov.br/x", certificado: { chave: 1 } } })).status === 400);
 const fora = await executar({ method: "POST", body: { url: "https://exemplo-malicioso.com/x", certificado: pem } });
 conferir("certificado nunca segue para domínio fora da lista", fora.status === 403);
+const naoPermitido = await executar({ method: "DELETE" });
+conferir("método recusado informa os aceitos", naoPermitido.status === 405 && naoPermitido.cabecalhos.Allow === "GET, POST");
+conferir("GET para porta diferente da padrão", (await executar({ method: "GET", query: { url: "https://adn.nfse.gov.br:8443/x" } })).status === 403);
+conferir("GET com porta 443 explícita segue a regra do domínio", (await executar({ method: "GET", query: { url: "https://exemplo-malicioso.com:443/x" } })).status === 403);
+conferir("GET com usuário e senha na URL", (await executar({ method: "GET", query: { url: "https://usuario:segredo@adn.nfse.gov.br/x" } })).status === 403);
+conferir("POST com usuário na URL", (await executar({ method: "POST", body: { url: "https://usuario@sefin.nfse.gov.br/x", certificado: pem } })).status === 403);
+conferir("GET com url repetida", (await executar({ method: "GET", query: { url: ["https://adn.nfse.gov.br/x", "https://adn.nfse.gov.br/y"] } })).status === 400);
+conferir("POST com corpo null em texto", (await executar({ method: "POST", body: "null" })).status === 400);
+conferir("POST com corpo em lista", (await executar({ method: "POST", body: [] })).status === 400);
+conferir("POST com url que não é texto", (await executar({ method: "POST", body: { url: ["https://adn.nfse.gov.br/x"] } })).status === 400);
 
 console.log("\n== dicas de erro ==");
 conferir("tempo esgotado", dicaDoErro({ code: "ETIMEDOUT" }, false).includes("tempo limite"));

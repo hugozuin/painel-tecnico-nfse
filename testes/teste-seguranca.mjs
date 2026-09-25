@@ -133,7 +133,7 @@ const chamarRepasse = async (requisicao) => {
     send(corpo) { registro.corpo = corpo; return this; },
     setHeader(nome, valor) { registro.cabecalhos[nome] = valor; return this; }
   };
-  await repasse({ headers: {}, query: {}, ...requisicao }, resposta);
+  await repasse(Object.defineProperties({ headers: {}, query: {} }, Object.getOwnPropertyDescriptors(requisicao)), resposta);
   return registro;
 };
 const protegeResposta = (cabecalhos) =>
@@ -179,7 +179,6 @@ simularNacional({ tipo: "application/json", partes: [Buffer.from('{"ok":true}')]
 const sucessoJson = await chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/x" } });
 conferir("resposta JSON do Nacional sai protegida e sem download forçado",
   sucessoJson.status === 200 && protegeResposta(sucessoJson.cabecalhos) && !sucessoJson.cabecalhos["Content-Disposition"] && String(sucessoJson.corpo) === '{"ok":true}');
-https.request = requestOriginal;
 for (const tipo of ["text/html", "TEXT/HTML; charset=utf-8", "application/xhtml+xml", "image/svg+xml"]) {
   const cabecalhos = cabecalhosDaResposta(tipo);
   conferir(`${tipo} do Nacional vira download`, cabecalhos["Content-Disposition"] === "attachment" && protegeResposta(cabecalhos));
@@ -188,6 +187,96 @@ for (const tipo of ["application/json", "application/pdf", "application/xml", "t
   const cabecalhos = cabecalhosDaResposta(tipo);
   conferir(`${tipo || "tipo vazio"} segue sem download forçado e protegido`, !cabecalhos["Content-Disposition"] && protegeResposta(cabecalhos));
 }
+
+console.log("\n== entrada do repasse: tamanho e certificado ==");
+const { problemaNoCertificado } = await import("../api/proxy.js");
+const { lerCertificado } = await import("../js/certificado.js");
+const forge = (await import("node-forge")).default;
+const LIMITE_CORPO = 64 * 1024;
+const destinoLiberado = "https://adn.nfse.gov.br/cnc/consulta/cad";
+let corpoLido = false;
+const porCabecalho = await chamarRepasse({
+  method: "POST",
+  headers: { "content-length": String(LIMITE_CORPO + 1) },
+  get body() { corpoLido = true; return {}; }
+});
+conferir("413 pelo content-length, sem ler o corpo", porCabecalho.status === 413 && !corpoLido && protegeResposta(porCabecalho.cabecalhos), JSON.stringify(porCabecalho));
+conferir("413 por corpo em texto acima de 64 KB sem content-length",
+  (await chamarRepasse({ method: "POST", body: JSON.stringify({ url: destinoLiberado, sobra: "x".repeat(LIMITE_CORPO) }) })).status === 413);
+conferir("413 por corpo já interpretado acima de 64 KB",
+  (await chamarRepasse({ method: "POST", body: { url: destinoLiberado, sobra: "x".repeat(LIMITE_CORPO) } })).status === 413);
+
+const certificadosDeTeste = ["cliente-legado.pfx", "cliente-moderno.pfx"].map((arquivo) =>
+  lerCertificado(readFileSync(`testes/certificados/${arquivo}`), "senha123", forge));
+const pemDeArquivo = (arquivo) => readFileSync(`testes/certificados/${arquivo}`, "utf8");
+for (const [indice, lido] of certificadosDeTeste.entries()) {
+  const corpo = JSON.stringify({ url: destinoLiberado, certificado: { chave: lido.chave, certificado: lido.certificado } });
+  conferir(`PEM gerado pela tela é aceito (PFX ${indice + 1}, ${Buffer.byteLength(corpo)} bytes)`, problemaNoCertificado(lido) === "" && Buffer.byteLength(corpo) < LIMITE_CORPO / 8);
+}
+const [legado] = certificadosDeTeste;
+const cadeiaComFimLf = legado.certificado.replaceAll("\r\n", "\n");
+const casosDePem = [
+  ["chave e cadeia com fim de linha LF", { chave: legado.chave.replaceAll("\r\n", "\n"), certificado: cadeiaComFimLf }, true],
+  ["chave PKCS#8 (PRIVATE KEY)", { chave: pemDeArquivo("servidor.key"), certificado: pemDeArquivo("servidor.pem") + pemDeArquivo("ca.pem") }, true],
+  ["chave EC PRIVATE KEY", { chave: legado.chave.replaceAll("RSA PRIVATE KEY", "EC PRIVATE KEY"), certificado: cadeiaComFimLf }, true],
+  ["chave cifrada (ENCRYPTED PRIVATE KEY)", { chave: legado.chave.replaceAll("RSA PRIVATE KEY", "ENCRYPTED PRIVATE KEY"), certificado: cadeiaComFimLf }, false],
+  ["chave com Proc-Type cifrado", { chave: legado.chave.replace("-----\r\n", "-----\r\nProc-Type: 4,ENCRYPTED\r\n"), certificado: cadeiaComFimLf }, false],
+  ["marcadores BEGIN e END diferentes", { chave: legado.chave.replace("END RSA PRIVATE KEY", "END PRIVATE KEY"), certificado: cadeiaComFimLf }, false],
+  ["texto antes da chave", { chave: `extra\n${legado.chave}`, certificado: cadeiaComFimLf }, false],
+  ["só o cabeçalho da chave", { chave: "-----BEGIN RSA PRIVATE KEY-----", certificado: cadeiaComFimLf }, false],
+  ["cadeia vazia", { chave: legado.chave, certificado: "" }, false],
+  ["chave dentro da cadeia", { chave: legado.chave, certificado: cadeiaComFimLf + legado.chave }, false],
+  ["texto depois da cadeia", { chave: legado.chave, certificado: `${cadeiaComFimLf}fim` }, false],
+  ["cadeia com 11 certificados", { chave: legado.chave, certificado: pemDeArquivo("ca.pem").repeat(11) }, false]
+];
+for (const [titulo, certificado, aceito] of casosDePem) {
+  const problema = problemaNoCertificado(certificado);
+  conferir(`${aceito ? "aceita" : "recusa"} ${titulo}`, aceito ? problema === "" : problema !== "", problema);
+}
+const inicioPatologico = performance.now();
+problemaNoCertificado({ chave: `-----BEGIN RSA PRIVATE KEY-----\n${"A".repeat(LIMITE_CORPO)}`, certificado: "" });
+problemaNoCertificado({ chave: legado.chave, certificado: `-----BEGIN CERTIFICATE-----\n${"A\n".repeat(LIMITE_CORPO / 2)}` });
+conferir("validação de PEM rápida mesmo com 64 KB malformados", performance.now() - inicioPatologico < 50, `${Math.round(performance.now() - inicioPatologico)} ms`);
+
+const pedidosPemInvalido = simularNacional({ tipo: "application/json", partes: [Buffer.from("{}")] });
+const pemInvalido = await chamarRepasse({ method: "POST", body: { url: destinoLiberado, certificado: { chave: "-----BEGIN RSA PRIVATE KEY-----", certificado: "x" } } });
+conferir("PEM inválido recusado com 400 antes de chamar o Nacional", pemInvalido.status === 400 && pedidosPemInvalido.length === 0, JSON.stringify(pemInvalido.corpo));
+const pedidosPemValido = simularNacional({ tipo: "application/json", partes: [Buffer.from('{"contribuinte":{}}')] });
+const pemValido = await chamarRepasse({ method: "POST", body: { url: destinoLiberado, certificado: { chave: legado.chave, certificado: legado.certificado } } });
+conferir("PEM válido segue para o Nacional na conexão TLS",
+  pemValido.status === 200 && pedidosPemValido.length === 1 && pedidosPemValido[0].opcoes.key === legado.chave && pedidosPemValido[0].opcoes.cert === legado.certificado);
+
+console.log("\n== saída do repasse: tamanho e prazo ==");
+const megabyte = Buffer.alloc(1024 * 1024, 65);
+simularNacional({ tipo: "application/pdf", partes: [megabyte, megabyte, megabyte, megabyte, megabyte] });
+const respostaGrande = await chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/danfse/x" } });
+conferir("resposta acima de 4 MB vira 502 explicado", respostaGrande.status === 502 && respostaGrande.corpo?.codigo === "ERESPOSTAGRANDE" && respostaGrande.corpo?.dica !== "" && protegeResposta(respostaGrande.cabecalhos), JSON.stringify(respostaGrande.corpo));
+simularNacional({ tipo: "application/pdf", partes: [megabyte, megabyte, megabyte, megabyte] });
+const respostaNoLimite = await chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/danfse/x" } });
+conferir("resposta de 4 MB ainda é entregue", respostaNoLimite.status === 200 && respostaNoLimite.corpo.length === 4 * 1024 * 1024);
+
+const { mock } = await import("node:test");
+let pedidoLento = null;
+https.request = () => {
+  const pedido = new EventEmitter();
+  pedido.end = () => {};
+  pedido.destroy = () => { pedido.destruido = true; };
+  pedidoLento = pedido;
+  return pedido;
+};
+mock.timers.enable({ apis: ["setTimeout"] });
+const consultaLenta = chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/x" } });
+mock.timers.tick(29999);
+await Promise.resolve();
+const aindaAberta = !pedidoLento?.destruido;
+mock.timers.tick(1);
+const respostaLenta = await consultaLenta;
+mock.timers.reset();
+conferir("prazo total de 30 s encerra a conexão lenta", aindaAberta && pedidoLento?.destruido && respostaLenta.status === 502 && respostaLenta.corpo?.codigo === "ETIMEDOUT", JSON.stringify(respostaLenta.corpo));
+https.request = requestOriginal;
+
+const registrosNoRepasse = procurar(["api/proxy.js"], /\bconsole\.|process\.std(?:out|err)/);
+conferir("repasse não registra nada em log", registrosNoRepasse.length === 0, registrosNoRepasse.join(", "));
 
 console.log(falhas === 0 ? "\nTeste de segurança passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);
