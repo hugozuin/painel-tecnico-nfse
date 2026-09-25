@@ -29,8 +29,8 @@ const SINKS_PROIBIDOS = {
   outerHTML: /\bouterHTML\b/,
   insertAdjacentHTML: /\binsertAdjacentHTML\b/,
   "document.write": /\bdocument\.write(?:ln)?\s*\(/,
-  eval: /(?:^|[^\w.$])eval\s*\(/,
-  "new Function": /\bnew\s+Function\b|(?:^|[^\w.$])Function\s*\(/,
+  eval: /\beval\b/,
+  "new Function": /\bFunction\b/,
   "setTimeout ou setInterval com texto": /\bset(?:Timeout|Interval)\s*\(\s*["'`]/,
   "setAttribute de estilo ou evento": /\bsetAttribute\s*\(\s*["'`](?:style|on\w+)["'`]/i,
   "javascript:": /javascript:/i,
@@ -42,8 +42,8 @@ const exemplosProibidos = {
   outerHTML: "const x = no.outerHTML;",
   insertAdjacentHTML: 'no.insertAdjacentHTML("beforeend", x);',
   "document.write": "document.write(x);",
-  eval: "eval(x);",
-  "new Function": 'const f = new Function("return 1");',
+  eval: "globalThis.eval(x);",
+  "new Function": 'const f = new window.Function("return 1");',
   "setTimeout ou setInterval com texto": 'setTimeout("alerta()", 10);',
   "setAttribute de estilo ou evento": 'no.setAttribute("onclick", x);',
   "javascript:": 'link.href = "javascript:void(0)";',
@@ -81,11 +81,18 @@ montarCartaoCertificado(telaCertificado);
 Object.defineProperty(telaCertificado.querySelector('input[type="file"]'), "files", {
   value: [new domCertificado.window.File(["pfx"], "certificado.pfx")]
 });
+const integridadeNaInsercao = [];
+const anexarNoCabecalho = document.head.appendChild.bind(document.head);
+document.head.appendChild = (no) => {
+  integridadeNaInsercao.push(no.integrity);
+  return anexarNoCabecalho(no);
+};
 [...telaCertificado.querySelectorAll("button")].find((botao) => botao.textContent === "Carregar certificado").click();
 await new Promise((pronto) => setTimeout(pronto, 20));
 const scriptForge = document.head.querySelector("script");
 conferir("tela carrega o forge pelo caminho versionado", scriptForge?.getAttribute("src") === BIBLIOTECA_FORGE.endereco, scriptForge?.getAttribute("src"));
-conferir("tela exige a integridade (SRI) do forge", scriptForge?.integrity === BIBLIOTECA_FORGE.integridade);
+conferir("tela exige a integridade (SRI) do forge antes de inserir o script",
+  integridadeNaInsercao.length === 1 && integridadeNaInsercao[0] === BIBLIOTECA_FORGE.integridade, JSON.stringify(integridadeNaInsercao));
 
 console.log("\n== API Key só para a API PlugNotas ==");
 const { requisitar, ORIGEM_PLUGNOTAS } = await import("../js/plugnotas.js");
@@ -402,13 +409,14 @@ const armazenamentosSemTeste = procurar(codigoDoSite, /\bindexedDB\b|\bcaches\.|
 conferir("código não usa IndexedDB, CacheStorage, cookie nem sendBeacon, que o jsdom não cobre", armazenamentosSemTeste.length === 0, armazenamentosSemTeste.join(", "));
 
 console.log("\n== dados sensíveis no que é publicado e versionado ==");
-const { varrerSigilo, acharDadosSensiveis, cnpjValido, cpfValido } = await import("./sigilo.mjs");
+const { varrerSigilo, acharDadosSensiveis, cnpjValido, cpfValido, textosDoConteudo, arquivosDeChaveForaDosTestes } = await import("./sigilo.mjs");
 const permitidosDoForge = new Map([
   [SHA256_FORGE, "SHA-256 do forge vendorizado"],
   [BIBLIOTECA_FORGE.integridade, "SRI do forge vendorizado"]
 ]);
 const completarDocumento = (base, valido) => Array.from({ length: 100 }, (_, dv) => `${base}${String(dv).padStart(2, "0")}`).find(valido);
 const cnpjSintetico = completarDocumento("112223330001", cnpjValido);
+const cnpjAlfanumericoSintetico = completarDocumento(["12ABC", "34501DE"].join(""), cnpjValido);
 const cpfSintetico = completarDocumento("111444777", cpfValido);
 const digitosEmZigueZague = (quantidade) => Array.from({ length: quantidade }, (_, indice) => (indice * 7) % 10).join("");
 const aleatorio = createHash("sha256").update("controle-da-varredura");
@@ -438,9 +446,24 @@ for (const [padrao, texto] of Object.entries(exemplosSensiveis)) {
   const achados = acharDadosSensiveis(texto);
   conferir(`controle: detecta ${padrao}`, achados.some((achado) => achado.padrao === padrao), JSON.stringify(achados));
 }
+const CNPJ_ALFANUMERICO_OU_PARCIAL = "CNPJ alfanumérico ou com separadores parciais";
+const formasParciaisDoCnpj = [
+  `"cpfCnpj": "${cnpjAlfanumericoSintetico}"`,
+  cnpjAlfanumericoSintetico.replace(/^(.{2})(.{3})(.{3})(.{4})(.{2})$/, "$1.$2.$3/$4-$5"),
+  cnpjSintetico.replace(/^(.{8})(.{4})(.{2})$/, "$1/$2-$3"),
+  cnpjSintetico.replace(/^(.{2})(.{3})(.{3})(.{4})(.{2})$/, "$1 $2 $3 $4 $5")
+];
+for (const texto of formasParciaisDoCnpj) {
+  const achados = acharDadosSensiveis(texto);
+  conferir(`controle: detecta ${CNPJ_ALFANUMERICO_OU_PARCIAL} (${texto.length} caracteres)`, achados.some((achado) => achado.padrao === CNPJ_ALFANUMERICO_OU_PARCIAL), JSON.stringify(achados));
+}
+const linhasDoPdfSimulado = textosDoConteudo(`BT 1 0 0 1 72 720 Tm (versao 2) Tj T* (${cpfSintetico} para o cliente) Tj ET`);
+conferir("controle: extração do PDF quebra a linha no operador T*",
+  linhasDoPdfSimulado.length === 2 && acharDadosSensiveis(linhasDoPdfSimulado.join("\n")).some((achado) => achado.padrao === "CPF"), JSON.stringify(linhasDoPdfSimulado.length));
 const cnpjComDigitoErrado = `${cnpjSintetico.slice(0, 13)}${(Number(cnpjSintetico.at(-1)) + 1) % 10}`;
+const cnpjAlfanumericoComDigitoErrado = `${cnpjAlfanumericoSintetico.slice(0, 13)}${(Number(cnpjAlfanumericoSintetico.at(-1)) + 1) % 10}`;
 const exemplosPublicos = [
-  "12345678000195", "29.062.609/0001-77", "12345678909", cnpjComDigitoErrado, "9".repeat(15), "0".repeat(13),
+  "12345678000195", "29.062.609/0001-77", "12345678909", cnpjComDigitoErrado, cnpjAlfanumericoComDigitoErrado, "9".repeat(15), "0".repeat(13),
   "cliente@exemplo.com.br", "https://usuario:segredo@adn.nfse.gov.br/x", "https://api.plugnotas.com.br@exemplo.invalid/x",
   "codMunicipio=3504107", "1.1502.10.00", "cClassTrib 000001", "ID da nota, um por linha",
   "NFSe/infNFSe/DPS/infDPS/prest/regTrib/opSimpNac/regApTribSN", "-----BEGIN RSA PRIVATE KEY-----"
@@ -454,10 +477,16 @@ conferir("controle: hashes do forge só passam como permitidos",
   && acharDadosSensiveis(`${SHA256_FORGE} ${BIBLIOTECA_FORGE.integridade}`, permitidosDoForge).length === 0);
 
 const varredura = varrerSigilo(permitidosDoForge);
-const essenciais = ["js/telas/resolve.js", "api/proxy.js", "definicoes/de-para-nacional.json", "definicoes/ibscbs.json", "index.html", "CLAUDE.md", "README.md", "ferramentas/gerar_manual.py", "testes/teste.mjs"];
-conferir("varredura cobre site, definições, documentação, ferramentas e testes", essenciais.every((arquivo) => varredura.arquivos.includes(arquivo)), essenciais.filter((arquivo) => !varredura.arquivos.includes(arquivo)).join(", "));
-conferir("varredura fica fora do forge, dos certificados de teste e das dependências",
-  !varredura.arquivos.some((arquivo) => /^assets\/vendor\/|^testes\/(?:node_modules|certificados)\/|package-lock/.test(arquivo)));
+const essenciais = [
+  "js/telas/resolve.js", "api/proxy.js", "definicoes/de-para-nacional.json", "definicoes/ibscbs.json", "index.html",
+  "CLAUDE.md", "README.md", "vercel.json", ".vercelignore", "ferramentas/gerar_manual.py", "testes/teste.mjs", "testes/sigilo.mjs"
+];
+conferir("varredura cobre tudo o que o Git versiona ou vai versionar, inclusive a raiz", essenciais.every((arquivo) => varredura.arquivos.includes(arquivo)), essenciais.filter((arquivo) => !varredura.arquivos.includes(arquivo)).join(", "));
+conferir("varredura fica fora só do forge, dos certificados de teste e das dependências",
+  !varredura.arquivos.some((arquivo) => arquivo === BIBLIOTECA_FORGE.endereco || /^testes\/(?:node_modules|certificados)\/|package-lock/.test(arquivo))
+  && varredura.arquivos.includes("assets/vendor/forge-LICENSE.txt"));
+const chavesForaDosTestes = arquivosDeChaveForaDosTestes();
+conferir("nenhum .pfx, .p12, .key ou .pem fora de testes/certificados", chavesForaDosTestes.length === 0, chavesForaDosTestes.join(", "));
 conferir("texto do manual em PDF extraído para a varredura", varredura.manual.fluxos > 0 && varredura.manual.texto.includes("Painel T"));
 conferir("nenhum ID, chave, token, CNPJ, CPF ou e-mail fora da lista de permitidos",
   varredura.achados.length === 0,

@@ -1,20 +1,21 @@
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import path from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import zlib from "node:zlib";
 
 const soDigitos = (valor) => valor.replace(/\D/g, "");
+const semSeparadores = (valor) => valor.replace(/[./\- ]/g, "").toUpperCase();
 
-const digitoVerificador = (digitos, pesos) => {
-  const resto = [...digitos].reduce((soma, digito, indice) => soma + Number(digito) * pesos[indice], 0) % 11;
+const digitoVerificador = (caracteres, pesos) => {
+  const resto = [...caracteres].reduce((soma, caractere, indice) => soma + (caractere.charCodeAt(0) - 48) * pesos[indice], 0) % 11;
   return resto < 2 ? 0 : 11 - resto;
 };
 
 export function cnpjValido(valor) {
-  const digitos = soDigitos(valor);
-  if (digitos.length !== 14 || /^(\d)\1+$/.test(digitos)) return false;
-  const primeiro = digitoVerificador(digitos.slice(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
-  const segundo = digitoVerificador(digitos.slice(0, 12) + primeiro, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
-  return digitos.endsWith(`${primeiro}${segundo}`);
+  const cnpj = semSeparadores(valor);
+  if (!/^[0-9A-Z]{12}\d{2}$/.test(cnpj) || /^(.)\1+$/.test(cnpj)) return false;
+  const primeiro = digitoVerificador(cnpj.slice(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  const segundo = digitoVerificador(cnpj.slice(0, 12) + primeiro, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  return cnpj.endsWith(`${primeiro}${segundo}`);
 }
 
 export function cpfValido(valor) {
@@ -51,6 +52,11 @@ const PADROES = [
   { nome: "sequência de 15 ou mais dígitos", expressao: /(?<!\d)\d{15,}(?!\d)/g, confirma: (valor) => ![44, 50].includes(valor.length) && !sequenciaTrivial(valor) },
   { nome: "CNPJ", expressao: /(?<!\d)\d{14}(?!\d)/g, confirma: cnpjValido },
   { nome: "CNPJ formatado", expressao: /(?<!\d)\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}(?!\d)/g, confirma: cnpjValido },
+  {
+    nome: "CNPJ alfanumérico ou com separadores parciais",
+    expressao: /(?<![0-9A-Za-z])[0-9A-Z]{2}[. ]?[0-9A-Z]{3}[. ]?[0-9A-Z]{3}[/ ]?[0-9A-Z]{4}[- ]?\d{2}(?![0-9A-Za-z])/g,
+    confirma: (valor) => cnpjValido(valor) && !/^\d{14}$/.test(valor) && !/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(valor)
+  },
   { nome: "CPF", expressao: /(?<!\d)\d{11}(?!\d)/g, confirma: cpfValido },
   { nome: "CPF formatado", expressao: /(?<!\d)\d{3}\.\d{3}\.\d{3}-\d{2}(?!\d)/g, confirma: cpfValido },
   { nome: "JWT", expressao: /eyJ[A-Za-z0-9_-]{4,}\.eyJ[A-Za-z0-9_-]{4,}\.[A-Za-z0-9_-]*/g },
@@ -85,7 +91,11 @@ export function mascarar(valor) {
   return `${valor.slice(0, ponta)}${"*".repeat(valor.length - ponta * 2)}${valor.slice(-ponta)}`;
 }
 
-const normalizar = (valor) => (/^[\d ./-]+$/.test(valor) ? soDigitos(valor) : valor);
+const normalizar = (valor) => {
+  if (/^[\d ./-]+$/.test(valor)) return soDigitos(valor);
+  if (/^[0-9A-Z .\/-]+$/.test(valor) && /^[0-9A-Z]{12}\d{2}$/.test(semSeparadores(valor))) return semSeparadores(valor);
+  return valor;
+};
 
 export function acharDadosSensiveis(texto, permitidosExtras = new Map()) {
   const permitido = (valor) => PERMITIDOS.has(normalizar(valor)) || permitidosExtras.has(normalizar(valor));
@@ -133,7 +143,7 @@ function decodificarAscii85(texto) {
   return Buffer.from(bytes);
 }
 
-function textosDoConteudo(conteudo) {
+export function textosDoConteudo(conteudo) {
   const linhas = [];
   let atual = "";
   let posicao = 0;
@@ -156,7 +166,7 @@ function textosDoConteudo(conteudo) {
       }
       continue;
     }
-    if (/^(?:Td|TD|T\*|Tm|ET)\b/.test(conteudo.slice(posicao, posicao + 3)) && atual) {
+    if (/^(?:(?:Td|TD|Tm|ET)\b|T\*)/.test(conteudo.slice(posicao, posicao + 3)) && atual) {
       linhas.push(atual);
       atual = "";
     }
@@ -182,27 +192,26 @@ export function extrairTextoPdf(caminho) {
   return { texto: linhas.join("\n"), fluxos };
 }
 
-const PASTAS_DO_ESCOPO = ["definicoes", "js", "api", "assets", "ferramentas", "testes"];
-const ARQUIVOS_DO_ESCOPO = ["index.html", "styles.css", "vercel.json", "package.json", "README.md", "CLAUDE.md"];
+const PASTA_DOS_CERTIFICADOS_DE_TESTE = /^testes\/certificados\//;
+const ARQUIVOS_DE_CHAVE = /\.(?:pfx|p12|key|pem)$/i;
 const FORA_DO_ESCOPO = [
-  /^assets\/vendor\//,
-  /^testes\/node_modules\//,
-  /^testes\/certificados\//,
-  /^testes\/package-lock\.json$/,
-  /^testes\/sigilo\.mjs$/,
-  /\.(?:pdf|pfx|p12|xlsx|png|jpg|ico|pyc)$/,
-  /__pycache__/
+  /^assets\/vendor\/forge-[\d.]+\.min\.js$/,
+  PASTA_DOS_CERTIFICADOS_DE_TESTE,
+  /(?:^|\/)package-lock\.json$/,
+  /\.(?:pdf|pfx|p12|xlsx|png|jpg|jpeg|gif|ico|woff2?|pyc)$/i
 ];
 
-const listar = (relativo) => {
-  if (!existsSync(relativo)) return [];
-  if (statSync(relativo).isFile()) return [relativo];
-  return readdirSync(relativo).flatMap((nome) => listar(path.posix.join(relativo, nome)));
-};
+export function arquivosDoRepositorio() {
+  const saida = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], { encoding: "utf8" });
+  return [...new Set(saida.split("\n").map((linha) => linha.trim()).filter(Boolean))].filter(existsSync);
+}
 
-export function arquivosDoEscopo() {
-  return [...PASTAS_DO_ESCOPO.flatMap(listar), ...ARQUIVOS_DO_ESCOPO.filter(existsSync)]
-    .filter((arquivo) => !FORA_DO_ESCOPO.some((expressao) => expressao.test(arquivo)));
+export function arquivosDoEscopo(arquivos = arquivosDoRepositorio()) {
+  return arquivos.filter((arquivo) => !FORA_DO_ESCOPO.some((expressao) => expressao.test(arquivo)));
+}
+
+export function arquivosDeChaveForaDosTestes(arquivos = arquivosDoRepositorio()) {
+  return arquivos.filter((arquivo) => ARQUIVOS_DE_CHAVE.test(arquivo) && !PASTA_DOS_CERTIFICADOS_DE_TESTE.test(arquivo));
 }
 
 export function varrerSigilo(permitidosExtras = new Map()) {

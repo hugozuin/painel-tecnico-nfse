@@ -132,8 +132,13 @@ async function verificar(executavel) {
   const preencher = (seletor, valor) => avaliar(`(() => { const campo = document.querySelector(${JSON.stringify(seletor)}); campo.value = ${JSON.stringify(valor)}; campo.dispatchEvent(new Event("input", { bubbles: true })); })()`);
   const abrirTela = async (id) => {
     await avaliar(`location.hash = ${JSON.stringify(id)}`);
-    await aguardar(`document.querySelector(".tela")?.dataset.rota === ${JSON.stringify(id)} || document.title.length > 0`, 3000);
+    const montada = await aguardar(`(() => {
+      const tela = document.querySelector(".tela");
+      return tela?.dataset.rota === ${JSON.stringify(id)} && !/Carregando/.test(tela.textContent);
+    })()`, 8000);
+    if (!montada) problemas.push(`tela ${id} não terminou de montar`);
     await pausar(250);
+    return montada;
   };
 
   await naPagina("Page.navigate", { url: base });
@@ -143,8 +148,9 @@ async function verificar(executavel) {
     JSON.parse(readFileSync(path.join(RAIZ, "definicoes", `${nome}.json`), "utf8")).rotas.map((rota) => rota.id));
   const idsDoMenu = await avaliar(`[...document.querySelectorAll(".menu-item")].map((item) => item.dataset.rota)`);
   const telas = [...new Set([...idsDoMenu, ...idsDasDefinicoes])];
-  for (const id of telas) await abrirTela(id);
-  conferencias.push([`${telas.length} telas visitadas`, telas.length > 20]);
+  let montadas = 0;
+  for (const id of telas) if (await abrirTela(id)) montadas++;
+  conferencias.push([`${montadas}/${telas.length} telas montadas por completo`, telas.length > 20 && montadas === telas.length]);
 
   await avaliar(`document.getElementById("themeToggle").click(); document.getElementById("themeToggle").click();`);
   await avaliar(`document.querySelector(".info-icone")?.click()`);
