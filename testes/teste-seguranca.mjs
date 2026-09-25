@@ -388,5 +388,67 @@ conferir("Remover descarta o certificado da memória", certificadoAtual() === nu
 const armazenamentosSemTeste = procurar(codigoDoSite, /\bindexedDB\b|\bcaches\.|\bdocument\.cookie\b|\bcookieStore\b|\bsendBeacon\b/);
 conferir("código não usa IndexedDB, CacheStorage, cookie nem sendBeacon, que o jsdom não cobre", armazenamentosSemTeste.length === 0, armazenamentosSemTeste.join(", "));
 
+console.log("\n== dados sensíveis no que é publicado e versionado ==");
+const { varrerSigilo, acharDadosSensiveis, cnpjValido, cpfValido } = await import("./sigilo.mjs");
+const permitidosDoForge = new Map([
+  [SHA256_FORGE, "SHA-256 do forge vendorizado"],
+  [BIBLIOTECA_FORGE.integridade, "SRI do forge vendorizado"]
+]);
+const completarDocumento = (base, valido) => Array.from({ length: 100 }, (_, dv) => `${base}${String(dv).padStart(2, "0")}`).find(valido);
+const cnpjSintetico = completarDocumento("112223330001", cnpjValido);
+const cpfSintetico = completarDocumento("111444777", cpfValido);
+const digitosEmZigueZague = (quantidade) => Array.from({ length: quantidade }, (_, indice) => (indice * 7) % 10).join("");
+const aleatorio = createHash("sha256").update("controle-da-varredura");
+const base64Sintetico = aleatorio.copy().digest("base64");
+const exemplosSensiveis = {
+  "ID do Mongo": `id ${["5f1a2b3c4d5e", "6f7a8b9c0d1e"].join("")}`,
+  UUID: ["8f14e45f", "ceea", "467a", "9b7d", "8c1f3e2a9b10"].join("-"),
+  "chave de acesso de 44 dígitos": digitosEmZigueZague(44),
+  "chave de acesso com separadores": digitosEmZigueZague(44).match(/.{4}/g).join(" "),
+  "chave da NFS-e de 50 dígitos": digitosEmZigueZague(50),
+  "sequência de 15 ou mais dígitos": digitosEmZigueZague(18),
+  CNPJ: `/empresa/${cnpjSintetico}/webhook`,
+  "CNPJ formatado": cnpjSintetico.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5"),
+  CPF: `"cpfCnpj": "${cpfSintetico}"`,
+  "CPF formatado": cpfSintetico.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4"),
+  JWT: ["eyJhbGciOiJIUzI1NiJ9", "eyJzdWIiOiIxMjM0In0", "c2lnbmF0dXJh"].join("."),
+  "token Bearer": `Authorization: ${"Bearer"} ${base64Sintetico}`,
+  "x-api-key com valor": `"x-api-key": "${"k3yVal0r"}${"Secreto9"}"`,
+  "token de serviço": `${"ghp"}_${"a1".repeat(18)}`,
+  "hexadecimal longo": aleatorio.copy().digest("hex"),
+  "base64 longo": `chave ${base64Sintetico}`,
+  "segredo atribuído": `senha = "${"Abc12345"}${"xyz"}"`,
+  "e-mail": `contato: ${"consultor"}@${"empresa-real.com.br"}`,
+  "chave privada PEM": `${"-----BEGIN RSA "}${"PRIVATE KEY-----"}\n${aleatorio.copy().digest("base64")}${base64Sintetico}`
+};
+for (const [padrao, texto] of Object.entries(exemplosSensiveis)) {
+  const achados = acharDadosSensiveis(texto);
+  conferir(`controle: detecta ${padrao}`, achados.some((achado) => achado.padrao === padrao), JSON.stringify(achados));
+}
+const cnpjComDigitoErrado = `${cnpjSintetico.slice(0, 13)}${(Number(cnpjSintetico.at(-1)) + 1) % 10}`;
+const exemplosPublicos = [
+  "12345678000195", "29.062.609/0001-77", "12345678909", cnpjComDigitoErrado, "9".repeat(15), "0".repeat(13),
+  "cliente@exemplo.com.br", "https://usuario:segredo@adn.nfse.gov.br/x", "https://api.plugnotas.com.br@exemplo.invalid/x",
+  "codMunicipio=3504107", "1.1502.10.00", "cClassTrib 000001", "ID da nota, um por linha",
+  "NFSe/infNFSe/DPS/infDPS/prest/regTrib/opSimpNac/regApTribSN", "-----BEGIN RSA PRIVATE KEY-----"
+];
+for (const texto of exemplosPublicos) {
+  const achados = acharDadosSensiveis(texto);
+  conferir(`controle: não acusa ${texto.length > 40 ? `${texto.slice(0, 40)}…` : texto}`, achados.length === 0, JSON.stringify(achados));
+}
+conferir("controle: hashes do forge só passam como permitidos",
+  acharDadosSensiveis(`${SHA256_FORGE} ${BIBLIOTECA_FORGE.integridade}`).length === 2
+  && acharDadosSensiveis(`${SHA256_FORGE} ${BIBLIOTECA_FORGE.integridade}`, permitidosDoForge).length === 0);
+
+const varredura = varrerSigilo(permitidosDoForge);
+const essenciais = ["js/telas/resolve.js", "api/proxy.js", "definicoes/de-para-nacional.json", "definicoes/ibscbs.json", "index.html", "CLAUDE.md", "README.md", "ferramentas/gerar_manual.py", "testes/teste.mjs"];
+conferir("varredura cobre site, definições, documentação, ferramentas e testes", essenciais.every((arquivo) => varredura.arquivos.includes(arquivo)), essenciais.filter((arquivo) => !varredura.arquivos.includes(arquivo)).join(", "));
+conferir("varredura fica fora do forge, dos certificados de teste e das dependências",
+  !varredura.arquivos.some((arquivo) => /^assets\/vendor\/|^testes\/(?:node_modules|certificados)\/|package-lock/.test(arquivo)));
+conferir("texto do manual em PDF extraído para a varredura", varredura.manual.fluxos > 0 && varredura.manual.texto.includes("Painel T"));
+conferir("nenhum ID, chave, token, CNPJ, CPF ou e-mail fora da lista de permitidos",
+  varredura.achados.length === 0,
+  varredura.achados.map((achado) => `${achado.arquivo}:${achado.linha}:${achado.coluna} ${achado.padrao} ${achado.valor}`).join("; "));
+
 console.log(falhas === 0 ? "\nTeste de segurança passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

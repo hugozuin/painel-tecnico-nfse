@@ -42,13 +42,13 @@ const servidor = https.createServer({
   resposta.end(JSON.stringify({ titular: pedido.socket.getPeerCertificate()?.subject?.CN || "", caminho: pedido.url }));
 });
 await new Promise((pronto) => servidor.listen(0, pronto));
-const endereco = `https://localhost:${servidor.address().port}/cnc/consulta/cad?codMunicipio=3504107&inscricaoFederal=67160390000138`;
+const endereco = `https://localhost:${servidor.address().port}/cnc/consulta/cad?codMunicipio=3504107&inscricaoFederal=12345678000195`;
 
 const comCertificado = await consultarNacional(endereco, { chave: legado.chave, certificado: legado.certificado });
 const corpo = JSON.parse(comCertificado.corpo.toString("utf8"));
 conferir("com certificado responde 200", comCertificado.status === 200, String(comCertificado.status));
 conferir("servidor recebeu o certificado do consultor", corpo.titular === "EMPRESA TESTE LTDA:12345678000195", JSON.stringify(corpo));
-conferir("consulta do contribuinte chega com IBGE e CNPJ", corpo.caminho === "/cnc/consulta/cad?codMunicipio=3504107&inscricaoFederal=67160390000138");
+conferir("consulta do contribuinte chega com IBGE e CNPJ", corpo.caminho === "/cnc/consulta/cad?codMunicipio=3504107&inscricaoFederal=12345678000195");
 conferir("tipo do retorno repassado", comCertificado.tipo === "application/json");
 
 let erroSem = null;

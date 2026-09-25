@@ -51,7 +51,7 @@ global.fetch = async (url, opcoes = {}) => {
   if (endereco.includes("/nfse/sincronizar")) return resposta(200, { aceitos: 2 });
   if (endereco.includes("/nfse/email/")) return resposta(200, { message: "E-mail enviado" });
   if (endereco.includes("api/proxy")) {
-    if ((opcoes.method || "GET") === "POST") return resposta(200, { contribuinte: { situacao: "Ativo", inscricaoFederal: "67160390000138" } });
+    if ((opcoes.method || "GET") === "POST") return resposta(200, { contribuinte: { situacao: "Ativo", inscricaoFederal: "12345678000195" } });
     return resposta(200, { convenio: { aderente: true } });
   }
   return resposta(404, { message: "nao mapeado" });
@@ -166,7 +166,7 @@ await esperar(300);
 const campoDestinatarios = [...document.querySelectorAll(".config-field")]
   .find((bloco) => bloco.textContent.includes("Destinatários"))?.querySelector("input");
 conferir("campo de destinatários encontrado", Boolean(campoDestinatarios));
-campoDestinatarios.value = "a@b.com, c@d.com";
+campoDestinatarios.value = "consultor@exemplo.com.br, cliente@exemplo.com.br";
 clicar("Executar");
 await confirmar();
 await esperar(400);
@@ -232,7 +232,7 @@ await esperar(400);
 conferir("mostra o titular do certificado", cartaoCertificado.textContent.includes("EMPRESA TESTE LTDA:12345678000195"));
 conferir("senha apagada do campo", cartaoCertificado.querySelector('input[type="password"]').value === "");
 const listaCnc = document.querySelector(".tela textarea");
-listaCnc.value = "67160390000138";
+listaCnc.value = "12345678000195";
 listaCnc.dispatchEvent(new dom.window.Event("input"));
 await esperar(300);
 [...document.querySelectorAll(".config-field")].find((b) => b.textContent.includes("Código IBGE do município")).querySelector("input").value = "3504107";
@@ -240,11 +240,11 @@ clicar("Consultar");
 await esperar(500);
 const chamadaCnc = chamadas.filter((c) => c.url === "api/proxy" && c.metodo === "POST").pop();
 conferir("com certificado usa POST no repasse", Boolean(chamadaCnc));
-conferir("URL do contribuinte montada", chamadaCnc?.corpo?.url === "https://adn.nfse.gov.br/cnc/consulta/cad?codMunicipio=3504107&inscricaoFederal=67160390000138", chamadaCnc?.corpo?.url);
+conferir("URL do contribuinte montada", chamadaCnc?.corpo?.url === "https://adn.nfse.gov.br/cnc/consulta/cad?codMunicipio=3504107&inscricaoFederal=12345678000195", chamadaCnc?.corpo?.url);
 conferir("envia chave e certificado em PEM", chamadaCnc?.corpo?.certificado?.chave?.startsWith("-----BEGIN RSA PRIVATE KEY-----") && chamadaCnc?.corpo?.certificado?.certificado?.includes("BEGIN CERTIFICATE"));
 conferir("a senha não sai do navegador", !JSON.stringify(chamadaCnc?.corpo || {}).includes("senha123"));
 const retornoCnc = [...document.querySelectorAll(".retorno")].pop();
-conferir("retorno do contribuinte exibido e visível", retornoCnc?.querySelector("textarea")?.value.includes("67160390000138") && !retornoCnc.closest(".card").hidden);
+conferir("retorno do contribuinte exibido e visível", retornoCnc?.querySelector("textarea")?.value.includes("12345678000195") && !retornoCnc.closest(".card").hidden);
 [...cartaoCertificado.querySelectorAll("button")].find((b) => b.textContent === "Remover").click();
 clicar("Consultar");
 await esperar(400);

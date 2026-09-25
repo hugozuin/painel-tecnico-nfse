@@ -122,7 +122,7 @@ definicoes/             rotas.json, rotas-nacional.json, regras-validacao.json, 
                         de-para-nacional.json, ibscbs.json (gerados, não editar à mão)
 fontes/nacional/        anexos VI (v1.04, NT009), VII (v1.02) e VIII (v1.01), públicos
 ferramentas/            gerar_definicoes.py, gerar_manual.py, relatorio-geracao.json
-testes/                 suítes Node, executar.mjs, teste_fontes.py, certificados de teste
+testes/                 suítes Node, executar.mjs, teste_fontes.py, sigilo.mjs (varredura de dados sensíveis), certificados de teste
 documentacao.pdf        manual de uso (gerado)
 vercel.json             cabeçalhos HTTP
 .vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md, .gitattributes
@@ -343,7 +343,11 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    protocolos ou API Keys para código, catálogos, exemplos, testes ou
    documentação. Já houve um caso de exemplos copiados das coleções, corrigido.
    Use valores fictícios ou públicos (códigos IBGE, dados de exemplo da
-   documentação oficial).
+   documentação oficial). `teste-seguranca.mjs` varre site, definições,
+   documentação (inclusive o texto do `documentacao.pdf`), ferramentas e testes
+   em busca de IDs do Mongo, UUIDs, chaves de acesso, tokens, CNPJs, CPFs e
+   e-mails. A lista de permitidos fica em `testes/sigilo.mjs`, cada valor com a
+   fonte pública; valor novo só entra com fonte.
 3. **API Key.** Nunca enviar ao servidor da ferramenta, nunca registrar em log,
    nunca incluir em exportação. `X-API-KEY` só pode ir para a origem fixa
    `ORIGEM_PLUGNOTAS` (`js/plugnotas.js`): `requisitar` recusa, sem chamar o

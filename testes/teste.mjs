@@ -122,7 +122,7 @@ conferir("apelido confirmado pela lib", analisarEmissao({ prestador: { cpfcnpj: 
 
 const limpo = analisarEmissao({
   prestador: { cpfCnpj: "29062609000177", endereco: { codigoCidade: "4115200", cep: "87010000" } },
-  tomador: { cpfCnpj: "52998224725", email: "cliente@exemplo.com.br", endereco: { codigoCidade: "4115200", cep: "87010000" } },
+  tomador: { cpfCnpj: "12345678909", email: "cliente@exemplo.com.br", endereco: { codigoCidade: "4115200", cep: "87010000" } },
   servico: [{
     codigo: "010101", valor: { servico: 1000 }, discriminacao: "Servico de consultoria",
     iss: { aliquota: 2, tipoTributacao: 6, exigibilidade: 1 },

@@ -76,7 +76,7 @@ export function montarTelaResolve(container) {
 
   const areaIds = criar("textarea", {
     class: "text-area", rows: 7, spellcheck: false,
-    placeholder: "66d8f8f5c9b9e10001a12345\n66d8f8f5c9b9e10001a12346",
+    placeholder: "ID da nota, um por linha",
     value: localStorage.getItem(CHAVES_ARMAZENAMENTO.idsResolve) || ""
   });
   const contadorIds = criar("span", { class: "badge badge-neutral", texto: "0 IDs válidos" });
