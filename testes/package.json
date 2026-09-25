@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "node executar.mjs",
-    "test:detalhes": "node executar.mjs --detalhes"
+    "test:detalhes": "node executar.mjs --detalhes",
+    "verificar:csp": "node verificar-csp.mjs"
   },
   "devDependencies": {
     "jsdom": "30.1.0",

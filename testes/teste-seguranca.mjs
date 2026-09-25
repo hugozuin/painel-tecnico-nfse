@@ -450,5 +450,81 @@ conferir("nenhum ID, chave, token, CNPJ, CPF ou e-mail fora da lista de permitid
   varredura.achados.length === 0,
   varredura.achados.map((achado) => `${achado.arquivo}:${achado.linha}:${achado.coluna} ${achado.padrao} ${achado.valor}`).join("; "));
 
+console.log("\n== cabeçalhos do site e CSP (vercel.json) ==");
+const regrasDoVercel = new Map(JSON.parse(readFileSync("vercel.json", "utf8")).headers
+  .map((regra) => [regra.source, Object.fromEntries(regra.headers.map(({ key, value }) => [key, value]))]));
+const REGRA_GLOBAL = "/(.*)";
+const REGRA_DAS_PAGINAS = "/((?!api/).*)";
+const globais = regrasDoVercel.get(REGRA_GLOBAL) || {};
+const dasPaginas = regrasDoVercel.get(REGRA_DAS_PAGINAS) || {};
+conferir("nosniff, Referrer-Policy e X-Robots-Tag valem para tudo",
+  globais["X-Content-Type-Options"] === "nosniff" && globais["Referrer-Policy"] === "same-origin" && globais["X-Robots-Tag"] === "noindex, nofollow");
+conferir("CSP, COOP e Permissions-Policy só na regra das páginas", !globais["Content-Security-Policy"] && !globais["Cross-Origin-Opener-Policy"] && Boolean(dasPaginas["Content-Security-Policy"]));
+const casaRegraDasPaginas = new RegExp(`^${REGRA_DAS_PAGINAS}$`);
+conferir("regra das páginas cobre site e manual e deixa o repasse com a própria CSP",
+  ["/", "/index.html", "/js/app.js", `/${BIBLIOTECA_FORGE.endereco}`, "/documentacao.pdf", "/definicoes/rotas.json"].every((caminho) => casaRegraDasPaginas.test(caminho))
+  && !["/api/proxy", "/api/proxy.js"].some((caminho) => casaRegraDasPaginas.test(caminho)));
+const CSP_APROVADA = {
+  "default-src": ["'self'"],
+  "script-src": ["'self'"],
+  "style-src": ["'self'", "https://fonts.googleapis.com"],
+  "font-src": ["https://fonts.gstatic.com"],
+  "img-src": ["'self'"],
+  "connect-src": ["'self'", ORIGEM_PLUGNOTAS],
+  "object-src": ["'none'"],
+  "base-uri": ["'none'"],
+  "frame-ancestors": ["'none'"],
+  "form-action": ["'none'"]
+};
+const diretivas = Object.fromEntries((dasPaginas["Content-Security-Policy"] || "").split(";").map((trecho) => trecho.trim()).filter(Boolean)
+  .map((trecho) => { const [nome, ...valores] = trecho.split(/\s+/); return [nome, valores]; }));
+const ordenar = (politica) => JSON.stringify(Object.entries(politica).sort(([a], [b]) => a.localeCompare(b)));
+conferir("CSP com exatamente as diretivas aprovadas", ordenar(diretivas) === ordenar(CSP_APROVADA), dasPaginas["Content-Security-Policy"]);
+conferir("CSP sem unsafe, curinga, data: nem blob:", !Object.values(diretivas).flat().some((valor) => /unsafe|^\*$|^data:$|^blob:$/.test(valor)));
+conferir("Permissions-Policy e COOP aprovadas",
+  dasPaginas["Permissions-Policy"] === "camera=(), microphone=(), geolocation=()" && dasPaginas["Cross-Origin-Opener-Policy"] === "same-origin");
+
+const configuracao = JSON.parse(readFileSync("definicoes/config.json", "utf8"));
+const conexoes = diretivas["connect-src"] || [];
+conferir("base do catálogo liberada no connect-src", conexoes.includes(new URL(JSON.parse(readFileSync("definicoes/rotas.json", "utf8")).base).origin));
+conferir("leitura remota ligada exige raw.githubusercontent.com no connect-src", !configuracao.atualizacaoRemota || conexoes.includes("https://raw.githubusercontent.com"));
+const ORIGENS_SO_DE_LINK = ["https://github.com", "https://raw.githubusercontent.com"];
+const origensNoCodigo = [...new Set(codigoDoSite.filter((arquivo) => arquivo.startsWith("js/"))
+  .flatMap((arquivo) => [...readFileSync(arquivo, "utf8").matchAll(/https:\/\/[A-Za-z0-9.-]+/g)].map(([origem]) => origem)))];
+const origensSemLiberacao = origensNoCodigo.filter((origem) => !conexoes.includes(origem) && !ORIGENS_SO_DE_LINK.includes(origem));
+conferir("toda origem https do front está no connect-src ou só aparece em link", origensSemLiberacao.length === 0, origensSemLiberacao.join(", "));
+const ambientesDoNacional = JSON.parse(readFileSync("definicoes/rotas-nacional.json", "utf8")).ambientes
+  .flatMap((ambiente) => [ambiente.adn, ambiente.sefin]).map((endereco) => new URL(endereco));
+const { DOMINIOS_LIBERADOS } = await import("../api/proxy.js");
+conferir("hosts do Nacional só pelo repasse: liberados no repasse e fora do connect-src",
+  ambientesDoNacional.every((endereco) => DOMINIOS_LIBERADOS.includes(endereco.hostname) && !conexoes.includes(endereco.origin)));
+
+console.log("\n== página, estilos e imagens compatíveis com a CSP ==");
+const paginaEstatica = new JSDOM(readFileSync("index.html", "utf8")).window.document;
+const todosOsElementos = [...paginaEstatica.querySelectorAll("*")];
+conferir("scripts só por arquivo local, sem código inline",
+  [...paginaEstatica.scripts].every((script) => script.getAttribute("src") && !script.textContent.trim() && !/^(?:[a-z]+:)?\/\//i.test(script.getAttribute("src"))));
+conferir("sem <style> e sem atributo style", !paginaEstatica.querySelector("style") && !todosOsElementos.some((elemento) => elemento.hasAttribute("style")));
+conferir("sem atributos de evento inline", !todosOsElementos.some((elemento) => [...elemento.attributes].some((atributo) => /^on/i.test(atributo.name))));
+conferir("sem endereços javascript:", !todosOsElementos.some((elemento) => [...elemento.attributes].some((atributo) => /^\s*javascript:/i.test(atributo.value))));
+conferir("folhas de estilo locais ou do Google Fonts liberado no style-src",
+  [...paginaEstatica.querySelectorAll('link[rel="stylesheet"]')].every((folha) => {
+    const endereco = folha.getAttribute("href");
+    return !/^(?:[a-z]+:)?\/\//i.test(endereco) || (diretivas["style-src"] || []).includes(new URL(endereco).origin);
+  }));
+conferir("imagens e ícone locais", [...paginaEstatica.querySelectorAll("img[src], link[rel~='icon']")].every((elemento) => !/^(?:[a-z]+:)?\/\//i.test(elemento.getAttribute("src") || elemento.getAttribute("href"))));
+conferir("links em nova aba com rel=noopener", [...paginaEstatica.querySelectorAll('a[target="_blank"]')].every((link) => /\bnoopener\b/.test(link.getAttribute("rel") || "")));
+const estilos = readFileSync("styles.css", "utf8");
+conferir("styles.css sem @import", !/@import/i.test(estilos));
+conferir("styles.css só com url() local", [...estilos.matchAll(/url\(\s*["']?([^"')]+)/gi)].every(([, endereco]) => !/^(?:[a-z]+:|\/\/)/i.test(endereco)));
+const svgsDoSite = readdirSync("assets").filter((nome) => nome.endsWith(".svg")).map((nome) => `assets/${nome}`);
+const svgsComConteudoAtivo = svgsDoSite.filter((arquivo) => /<script|<style|\sstyle=|\son\w+=|href=["']\s*(?:https?:|javascript:)/i.test(readFileSync(arquivo, "utf8")));
+conferir("SVGs sem script, estilo inline nem referência externa", svgsDoSite.length > 0 && svgsComConteudoAtivo.length === 0, svgsComConteudoAtivo.join(", "));
+const textoDoForge = bytesForge.toString("latin1");
+const criacoesDeFuncao = textoDoForge.match(/new Function/g) || [];
+conferir("forge sem eval e com um único new Function, protegido por try e não alcançado em modo não estrito",
+  !/(?:^|[^\w.$])eval\s*\(/.test(textoDoForge) && criacoesDeFuncao.length === 1
+  && /try\{\w+=\w+\|\|new Function\("return this"\)\(\)\}catch/.test(textoDoForge) && !textoDoForge.includes("use strict"));
+
 console.log(falhas === 0 ? "\nTeste de segurança passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

@@ -45,6 +45,9 @@ Público: consultores internos. Não é produto para cliente final.
 cd testes && npm test
 cd testes && npm run test:detalhes
 
+# CSP e SRI num Chrome ou Edge real, com os cabeçalhos do vercel.json (fora do npm test)
+cd testes && npm run verificar:csp
+
 # conferência dos dados contra as planilhas dos anexos (Python 3.10+ e openpyxl)
 python testes/teste_fontes.py
 
@@ -289,6 +292,9 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Todo JSON passa por conferência de formato antes de valer.
 - `config.json`: `atualizacaoRemota: false` (o GitHub só entrega arquivos de
   repositório público) e `botaoRepositorio: false` (botão oculto; `true` exibe).
+  Religar a leitura remota exige incluir `https://raw.githubusercontent.com` no
+  `connect-src` do `vercel.json`; sem isso a CSP bloqueia a leitura e o app usa
+  a cópia publicada. O teste de segurança cobra essa ligação.
 - O log da sessão registra de onde cada definição veio.
 
 ### 5.7 De-para e gerador
@@ -371,6 +377,15 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    aprovação, versão fixa e licença no repositório.
 8. **Indexação.** O site é aberto, mas não indexável (`X-Robots-Tag: noindex,
    nofollow`).
+9. **Cabeçalhos do site.** CSP, Permissions-Policy e
+   `Cross-Origin-Opener-Policy: same-origin` valem nas páginas (regra
+   `/((?!api/).*)` do `vercel.json`); o repasse define a própria CSP. Nada
+   inline: sem `<script>` ou `<style>` embutidos, sem atributo `style` ou `on*`,
+   estilo dinâmico só por CSSOM (`elemento.style.x`). Origem nova de `fetch`
+   precisa entrar no `connect-src`, e o teste de segurança falha até isso
+   acontecer. Validar com `npm run verificar:csp` e, depois do deploy, com
+   `curl -sI` na produção. As prévias mostram a Vercel Toolbar, que exigiria
+   afrouxar a CSP; não liberar `vercel.live`.
 
 ## 7. Padrões de código
 
@@ -416,6 +431,8 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 | Relatório de NFS-e removido | Não é usado |
 | Telas de rota sem novas tentativas e separação por espaço mantida | Hugo aprovou o comportamento atual |
 | Validador só com regras de fonte documentada | Rigor: nada de conhecimento geral sem fonte |
+| CSP só nas páginas, com `img-src 'self'` (sem `data:`) e sem liberar a Vercel Toolbar | Aprovado na rodada 1; nada do app usa `data:` e o repasse tem CSP própria |
+| Sem limitador por IP no código do repasse; limite pelo WAF da Vercel | Aprovado na rodada 1; contador em memória não protege e barraria lotes da equipe no mesmo IP |
 | Nome, logo, favicon e rodapé atuais | Identidade definida pelo Hugo |
 
 Rotas conferidas na documentação do PlugNotas (método e caminho):
