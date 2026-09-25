@@ -15,6 +15,7 @@ const suites = [
   "teste-certificado.mjs",
   "teste-seguranca.mjs"
 ];
+const LIMITE_POR_SUITE_MS = 180000;
 
 let suitesComFalha = 0;
 let verificacoes = 0;
@@ -23,9 +24,11 @@ for (const suite of suites) {
   const resultado = spawnSync(process.execPath, [path.join(pastaTestes, suite)], {
     cwd: raizRepositorio,
     encoding: "utf8",
+    timeout: LIMITE_POR_SUITE_MS,
     env: { ...process.env, NODE_EXTRA_CA_CERTS: path.join(pastaTestes, "certificados", "ca.pem") }
   });
-  const saida = `${resultado.stdout || ""}${resultado.stderr || ""}`;
+  const estourouPrazo = resultado.error?.code === "ETIMEDOUT" ? `\nFALHA suíte interrompida após ${LIMITE_POR_SUITE_MS / 1000} s sem terminar` : "";
+  const saida = `${resultado.stdout || ""}${resultado.stderr || ""}${estourouPrazo}`;
   const aprovadas = (saida.match(/^\s+ok\s/gm) || []).length;
   const falhou = resultado.status !== 0;
   verificacoes += aprovadas;

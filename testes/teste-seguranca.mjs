@@ -179,6 +179,10 @@ simularNacional({ tipo: "application/json", partes: [Buffer.from('{"ok":true}')]
 const sucessoJson = await chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/x" } });
 conferir("resposta JSON do Nacional sai protegida e sem download forçado",
   sucessoJson.status === 200 && protegeResposta(sucessoJson.cabecalhos) && !sucessoJson.cabecalhos["Content-Disposition"] && String(sucessoJson.corpo) === '{"ok":true}');
+const pedidosPorta443 = simularNacional({ tipo: "application/json", partes: [Buffer.from("{}")] });
+const porta443 = await chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br:443/x" } });
+conferir("porta 443 explícita em domínio liberado segue para o Nacional",
+  porta443.status === 200 && pedidosPorta443.length === 1 && pedidosPorta443[0].endereco === "https://adn.nfse.gov.br/x", JSON.stringify(porta443.corpo));
 for (const tipo of ["text/html", "TEXT/HTML; charset=utf-8", "application/xhtml+xml", "image/svg+xml"]) {
   const cabecalhos = cabecalhosDaResposta(tipo);
   conferir(`${tipo} do Nacional vira download`, cabecalhos["Content-Disposition"] === "attachment" && protegeResposta(cabecalhos));
@@ -257,22 +261,31 @@ conferir("resposta de 4 MB ainda é entregue", respostaNoLimite.status === 200 &
 
 const { mock } = await import("node:test");
 let pedidoLento = null;
-https.request = () => {
+let responderLento = null;
+https.request = (endereco, opcoes, aoResponder) => {
   const pedido = new EventEmitter();
   pedido.end = () => {};
   pedido.destroy = () => { pedido.destruido = true; };
   pedidoLento = pedido;
+  responderLento = aoResponder;
   return pedido;
 };
 mock.timers.enable({ apis: ["setTimeout"] });
 const consultaLenta = chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/x" } });
-mock.timers.tick(29999);
+mock.timers.tick(20000);
+const respostaAosPoucos = new EventEmitter();
+respostaAosPoucos.statusCode = 200;
+respostaAosPoucos.headers = { "content-type": "application/pdf" };
+responderLento(respostaAosPoucos);
+respostaAosPoucos.emit("data", Buffer.from("x"));
+mock.timers.tick(9999);
 await Promise.resolve();
 const aindaAberta = !pedidoLento?.destruido;
 mock.timers.tick(1);
-const respostaLenta = await consultaLenta;
+const respostaLenta = await Promise.race([consultaLenta, new Promise((pronto) => setImmediate(() => pronto(null)))]);
 mock.timers.reset();
-conferir("prazo total de 30 s encerra a conexão lenta", aindaAberta && pedidoLento?.destruido && respostaLenta.status === 502 && respostaLenta.corpo?.codigo === "ETIMEDOUT", JSON.stringify(respostaLenta.corpo));
+conferir("prazo total de 30 s conta desde o início, mesmo com dados chegando aos poucos",
+  aindaAberta && pedidoLento?.destruido && respostaLenta?.status === 502 && respostaLenta?.corpo?.codigo === "ETIMEDOUT", JSON.stringify(respostaLenta?.corpo ?? "sem resposta no prazo"));
 https.request = requestOriginal;
 
 const registrosNoRepasse = procurar(["api/proxy.js"], /\bconsole\.|process\.std(?:out|err)/);

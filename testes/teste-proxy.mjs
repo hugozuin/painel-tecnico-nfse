@@ -1,4 +1,18 @@
+import https from "node:https";
+import tls from "node:tls";
+import { EventEmitter } from "node:events";
+import { readFileSync } from "node:fs";
+
 const { default: handler, dicaDoErro } = await import("../api/proxy.js");
+
+const pedidosAoNacional = [];
+https.request = (endereco) => {
+  pedidosAoNacional.push(String(endereco));
+  const pedido = new EventEmitter();
+  pedido.destroy = () => {};
+  pedido.end = () => setImmediate(() => pedido.emit("error", Object.assign(new Error("Chamada ao Nacional fora do esperado no teste"), { code: "ETESTE" })));
+  return pedido;
+};
 
 let falhas = 0;
 const conferir = (titulo, condicao, extra = "") => {
@@ -33,19 +47,33 @@ conferir("certificado nunca segue para domínio fora da lista", fora.status === 
 const naoPermitido = await executar({ method: "DELETE" });
 conferir("método recusado informa os aceitos", naoPermitido.status === 405 && naoPermitido.cabecalhos.Allow === "GET, POST");
 conferir("GET para porta diferente da padrão", (await executar({ method: "GET", query: { url: "https://adn.nfse.gov.br:8443/x" } })).status === 403);
-conferir("GET com porta 443 explícita segue a regra do domínio", (await executar({ method: "GET", query: { url: "https://exemplo-malicioso.com:443/x" } })).status === 403);
 conferir("GET com usuário e senha na URL", (await executar({ method: "GET", query: { url: "https://usuario:segredo@adn.nfse.gov.br/x" } })).status === 403);
 conferir("POST com usuário na URL", (await executar({ method: "POST", body: { url: "https://usuario@sefin.nfse.gov.br/x", certificado: pem } })).status === 403);
 conferir("GET com url repetida", (await executar({ method: "GET", query: { url: ["https://adn.nfse.gov.br/x", "https://adn.nfse.gov.br/y"] } })).status === 400);
 conferir("POST com corpo null em texto", (await executar({ method: "POST", body: "null" })).status === 400);
 conferir("POST com corpo em lista", (await executar({ method: "POST", body: [] })).status === 400);
 conferir("POST com url que não é texto", (await executar({ method: "POST", body: { url: ["https://adn.nfse.gov.br/x"] } })).status === 400);
+conferir("nenhuma recusa chegou a chamar o Nacional", pedidosAoNacional.length === 0, pedidosAoNacional.join(", "));
 
 console.log("\n== dicas de erro ==");
 conferir("tempo esgotado", dicaDoErro({ code: "ETIMEDOUT" }, false).includes("tempo limite"));
 conferir("endereço não encontrado", dicaDoErro({ code: "ENOTFOUND" }, false).includes("não foi encontrado"));
 conferir("cadeia do servidor", dicaDoErro({ code: "UNABLE_TO_GET_ISSUER_CERT_LOCALLY" }, false).includes("certificado do servidor"));
 conferir("par de chave inválido", dicaDoErro({ code: "ERR_OSSL_X509_KEY_VALUES_MISMATCH" }, true).includes("par válido"));
+const erroAoMontarTls = (opcoes) => {
+  try {
+    tls.createSecureContext(opcoes);
+    return null;
+  } catch (erro) {
+    return erro;
+  }
+};
+const chaveDeTeste = readFileSync("testes/certificados/servidor.key", "utf8");
+const cadeiaDeTeste = readFileSync("testes/certificados/servidor.pem", "utf8");
+const erroDeChave = erroAoMontarTls({ key: "-----BEGIN RSA PRIVATE KEY-----\nAAAA\n-----END RSA PRIVATE KEY-----\n", cert: cadeiaDeTeste });
+const erroDeCadeia = erroAoMontarTls({ key: chaveDeTeste, cert: "-----BEGIN CERTIFICATE-----\nAAAA\n-----END CERTIFICATE-----\n" });
+conferir("chave em PEM com conteúdo inválido explicada", Boolean(erroDeChave) && dicaDoErro(erroDeChave, true).includes("par válido"), erroDeChave?.message);
+conferir("cadeia em PEM com conteúdo inválido explicada", Boolean(erroDeCadeia) && dicaDoErro(erroDeCadeia, true).includes("par válido"), erroDeCadeia?.message);
 conferir("conexão recusada sem certificado", dicaDoErro({ code: "ECONNRESET" }, false).includes("carregue um certificado A1"));
 conferir("conexão recusada com certificado", dicaDoErro({ code: "ECONNRESET" }, true).includes("ICP-Brasil"));
 

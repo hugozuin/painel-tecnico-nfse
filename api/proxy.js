@@ -103,7 +103,7 @@ export function dicaDoErro(erro, comCertificado) {
   if (/UNABLE_TO_GET_ISSUER|SELF_SIGNED_CERT|UNABLE_TO_VERIFY_LEAF|CERT_HAS_EXPIRED|CERT_NOT_YET_VALID/.test(texto)) {
     return "A conexão não reconheceu o certificado do servidor do Nacional.";
   }
-  if (/KEY_VALUES_MISMATCH|bad decrypt|no start line|PEM/i.test(texto)) {
+  if (/KEY_VALUES_MISMATCH|bad decrypt|no start line|PEM|DECODER|ASN1/i.test(texto)) {
     return "A chave e o certificado enviados não formam um par válido. Carregue o certificado de novo.";
   }
   if (/ECONNRESET|socket hang up|ALERT|handshake|EPROTO/i.test(texto)) {
