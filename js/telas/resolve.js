@@ -5,7 +5,8 @@
 import {
   criar, CHAVES_ARMAZENAMENTO, pausar, mostrarAviso, pedirConfirmacao, registrarLog,
   separarIdentificadores, aguardarDigitacao, criarPoolExecucao, baixarArquivo,
-  carimboDeTempo, montarCsv, copiarTexto, lerArquivoTexto, identificacao
+  carimboDeTempo, montarCsv, copiarTexto, lerArquivoTexto, identificacao,
+  temSegmentoDePonto, AVISO_SEGMENTO_DE_PONTO
 } from "../shared.js";
 import { criarSessaoRequisicoes, consultarNota, consultarEventos, executarResolve } from "../plugnotas.js";
 import { exigirApiKey } from "../credencial.js";
@@ -389,6 +390,12 @@ export function montarTelaResolve(container) {
 
     if (ids.length === 0) {
       mostrarAviso("Informe ao menos um ID válido.", "error");
+      areaIds.focus();
+      return;
+    }
+
+    if (temSegmentoDePonto(ids)) {
+      mostrarAviso(AVISO_SEGMENTO_DE_PONTO, "error");
       areaIds.focus();
       return;
     }

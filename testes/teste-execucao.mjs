@@ -250,6 +250,38 @@ clicar("Consultar");
 await esperar(400);
 conferir("sem certificado volta para GET", chamadas[chamadas.length - 1].url.startsWith("api/proxy?url="));
 
+console.log("\n== itens . e .. não desviam o caminho da rota ==");
+const avisos = () => [...document.querySelectorAll(".toast")].map((aviso) => aviso.textContent);
+const chamadasAntesDosPontos = chamadas.length;
+itens.find((i) => i.dataset.rota === "xml").click();
+await esperar(80);
+document.querySelector("textarea").value = "X9\n..";
+document.querySelector("textarea").dispatchEvent(new dom.window.Event("input"));
+await esperar(300);
+clicar("Baixar arquivos");
+await esperar(300);
+conferir("rota de arquivo recusa o item .. sem chamar a API", chamadas.length === chamadasAntesDosPontos && avisos().some((texto) => texto.includes('"."')));
+itens.find((i) => i.dataset.rota === "webhook").click();
+await esperar(80);
+const alternadorTestePontos = document.querySelector('.variantes-controles input[type="checkbox"]');
+alternadorTestePontos.checked = true;
+alternadorTestePontos.dispatchEvent(new dom.window.Event("change"));
+document.querySelector(".tela textarea").value = "..";
+document.querySelector(".tela textarea").dispatchEvent(new dom.window.Event("input"));
+await esperar(300);
+clicar("Executar");
+await esperar(300);
+conferir("teste de webhook da empresa com .. não vira o teste da organização",
+  document.getElementById("confirmModal").hidden && chamadas.length === chamadasAntesDosPontos && !chamadas.some((c) => c.url.endsWith("/webhook/verify") && !c.url.includes("/empresa/")));
+itens.find((i) => i.dataset.rota === "resolve").click();
+await esperar(80);
+document.querySelector("textarea").value = "N1\n.";
+document.querySelector("textarea").dispatchEvent(new dom.window.Event("input"));
+await esperar(400);
+clicar("Executar resolve");
+await esperar(300);
+conferir("resolve recusa o item . antes de confirmar", document.getElementById("confirmModal").hidden && chamadas.length === chamadasAntesDosPontos);
+
 console.log("\n== destino da API Key em todos os fluxos ==");
 const comChave = chamadas.filter((c) => c.chave);
 conferir("toda chamada com API Key vai só para a API PlugNotas",

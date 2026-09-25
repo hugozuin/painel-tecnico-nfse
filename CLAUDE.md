@@ -213,7 +213,10 @@ servem às telas agrupadas.
 ### 5.3 Motor das telas de rota (`js/telas/lote.js`)
 
 - A lista é separada por quebra de linha, espaço, vírgula ou ponto e vírgula, e
-  os repetidos saem (`separarIdentificadores`).
+  os repetidos saem (`separarIdentificadores`). Os itens `.` e `..` são
+  recusados com aviso nas telas de rota e no Resolve, porque o navegador os
+  resolve como segmento de caminho (ex.: `/empresa/../webhook/verify` viraria o
+  teste do webhook da organização).
 - Uma requisição por item, com pool de 5 em paralelo nas rotas do PlugNotas e 3
   no Nacional. Rotas sensíveis esperam 150 ms entre itens.
 - Campos fixos da tela valem para todos os itens.

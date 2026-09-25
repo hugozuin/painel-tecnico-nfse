@@ -34,9 +34,6 @@ export function criarSessaoRequisicoes() {
   };
 }
 
-/* Executa uma requisição única com timeout e devolve status, corpo e
-   mensagem já extraída. Não aplica retry: isso é responsabilidade de quem chama.
-   Com comoBlob, devolve o arquivo em vez de tentar interpretar JSON. */
 export function podeLevarApiKey(url) {
   try {
     return new URL(url, globalThis.location?.href).origin === ORIGEM_PLUGNOTAS;
@@ -45,6 +42,9 @@ export function podeLevarApiKey(url) {
   }
 }
 
+/* Executa uma requisição única com timeout e devolve status, corpo e
+   mensagem já extraída. Não aplica retry: isso é responsabilidade de quem chama.
+   Com comoBlob, devolve o arquivo em vez de tentar interpretar JSON. */
 export async function requisitar({ url, metodo = "GET", corpo, apiKey, sessao, comoBlob = false }) {
   if (apiKey && !podeLevarApiKey(url)) {
     return {

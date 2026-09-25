@@ -69,6 +69,12 @@ export function separarIdentificadores(textoBruto) {
   return lista;
 }
 
+export const AVISO_SEGMENTO_DE_PONTO = 'Os itens "." e ".." não são aceitos: no endereço da rota eles mudariam o caminho chamado.';
+
+export function temSegmentoDePonto(valores) {
+  return valores.some((valor) => valor === "." || valor === "..");
+}
+
 export function mostrarAviso(mensagem, tipo = "info", duracao = 4000) {
   const container = elemento("toastContainer");
   if (!container) return;

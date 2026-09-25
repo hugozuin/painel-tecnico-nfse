@@ -5,7 +5,7 @@
 import {
   criar, mostrarAviso, pedirConfirmacao, registrarLog, separarIdentificadores,
   aguardarDigitacao, criarPoolExecucao, baixarArquivo, carimboDeTempo, montarCsv,
-  copiarTexto, lerArquivoTexto, pausar
+  copiarTexto, lerArquivoTexto, pausar, temSegmentoDePonto, AVISO_SEGMENTO_DE_PONTO
 } from "../shared.js";
 import { criarSessaoRequisicoes, requisitar } from "../plugnotas.js";
 import { exigirApiKey } from "../credencial.js";
@@ -133,6 +133,11 @@ export function montarTelaRota(container, rota, contexto) {
     if (entrada.tipo !== "formulario" && itens.length === 0) {
       mostrarAviso("Informe ao menos um item.", "error");
       areaEntrada.focus();
+      return;
+    }
+
+    if (temSegmentoDePonto([...itens, ...Object.values(valores.dados.caminho)])) {
+      mostrarAviso(AVISO_SEGMENTO_DE_PONTO, "error");
       return;
     }
 
