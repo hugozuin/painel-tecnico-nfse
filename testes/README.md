@@ -9,7 +9,7 @@ openpyxl): `python testes/teste_fontes.py` na raiz do repositório.
 
 As suítes rodam com a raiz do repositório como pasta de trabalho; o
 `executar.mjs` cuida disso e da variável `NODE_EXTRA_CA_CERTS` usada no teste de
-certificado.
+certificado, e reprova a suíte que passar de 180 s sem terminar.
 
 `teste-seguranca.mjs` reúne as garantias de segurança: varredura de sinks
 proibidos no DOM, integridade do forge, destino da API Key, cabeçalhos,
@@ -22,9 +22,10 @@ permitido precisa ter fonte pública.
 `npm run verificar:csp` (fora do `npm test`) abre o Chrome ou o Edge em modo
 headless, serve o site com os cabeçalhos do `vercel.json`, percorre todas as
 telas, carrega o forge pelo fluxo real do certificado e falha se houver
-violação de CSP ou se o SRI barrar o forge. O repasse é simulado, mas a
-consulta de teste vai à API PlugNotas com uma chave fictícia e volta 401. Para
-usar outro navegador: `node verificar-csp.mjs <caminho do executável>`.
+violação de CSP ou se o SRI barrar o forge. Exige internet: o repasse é
+simulado, mas a fonte vem do Google Fonts e a consulta de teste vai à API
+PlugNotas com uma chave fictícia e volta 401. Para usar outro navegador:
+`node verificar-csp.mjs <caminho do executável>`.
 
 `certificados/` guarda certificados de teste autoassinados, gerados só para
 estes testes, válidos por 10 anos. Não são ICP-Brasil e não servem para

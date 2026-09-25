@@ -161,8 +161,8 @@ def construir():
     h.append(Paragraph("Algumas consultas exigem certificado digital na conexão. Carregue um certificado A1 ICP-Brasil "
                        "(.pfx ou .p12) e a senha no cartão Certificado digital; pode ser de qualquer CNPJ. O arquivo e a "
                        "senha são lidos no navegador, e só a chave e o certificado seguem para o repasse durante a "
-                       "consulta, sem serem guardados. A senha é apagada do campo depois de cada tentativa, com ou sem "
-                       "sucesso. Ao recarregar a página, carregue o certificado de novo.", corpo))
+                       "consulta, sem serem guardados. A senha é apagada do campo depois de cada leitura do arquivo, "
+                       "com ou sem sucesso. Ao recarregar a página, carregue o certificado de novo.", corpo))
 
     h.append(Paragraph("5. De-para do Nacional", secao))
     h.append(Paragraph("Cada tag do XML aparece pelo nome do leiaute do Nacional e pela referência do anexo VI, como em "

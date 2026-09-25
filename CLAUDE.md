@@ -45,7 +45,8 @@ Público: consultores internos. Não é produto para cliente final.
 cd testes && npm test
 cd testes && npm run test:detalhes
 
-# CSP e SRI num Chrome ou Edge real, com os cabeçalhos do vercel.json (fora do npm test)
+# CSP e SRI num Chrome ou Edge real, com os cabeçalhos do vercel.json (fora do npm test;
+# exige internet: carrega a Quicksand e faz uma consulta à API PlugNotas com chave fictícia, que volta 401)
 cd testes && npm run verificar:csp
 
 # conferência dos dados contra as planilhas dos anexos (Python 3.10+ e openpyxl)
@@ -80,8 +81,10 @@ lado do Nacional.
   `assets/vendor/forge-1.4.0.min.js` (licença em `forge-LICENSE.txt`), carregado
   sob demanda com SRI (`BIBLIOTECA_FORGE` em `js/certificado.js`) só para ler o
   certificado A1. Nada vem de CDN. Para atualizar: trocar o arquivo e o nome com
-  a nova versão, a versão em `testes/package.json`, a integridade em
-  `BIBLIOTECA_FORGE` e o SHA-256 em `testes/teste-seguranca.mjs`. O
+  a nova versão, a versão em `testes/package.json` e rodar `npm install` em
+  `testes/` (o teste compara o arquivo vendorizado com o do `node_modules`), a
+  integridade em `BIBLIOTECA_FORGE`, o SHA-256 em `testes/teste-seguranca.mjs`
+  e, se a licença mudar, o `forge-LICENSE.txt`. O
   `.gitattributes` impede a conversão de fim de linha em `assets/vendor/` e nos
   PDFs, que mudaria o hash num clone com `core.autocrlf=true`.
 - **Fonte:** Quicksand pelo Google Fonts.
@@ -125,7 +128,8 @@ definicoes/             rotas.json, rotas-nacional.json, regras-validacao.json, 
                         de-para-nacional.json, ibscbs.json (gerados, não editar à mão)
 fontes/nacional/        anexos VI (v1.04, NT009), VII (v1.02) e VIII (v1.01), públicos
 ferramentas/            gerar_definicoes.py, gerar_manual.py, relatorio-geracao.json
-testes/                 suítes Node, executar.mjs, teste_fontes.py, sigilo.mjs (varredura de dados sensíveis), certificados de teste
+testes/                 suítes Node, executar.mjs, teste_fontes.py, sigilo.mjs (varredura de dados sensíveis),
+                        verificar-csp.mjs (CSP e SRI no navegador, fora do npm test), certificados de teste
 documentacao.pdf        manual de uso (gerado)
 vercel.json             cabeçalhos HTTP
 .vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md, .gitattributes
@@ -259,9 +263,11 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   corpo; 413 acima disso), objeto JSON com `url` em texto. A chave precisa ser
   PEM `RSA PRIVATE KEY`, `PRIVATE KEY` ou `EC PRIVATE KEY`, sem cifra, e a
   cadeia de 1 a 10 blocos `CERTIFICATE`, com fim de linha LF ou CRLF
-  (`problemaNoCertificado`). O domínio é conferido antes do PEM. O corpo da
-  requisição nunca é registrado (o repasse não tem `console`; há teste). O corpo
-  gerado pela tela com os PFX de teste tem de 3 a 4 KB.
+  (`problemaNoCertificado`, que confere só o formato; conteúdo inválido cai no
+  502 com a dica de par inválido). O domínio é conferido antes do PEM. O corpo
+  da requisição nunca é registrado (o repasse não tem `console`; há teste). O
+  corpo gerado pela tela com os PFX de teste tem 2.930 e 4.114 bytes, e o teste
+  exige que fique abaixo de 8 KB.
 - Saída: respostas do Nacional acima de 4 MB viram 502 com código
   `ERESPOSTAGRANDE`. A Vercel corta respostas de função em 4,5 MB com um 500
   genérico.
@@ -365,13 +371,13 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    `requisitar`.
 4. **Certificado A1.** Nunca persistir em `localStorage`, `sessionStorage`,
    cookies ou logs. A senha não sai do navegador e é apagada do campo depois de
-   cada tentativa, com ou sem sucesso. O repasse usa chave e cadeia só durante a
+   cada leitura do arquivo, com ou sem sucesso. O repasse usa chave e cadeia só durante a
    conexão e não registra o corpo da requisição. `teste-seguranca.mjs` carrega e
    usa o A1 de teste e varre armazenamentos, cookie, logs, DOM, campos, área de
    transferência e arquivos exportados.
 5. **Repasse.** Somente `https`, domínios exatos da lista na porta padrão, sem
-   usuário ou senha na URL, métodos GET e POST, corpo até 64 KB e certificado em
-   PEM validado. Toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`.
+   usuário ou senha na URL, métodos GET e POST, corpo até 64 KB e certificado com
+   o formato PEM conferido. Toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`.
    Qualquer domínio novo exige alteração explícita da lista e teste.
 6. **DOM.** Proibido `innerHTML`, `outerHTML`, `insertAdjacentHTML`,
    `document.write`, `eval` e `new Function` com dados dinâmicos. Use `criar()`

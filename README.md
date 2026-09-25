@@ -30,7 +30,7 @@ consultas exigem certificado digital na conexão: o consultor carrega um A1
 ICP-Brasil (.pfx ou .p12) e a senha na tela. O arquivo e a senha são lidos no
 navegador, e só a chave e o certificado seguem para o repasse durante a
 consulta, sem serem guardados. A senha é apagada do campo depois de cada
-tentativa.
+leitura do arquivo, com ou sem sucesso.
 
 **De-para do Nacional.** Cada tag do XML aparece pelo nome do leiaute e pela
 descrição do anexo VI, por exemplo tpRetISSQN, Tipo de retencao do ISSQN. A
@@ -115,10 +115,11 @@ site.
 
 - **Cabeçalhos do site** (`vercel.json`): `nosniff`, `Referrer-Policy` e
   `X-Robots-Tag` em tudo. Nas páginas, fora de `/api/`, também valem a
-  Content-Security-Policy (scripts e estilos só do próprio site, fonte do Google
-  Fonts, conexões só com o próprio site e a API PlugNotas, sem objetos, sem
-  moldura e sem formulário), a Permissions-Policy (câmera, microfone e
-  localização desligados) e `Cross-Origin-Opener-Policy: same-origin`. Se a
+  Content-Security-Policy (scripts só do próprio site, estilos do próprio site e
+  da folha do Google Fonts, arquivos de fonte do Google Fonts, conexões só com o
+  próprio site e a API PlugNotas, sem objetos, sem moldura e sem formulário), a
+  Permissions-Policy (câmera, microfone e localização desligados) e
+  `Cross-Origin-Opener-Policy: same-origin`. Se a
   leitura remota das definições for religada, `https://raw.githubusercontent.com`
   precisa entrar no `connect-src`; o teste de segurança cobra isso.
 - **API Key**: só segue para `https://api.plugnotas.com.br`. Qualquer outro
@@ -126,10 +127,12 @@ site.
 - **Repasse**: toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`, e
   HTML ou SVG do Nacional vira download. A entrada aceita só `https`, os
   domínios da lista na porta padrão, sem usuário e senha na URL, corpo até
-  64 KB e certificado em PEM válido. Cada consulta tem prazo total de 30 s, e
-  respostas acima de 4 MB viram erro explicado. Não há limitador por IP no
-  código; a recomendação é uma regra de rate limit no WAF da Vercel (detalhes
-  na seção 5.5 do CLAUDE.md).
+  64 KB e certificado com o formato PEM conferido. Cada consulta tem prazo
+  total de 30 s, e respostas acima de 4 MB viram erro explicado. Não há
+  limitador por IP no código; a recomendação é uma regra de rate limit no WAF
+  da Vercel (detalhes na seção 5.5 do CLAUDE.md).
+- **Listas de identificadores**: os itens `.` e `..` são recusados com aviso,
+  porque mudariam o caminho da rota chamada.
 - **Forge**: vendorizado com a versão no nome (`assets/vendor/forge-1.4.0.min.js`)
   e carregado com SRI. O `.gitattributes` impede que o Git troque o fim de linha
   e altere o hash.

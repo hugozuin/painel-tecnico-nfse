@@ -9,10 +9,16 @@ de um minuto. Quem for colaborar precisa ser adicionado ao repositório privado.
 **config.json** guarda o endereço do repositório e duas chaves. `atualizacaoRemota`
 fica em false porque o repositório é privado. `botaoRepositorio` controla o botão
 Repositório no cabeçalho: false oculta, true exibe apontando para `repositorio`.
+Religar `atualizacaoRemota` exige incluir `https://raw.githubusercontent.com` no
+`connect-src` do `vercel.json`; sem isso a CSP bloqueia a leitura e o painel usa
+a cópia publicada. O teste de segurança cobra essa ligação.
 
 **rotas.json** e **rotas-nacional.json** são os catálogos de rotas. Cada item
 vira uma tela no menu, com título, legenda (`resumo`), método, caminho,
-campos e formato do resultado.
+campos e formato do resultado. Em rotas.json, `base` fica fixa em
+`https://api.plugnotas.com.br` (`ORIGEM_PLUGNOTAS` em `js/plugnotas.js`), a
+única origem que recebe a API Key e que está no `connect-src`. Com outra base,
+o painel recusa todas as chamadas com chave.
 
 - `entrada.tipo`: `lote` (uma chamada por linha, com `{item}` no caminho),
   `lote-conjunto` (a lista inteira no corpo) ou `formulario`.
@@ -43,3 +49,5 @@ sobrescreve. Para corrigir um conteúdo, corrija a fonte e gere de novo.
 
 Confira que o JSON é válido. Mesmo com o repositório privado, não inclua dados
 de cliente: CNPJ, razão social, chave de acesso e API Key precisam ser fictícios.
+Rode `cd testes && npm test` antes do commit: o deploy da Vercel não roda os
+testes, e a varredura de dados sensíveis cobre esta pasta.
