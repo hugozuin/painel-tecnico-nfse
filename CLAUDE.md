@@ -1,23 +1,16 @@
 # CLAUDE.md · Painel Técnico NFS-e
 
-Instruções do projeto para o Claude Code. A **Parte A** vale para toda sessão. A
-**Parte B** é a missão inicial de revisão, refatoração e testes; quando ela for
-concluída, mova-a para `docs/` e deixe aqui só um resumo, para este arquivo
-continuar curto e focado no que vale sempre.
+Instruções permanentes do projeto para o Claude Code, válidas em toda sessão.
 
-Regras de leitura:
-
-- Leia a Parte A inteira antes de qualquer mudança.
-- O código mostra o estado atual; as decisões da seção A8 mostram a intenção.
-  Se os dois divergirem, pergunte ao Hugo antes de mudar comportamento.
+- As tarefas chegam por mensagem do Hugo. Faça só o que foi pedido.
+- O código mostra o estado atual; as decisões da seção 8 mostram a intenção. Se
+  os dois divergirem, pergunte antes de mudar comportamento.
+- Não altere comportamento visível nem decisões da seção 8 sem aprovação. Se
+  uma tarefa exigir, descreva a proposta e pergunte.
 - Escreva tudo em português: código, textos da interface, mensagens de commit,
   documentação e respostas.
 
----
-
-# PARTE A · Regras permanentes
-
-## A1. Resumo do projeto
+## 1. Resumo do projeto
 
 O Painel Técnico NFS-e é a ferramenta interna da Consultoria Técnica NFS-e da
 TecnoSpeed (produto PlugNotas), criada e mantida por Hugo Zuin, consultor
@@ -45,7 +38,7 @@ Público: consultores internos. Não é produto para cliente final.
 | Publicação | Vercel, deploy automático a cada commit no `main`; site aberto, sem login |
 | Documentação da API | https://docs.plugnotas.com.br (só renderiza com JavaScript) |
 
-## A2. Comandos
+## 2. Comandos
 
 ```bash
 # testes (uma vez: cd testes && npm install)
@@ -73,7 +66,7 @@ python ferramentas/gerar_manual.py
 (`.gitignore`). Sem `--script`, `--mapeamento` e `--lib`, o gerador produz só o
 lado do Nacional.
 
-## A3. Stack e dependências
+## 3. Stack e dependências
 
 - **Front-end:** HTML, CSS e JavaScript em módulos ES, sem framework e sem etapa
   de build. `index.html` carrega `js/app.js`.
@@ -97,7 +90,7 @@ lado do Nacional.
 Restrições de arquitetura definidas pelo Hugo: sem MongoDB, PostgreSQL ou AWS;
 deploy simples na web; backend só o mínimo necessário (hoje, o repasse).
 
-## A4. Estrutura do repositório
+## 4. Estrutura do repositório
 
 ```
 index.html              estrutura, cabeçalho (Logs, Documentação, tema), menu lateral, modais, painel de logs
@@ -133,9 +126,9 @@ vercel.json             cabeçalhos HTTP
 Tamanho atual dos módulos maiores: `resolve.js` 695 linhas, `analise.js` 571,
 `lote.js` 484, `styles.css` 1026.
 
-## A5. Arquitetura e fluxos
+## 5. Arquitetura e fluxos
 
-### A5.1 Telas guiadas por catálogo
+### 5.1 Telas guiadas por catálogo
 
 Cada rota de `definicoes/rotas.json` e `definicoes/rotas-nacional.json` vira
 item de menu e tela, sem código novo. Cada tela abre com grupo, título e
@@ -174,9 +167,9 @@ servem às telas agrupadas.
 - No Nacional, `servidor` escolhe `adn` ou `sefin`, e o ambiente (produção ou
   produção restrita) é escolhido na tela.
 - Os `exemplo` são sempre textos neutros. Nunca use IDs, CNPJs ou chaves reais
-  (ver A6).
+  (ver seção 6).
 
-### A5.2 Telas agrupadas
+### 5.2 Telas agrupadas
 
 ```json
 {
@@ -208,7 +201,7 @@ servem às telas agrupadas.
   todas da conta, logotipo); Webhook (empresa ou organização, com toggle
   "Enviar um teste"); Certificado (por ID ou CPF/CNPJ, ou todos da conta).
 
-### A5.3 Motor das telas de rota (`js/telas/lote.js`)
+### 5.3 Motor das telas de rota (`js/telas/lote.js`)
 
 - A lista é separada por quebra de linha, espaço, vírgula ou ponto e vírgula, e
   os repetidos saem (`separarIdentificadores`).
@@ -220,9 +213,9 @@ servem às telas agrupadas.
   conteúdo, tempo e a URL de destino.
 - Requisições sem campos de corpo saem sem corpo (ex.: teste de webhook).
 - As telas de rota **não** repetem em falha temporária nem tratam 429; só o
-  Resolve faz isso (decisão A8).
+  Resolve faz isso (decisão da seção 8).
 
-### A5.4 Resolve (`js/telas/resolve.js`, `js/plugnotas.js`)
+### 5.4 Resolve (`js/telas/resolve.js`, `js/plugnotas.js`)
 
 1. Consulta a situação antes (`GET /nfse/consultar/{id}`).
 2. Emissor Nacional: chama `POST /nfse/eventos/{id}` antes do resolve e espera
@@ -240,7 +233,7 @@ servem às telas agrupadas.
 
 Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 
-### A5.5 Nacional e certificado
+### 5.5 Nacional e certificado
 
 - O navegador não chama o gov.br direto (sem CORS). As telas do Nacional usam
   `api/proxy`: `GET ?url=` sem certificado, ou `POST` com
@@ -256,7 +249,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   certificado real no servidor de um site aberto deixaria qualquer pessoa
   consultar em nome da empresa.
 
-### A5.6 Definições
+### 5.6 Definições
 
 - Abertura: `config.json`, `rotas.json`, `rotas-nacional.json` e
   `regras-validacao.json`. De-para e ibscbs carregam sob demanda.
@@ -265,7 +258,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   repositório público) e `botaoRepositorio: false` (botão oculto; `true` exibe).
 - O log da sessão registra de onde cada definição veio.
 
-### A5.7 De-para e gerador
+### 5.7 De-para e gerador
 
 - `ferramentas/gerar_definicoes.py` liga quatro elos: lib do PlugNotas (JSON
   para TX2), script do Nacional (TX2 para dataset), `Mapping.txt` (dataset para
@@ -279,7 +272,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   28 cClassTrib e 1.514 relações (anexos VII e VIII).
 - `ferramentas/relatorio-geracao.json` lista as lacunas da última geração.
 
-### A5.8 Validador
+### 5.8 Validador
 
 - `js/analise.js` (conferências calculadas) e `definicoes/regras-validacao.json`
   (regras declarativas com `fonte` e `tags` obrigatórios).
@@ -289,7 +282,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   Nacional ou cálculo sobre o JSON. Regras sem fonte nos documentos foram
   removidas; não reintroduza.
 
-### A5.9 Interface transversal
+### 5.9 Interface transversal
 
 - Popup de informação: passar o mouse abre; Shift ou clique fixam; Esc, clique
   fora ou o botão fecham.
@@ -303,7 +296,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Rodapé: "**Painel Técnico NFS-e · Consultoria Técnica NFS-e** · TecnoSpeed" e
   "Desenvolvido por Hugo Zuin" com menos destaque.
 
-## A6. Requisitos de segurança (obrigatórios)
+## 6. Requisitos de segurança (obrigatórios)
 
 1. **Sigilo do código interno.** Código, libs, scripts e demais insumos internos
    do PlugNotas nunca entram no repositório nem no site: coleções do Postman,
@@ -334,7 +327,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 8. **Indexação.** O site é aberto, mas não indexável (`X-Robots-Tag: noindex,
    nofollow`).
 
-## A7. Padrões de código
+## 7. Padrões de código
 
 - Nomes em português, descritivos e específicos. Nada de `data`, `temp`, `aux`,
   `obj`, `handler`, `utils` genéricos.
@@ -358,7 +351,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Commits pequenos, mensagem no imperativo em português (ex.: "Adiciona CSP no
   vercel.json"). `npm test` verde antes de cada commit.
 
-## A8. Decisões registradas (não reverter sem falar com o Hugo)
+## 8. Decisões registradas (não reverter sem falar com o Hugo)
 
 | Decisão | Motivo |
 |---|---|
@@ -395,7 +388,7 @@ GET  /empresa/{cnpj}/webhook   POST /empresa/{cnpj}/webhook/verify   GET /webhoo
 GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
 ```
 
-## A9. Pendências e limitações conhecidas
+## 9. Pendências e limitações conhecidas
 
 - Nomes de TX2 divergentes entre a lib e o script do Nacional (ex.: lib gera
   `ValorIRRF`, `ValorCP`, `TipoRetIss`, `TipoTributacaoIss`; script lê
@@ -412,7 +405,7 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
   regeração de PDF por idIntegracao; oferecidos, ainda não decididos.
 - O anexo VI tem regras com código provisório (`EXXX`); são exibidas como estão.
 
-## A10. Glossário
+## 10. Glossário
 
 | Termo | Significado |
 |---|---|
@@ -429,170 +422,3 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
 | cClassTrib | Classificação tributária do IBS e da CBS |
 | NBS | Nomenclatura Brasileira de Serviços |
 | idIntegracao | Identificador da nota definido pelo integrador |
-
----
-
-# PARTE B · Missão inicial: revisão, refatoração e testes
-
-## B0. Como conduzir
-
-1. Rode `git status` e `git log -5` e confirme que o repositório bate com a
-   seção A4. Se `testes/` não existir, pare e avise o Hugo.
-2. Crie o branch `refatoracao/rodada-1`.
-3. Rode `cd testes && npm install && npm test` e `python testes/teste_fontes.py`.
-   Linha de base: **258 verificações** em 7 suítes, mais 11 conferências das
-   planilhas, todas passando.
-4. Trabalhe na ordem de prioridade abaixo, um item por commit, com os testes
-   verdes a cada commit.
-5. Não altere comportamento visível nem decisões da seção A8 sem aprovação. Se
-   um item exigir, descreva a proposta e pergunte.
-6. Ao final, escreva `docs/revisao-rodada-1.md`: o que mudou, riscos restantes e
-   métricas antes e depois. Se a interface ou um fluxo mudar, atualize o README
-   e rode `python ferramentas/gerar_manual.py`.
-
-## B1. Prioridade 0 · Segurança
-
-1. **Cabeçalhos no `vercel.json`.** Hoje só há `X-Content-Type-Options`,
-   `Referrer-Policy` e `X-Robots-Tag`. Adicione e valide no navegador, sem
-   violações no console:
-
-   ```text
-   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.plugnotas.com.br; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'
-   Permissions-Policy: camera=(), microphone=(), geolocation=()
-   Cross-Origin-Opener-Policy: same-origin
-   ```
-
-   Antes, levante todos os destinos de `fetch` e recursos carregados. Se a
-   leitura remota for religada, inclua `https://raw.githubusercontent.com` em
-   `connect-src`.
-2. **Resposta do repasse.** Quem abrir `/api/proxy?url=...` direto no navegador
-   veria o conteúdo repassado na origem do painel, que tem API Keys em
-   `localStorage`. Nas respostas do repasse, envie
-   `Content-Security-Policy: default-src 'none'; sandbox` e
-   `X-Content-Type-Options: nosniff`, e `Content-Disposition: attachment` quando
-   o tipo for HTML.
-3. **Entrada do repasse.** Limite o tamanho do corpo do POST (ex.: 64 KB) e
-   valide os marcadores PEM da chave e do certificado antes de usar. Mantenha a
-   ausência de log do corpo. Avalie limitação de uso por IP (melhor esforço) e
-   documente o limite da solução.
-4. **API Key.** Garanta em `requisitar` que `X-API-KEY` só vai para a origem da
-   base do PlugNotas e crie teste. Proponha ao Hugo, sem mudar ainda, um aviso
-   na tela de perfis sobre chaves guardadas em `localStorage` e um botão para
-   apagar todos os perfis.
-5. **Certificado.** Teste que, depois de carregar e usar o A1, nenhum
-   armazenamento do navegador contém PEM, senha ou trechos do PFX.
-6. **DOM.** Remova `textoSeguro` de `js/shared.js` (não é usado) e troque
-   `seletorPerfil.innerHTML = ""` em `js/credencial.js` por `replaceChildren()`.
-7. **Varredura de dados sensíveis.** Crie teste que procure em `definicoes/`,
-   `js/`, `api/`, `index.html` e documentação padrões de IDs Mongo (24 hex),
-   UUIDs, chaves de acesso (44 dígitos), tokens e CNPJs fora de uma lista de
-   valores públicos permitidos.
-8. **Integridade do forge.** Registre o SHA-256 de `assets/vendor/forge.min.js`
-   num teste e renomeie o arquivo para incluir a versão
-   (`forge-1.4.0.min.js`), ajustando o carregamento em `js/certificado.js`.
-9. Rode `npm audit` em `testes/` e reporte.
-
-## B2. Prioridade 1 · Clean code
-
-1. **Código e estilo mortos.** Remova, depois de confirmar com busca: a
-   referência a `curadorAutorBadge` em `atualizarRotuloUsuario` (resto do antigo
-   modo curador); as classes CSS sem uso `brand-logo`, `bloco-json`,
-   `logsDetails`, `depara-descricao`, `tabela-valores`, `depara-campos`,
-   `depara-origem`; chaves de `CHAVES_ARMAZENAMENTO` sem leitura.
-2. **Comentários.** Remova os cabeçalhos de comentário dos módulos, levando para
-   o README o que for explicação útil.
-3. **Módulos grandes.** Divida mantendo a API pública e os testes:
-   - `resolve.js`: orquestração pura e testável separada da tela.
-   - `analise.js`: um módulo por domínio (texto, documentos, leiaute,
-     retenções, ISS, IBS e CBS) e um agregador `analisarEmissao`.
-   - `lote.js`: montagem da entrada, execução e renderização do Retorno.
-   - `styles.css`: reorganize por componente, eliminando duplicatas das seções
-     acrescentadas em rodadas diferentes.
-4. **Duplicação.** Unifique o componente de toggle (Resolve e telas agrupadas),
-   a montagem de cartões e os construtores de popup.
-5. **Prefixo de armazenamento.** As chaves usam o prefixo legado
-   `resolve-tools:`. Proponha migrar para `painel-nfse:` com migração única que
-   preserve perfis e preferências; só execute com aprovação.
-
-## B3. Prioridade 2 · Performance
-
-Linha de base medida (tamanhos brutos e com gzip):
-
-| Recurso | Bruto | gzip | Quando carrega |
-|---|---|---|---|
-| JS da aplicação (16 módulos) | 164 KB | 49 KB | Na abertura, todos |
-| styles.css | 34 KB | 7 KB | Na abertura |
-| index.html | 9 KB | 3 KB | Na abertura |
-| Definições da abertura | 34 KB | 6 KB | Na abertura |
-| de-para-nacional.json | 484 KB | 61 KB | Sob demanda |
-| ibscbs.json | 185 KB | 29 KB | Sob demanda |
-| forge.min.js | 277 KB | 73 KB | Só ao carregar certificado |
-
-Parâmetros de rede atuais: tempo limite de 120 s no PlugNotas e 30 s no
-repasse; pool de 5 e 3; Resolve com 3 tentativas a cada 1000 ms e verificação a
-cada 10 s. Duração dos testes: `teste-fluxo` cerca de 10 s, `teste-interface`
-8 s, `teste-execucao` 10 s, por esperas reais.
-
-Ações:
-
-1. **Carregamento por tela.** `js/app.js` importa todas as telas na abertura.
-   Troque por `import()` dinâmico ao abrir cada tela e meça o JS inicial.
-2. **Conexões do repasse.** Reaproveite conexões TLS com `https.Agent` em
-   `keepAlive`: um agente compartilhado sem certificado e, com certificado,
-   agentes por impressão digital num cache pequeno com expiração. Meça p50 e p95
-   com `duracaoMs`.
-3. **Região da função.** Avalie rodar o repasse em São Paulo (`gru1`) para
-   reduzir a latência até o gov.br, conferindo antes na documentação da Vercel
-   se o plano da conta permite.
-4. **IBS e CBS.** Pré-calcule índices por item e por indOp ao carregar, em vez
-   de filtrar as 1.514 relações a cada busca.
-5. **Cache.** Com o forge versionado no nome, sirva `assets/vendor/` com cache
-   longo e imutável. Mantenha revalidação para `definicoes/`.
-6. **Fonte.** Avalie hospedar a Quicksand no próprio site, o que também
-   simplifica a CSP.
-7. **Testes.** Troque esperas reais por tempo controlado onde possível.
-
-Métricas a acompanhar: KB de JS inicial com gzip; tempo até o menu ficar
-interativo; p50 e p95 do repasse; itens por minuto num lote e quantidade de 429;
-duração da suíte de testes.
-
-## B4. Prioridade 3 · Testes
-
-Suítes existentes (`testes/`):
-
-| Suíte | Cobre |
-|---|---|
-| `teste.mjs` (80) | analisador, buscas do de-para e do IBS/CBS, conteúdo das definições, contrato com a documentação do PlugNotas |
-| `teste-fluxo.mjs` (17) | cliente HTTP, tempo limite, Retry-After, 429, cancelamento, pool |
-| `teste-proxy.mjs` (16) | controle de acesso do repasse e dicas de erro |
-| `teste-interface.mjs` (81) | identidade, títulos, telas agrupadas, grupo Empresa, de-para, popup, IBS/CBS, validador, painel de logs |
-| `teste-execucao.mjs` (37) | Resolve, rotas de lote e de conjunto, Nacional com e sem certificado, Retorno visível |
-| `teste-atualizacao.mjs` (14) | leitura de definições, formato inválido, repositório fora do ar, botão Repositório |
-| `teste-certificado.mjs` (13) | leitura de PFX legado e moderno, TLS com certificado contra servidor que o exige |
-| `teste_fontes.py` (11) | JSON gerado contra as planilhas dos anexos, por leitura independente |
-
-Checklist:
-
-- [ ] `npm test` e `teste_fontes.py` verdes antes e depois de cada commit.
-- [ ] Novo `testes/teste-seguranca.mjs`: CSP e cabeçalhos no `vercel.json`;
-      cabeçalhos da resposta do repasse; limite do corpo e validação de PEM;
-      varredura de sinks proibidos em `js/`; varredura de dados sensíveis;
-      `X-API-KEY` só para a base do PlugNotas; certificado ausente de todo
-      armazenamento; hash do forge.
-- [ ] Novo `testes/teste-desempenho.mjs` com orçamentos: JS inicial com gzip no
-      máximo igual à linha de base (49 KB), apertando depois do carregamento
-      por tela; filtro do de-para nas 430 tags abaixo de 50 ms; busca de IBS/CBS
-      abaixo de 20 ms; `analisarEmissao` de um JSON típico abaixo de 50 ms.
-- [ ] Testes unitários para cada módulo extraído na refatoração.
-- [ ] Teste de regressão para todo defeito corrigido.
-- [ ] Teste de contrato atualizado sempre que uma rota mudar, depois de conferir
-      a documentação do PlugNotas.
-- [ ] Registre `executar.mjs` em `testes/package.json` para as novas suítes.
-
-## B5. Definição de pronto
-
-- Todas as suítes verdes, com as novas de segurança e desempenho.
-- Nenhuma decisão da seção A8 alterada sem aprovação registrada.
-- `docs/revisao-rodada-1.md` escrito com métricas antes e depois.
-- README e manual atualizados quando a interface ou um fluxo mudar.
-- Esta Parte B movida para `docs/` e substituída por um resumo.
