@@ -351,8 +351,11 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    ser igual a ela (teste de contrato). Nenhum código envia a chave por fora de
    `requisitar`.
 4. **Certificado A1.** Nunca persistir em `localStorage`, `sessionStorage`,
-   cookies ou logs. A senha não sai do navegador. O repasse usa chave e cadeia
-   só durante a conexão e não registra o corpo da requisição.
+   cookies ou logs. A senha não sai do navegador e é apagada do campo depois de
+   cada tentativa, com ou sem sucesso. O repasse usa chave e cadeia só durante a
+   conexão e não registra o corpo da requisição. `teste-seguranca.mjs` carrega e
+   usa o A1 de teste e varre armazenamentos, cookie, logs, DOM, campos, área de
+   transferência e arquivos exportados.
 5. **Repasse.** Somente `https`, domínios exatos da lista na porta padrão, sem
    usuário ou senha na URL, métodos GET e POST, corpo até 64 KB e certificado em
    PEM validado. Toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`.

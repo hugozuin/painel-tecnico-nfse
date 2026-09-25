@@ -278,5 +278,115 @@ https.request = requestOriginal;
 const registrosNoRepasse = procurar(["api/proxy.js"], /\bconsole\.|process\.std(?:out|err)/);
 conferir("repasse não registra nada em log", registrosNoRepasse.length === 0, registrosNoRepasse.join(", "));
 
+console.log("\n== certificado A1 sem vestígio no navegador ==");
+const domApp = new JSDOM(readFileSync("index.html", "utf8"), { url: "https://painel.local/" });
+Object.assign(global, {
+  window: domApp.window,
+  document: domApp.window.document,
+  localStorage: domApp.window.localStorage,
+  sessionStorage: domApp.window.sessionStorage,
+  location: domApp.window.location,
+  history: domApp.window.history,
+  Blob: domApp.window.Blob,
+  FileReader: domApp.window.FileReader
+});
+Object.defineProperty(global, "navigator", { value: domApp.window.navigator, configurable: true });
+const copiados = [];
+Object.defineProperty(domApp.window.navigator, "clipboard", { value: { writeText: async (texto) => { copiados.push(String(texto)); } }, configurable: true });
+const arquivosBaixados = [];
+URL.createObjectURL = (blob) => { arquivosBaixados.push(blob); return "blob:teste"; };
+URL.revokeObjectURL = () => {};
+globalThis.forge = forge;
+const pedidosDoApp = [];
+global.fetch = async (url, opcoes = {}) => {
+  const endereco = String(url);
+  pedidosDoApp.push({ url: endereco, metodo: opcoes.method || "GET", corpo: opcoes.body ? JSON.parse(opcoes.body) : null });
+  const definicao = endereco.match(/^definicoes\/(.+)\.json$/);
+  if (definicao) return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(`definicoes/${definicao[1]}.json`, "utf8")) };
+  return { ok: true, status: 200, headers: { get: () => "application/json" }, text: async () => '{"contribuinte":{"situacao":"Ativo"}}' };
+};
+const esperar = (ms) => new Promise((pronto) => setTimeout(pronto, ms));
+const { textoDosLogs } = await import("../js/shared.js");
+const { certificadoAtual } = await import("../js/certificado.js");
+await import("../js/app.js");
+document.dispatchEvent(new domApp.window.Event("DOMContentLoaded"));
+await esperar(400);
+
+document.querySelector('.menu-item[data-rota="cnc"]').click();
+await esperar(80);
+const cartaoA1 = [...document.querySelectorAll(".card")].find((cartao) => cartao.textContent.includes("Certificado digital"));
+const campoSenha = cartaoA1.querySelector('input[type="password"]');
+const pfxLegado = readFileSync("testes/certificados/cliente-legado.pfx");
+const SENHA_DO_TESTE = "senha123";
+const carregarA1 = async (senha) => {
+  Object.defineProperty(cartaoA1.querySelector('input[type="file"]'), "files", { value: [new domApp.window.File([pfxLegado], "certificado.pfx")], configurable: true });
+  campoSenha.value = senha;
+  [...cartaoA1.querySelectorAll("button")].find((botao) => botao.textContent === "Carregar certificado").click();
+  await esperar(400);
+};
+await carregarA1("senha-errada-do-teste");
+conferir("senha errada é apagada do campo", campoSenha.value === "" && certificadoAtual() === null);
+await carregarA1(SENHA_DO_TESTE);
+conferir("certificado carregado e senha apagada do campo", certificadoAtual() !== null && campoSenha.value === "");
+
+const listaContribuintes = document.querySelector(".tela textarea");
+listaContribuintes.value = "12345678000195";
+listaContribuintes.dispatchEvent(new domApp.window.Event("input"));
+await esperar(300);
+[...document.querySelectorAll(".config-field")].find((bloco) => bloco.textContent.includes("Código IBGE do município")).querySelector("input").value = "3504107";
+[...document.querySelectorAll("button")].find((botao) => botao.textContent.trim() === "Consultar").click();
+await esperar(500);
+const envioAoRepasse = pedidosDoApp.filter((pedido) => pedido.url === "api/proxy" && pedido.metodo === "POST").pop();
+conferir("consulta usou o certificado pelo repasse", Boolean(envioAoRepasse?.corpo?.certificado?.chave));
+
+for (const botao of document.querySelectorAll("button")) if (botao.textContent === "Copiar retorno") botao.click();
+document.getElementById("exportLogsBtn").click();
+await esperar(80);
+const textosBaixados = await Promise.all(arquivosBaixados.map((blob) => blob.text()));
+
+const miolo = (pem) => pem.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+const trechos = (texto, tamanho, passo) => {
+  const lista = [];
+  for (let inicio = 0; inicio + tamanho <= texto.length; inicio += passo) lista.push(texto.slice(inicio, inicio + tamanho));
+  return lista;
+};
+const vestigios = {
+  senha: [SENHA_DO_TESTE, "senha-errada-do-teste"],
+  "marcador PEM": ["PRIVATE KEY", "BEGIN CERTIFICATE"],
+  "base64 da chave": trechos(miolo(envioAoRepasse?.corpo?.certificado?.chave || ""), 40, 97),
+  "base64 da cadeia": trechos(miolo(envioAoRepasse?.corpo?.certificado?.certificado || ""), 40, 97),
+  "base64 do PFX": trechos(pfxLegado.toString("base64"), 40, 97),
+  "bytes do PFX": trechos(pfxLegado.toString("latin1"), 24, 131)
+};
+const encontrarVestigios = (texto) => Object.entries(vestigios).filter(([, agulhas]) => agulhas.some((agulha) => texto.includes(agulha))).map(([nome]) => nome);
+conferir("controle: os padrões acham a chave no corpo enviado ao repasse",
+  ["marcador PEM", "base64 da chave", "base64 da cadeia"].every((nome) => encontrarVestigios(JSON.stringify(envioAoRepasse?.corpo || {})).includes(nome)));
+const conteudoDoArmazenamento = (armazenamento) => Array.from({ length: armazenamento.length }, (_, indice) => {
+  const chave = armazenamento.key(indice);
+  return `${chave}=${armazenamento.getItem(chave)}`;
+}).join("\n");
+const lugaresDoNavegador = {
+  localStorage: conteudoDoArmazenamento(localStorage),
+  sessionStorage: conteudoDoArmazenamento(sessionStorage),
+  "document.cookie": document.cookie,
+  "logs da sessão": textoDosLogs(),
+  "painel de logs": document.getElementById("logsPanel").textContent,
+  "DOM": document.documentElement.outerHTML,
+  "valores dos campos": [...document.querySelectorAll("input, textarea, select")].map((campo) => campo.value).join("\n"),
+  "área de transferência": copiados.join("\n"),
+  "arquivos baixados": textosBaixados.join("\n"),
+  "window.name e history.state": `${domApp.window.name}|${JSON.stringify(history.state)}`
+};
+conferir("houve cópia do retorno e exportação de logs para varrer", copiados.length > 0 && textosBaixados.some((texto) => texto.includes("Logs da sessao")));
+for (const [lugar, texto] of Object.entries(lugaresDoNavegador)) {
+  const achados = encontrarVestigios(texto);
+  conferir(`sem senha, PEM ou PFX em ${lugar}`, achados.length === 0, achados.join(", "));
+}
+[...cartaoA1.querySelectorAll("button")].find((botao) => botao.textContent === "Remover").click();
+conferir("Remover descarta o certificado da memória", certificadoAtual() === null);
+
+const armazenamentosSemTeste = procurar(codigoDoSite, /\bindexedDB\b|\bcaches\.|\bdocument\.cookie\b|\bcookieStore\b|\bsendBeacon\b/);
+conferir("código não usa IndexedDB, CacheStorage, cookie nem sendBeacon, que o jsdom não cobre", armazenamentosSemTeste.length === 0, armazenamentosSemTeste.join(", "));
+
 console.log(falhas === 0 ? "\nTeste de segurança passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

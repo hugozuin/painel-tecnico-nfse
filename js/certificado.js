@@ -119,13 +119,13 @@ export function montarCartaoCertificado(container) {
     try {
       const biblioteca = await carregarBiblioteca();
       carregado = lerCertificado(await lerBinario(escolhido), senha.value, biblioteca);
-      senha.value = "";
       arquivo.value = "";
       registrarLog(`Certificado carregado para as consultas do Nacional: ${carregado.titular}.`, "success");
       mostrarAviso(carregado.vencido ? "Certificado carregado, mas está vencido." : "Certificado carregado.", carregado.vencido ? "error" : "success");
     } catch (erro) {
       mostrarAviso(erro.message, "error");
     } finally {
+      senha.value = "";
       botaoCarregar.disabled = false;
       mostrarSituacao();
     }
