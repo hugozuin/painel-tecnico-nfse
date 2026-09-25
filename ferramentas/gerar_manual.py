@@ -123,7 +123,8 @@ def construir():
     h.append(Paragraph("2. Credencial", secao))
     h.append(Paragraph("A API Key fica no topo das telas do PlugNotas. Sem marcar a opção de manter a chave, ela vive "
                        "apenas na sessão do navegador. Os perfis guardam chaves por apelido, o que ajuda a não rodar um "
-                       "lote na conta errada. As telas do Nacional não usam a API Key: são consultas públicas.", corpo))
+                       "lote na conta errada. A chave só segue para a API PlugNotas. As telas do Nacional não usam a "
+                       "API Key: passam pelo repasse da aplicação, e algumas exigem certificado digital.", corpo))
 
     h.append(Paragraph("3. Resolve em lote", secao))
     h.append(Paragraph("A rota de resolve confirma apenas que a solicitação foi recebida. Por isso o painel lê a "
@@ -160,7 +161,8 @@ def construir():
     h.append(Paragraph("Algumas consultas exigem certificado digital na conexão. Carregue um certificado A1 ICP-Brasil "
                        "(.pfx ou .p12) e a senha no cartão Certificado digital; pode ser de qualquer CNPJ. O arquivo e a "
                        "senha são lidos no navegador, e só a chave e o certificado seguem para o repasse durante a "
-                       "consulta, sem serem guardados. Ao recarregar a página, carregue o certificado de novo.", corpo))
+                       "consulta, sem serem guardados. A senha é apagada do campo depois de cada tentativa, com ou sem "
+                       "sucesso. Ao recarregar a página, carregue o certificado de novo.", corpo))
 
     h.append(Paragraph("5. De-para do Nacional", secao))
     h.append(Paragraph("Cada tag do XML aparece pelo nome do leiaute do Nacional e pela referência do anexo VI, como em "

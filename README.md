@@ -29,7 +29,8 @@ próprio, com status HTTP, tipo do conteúdo, tempo e a URL chamada. Algumas
 consultas exigem certificado digital na conexão: o consultor carrega um A1
 ICP-Brasil (.pfx ou .p12) e a senha na tela. O arquivo e a senha são lidos no
 navegador, e só a chave e o certificado seguem para o repasse durante a
-consulta, sem serem guardados.
+consulta, sem serem guardados. A senha é apagada do campo depois de cada
+tentativa.
 
 **De-para do Nacional.** Cada tag do XML aparece pelo nome do leiaute e pela
 descrição do anexo VI, por exemplo tpRetISSQN, Tipo de retencao do ISSQN. A
@@ -110,12 +111,35 @@ repasse do Nacional aceita GET, ou POST com o certificado do consultor, e apenas
 `api/proxy.js`. O `.vercelignore` deixa o gerador, os anexos e os READMEs fora do
 site.
 
+## Segurança
+
+- **Cabeçalhos do site** (`vercel.json`): `nosniff`, `Referrer-Policy` e
+  `X-Robots-Tag` em tudo. Nas páginas, fora de `/api/`, também valem a
+  Content-Security-Policy (scripts e estilos só do próprio site, fonte do Google
+  Fonts, conexões só com o próprio site e a API PlugNotas, sem objetos, sem
+  moldura e sem formulário), a Permissions-Policy (câmera, microfone e
+  localização desligados) e `Cross-Origin-Opener-Policy: same-origin`. Se a
+  leitura remota das definições for religada, `https://raw.githubusercontent.com`
+  precisa entrar no `connect-src`; o teste de segurança cobra isso.
+- **API Key**: só segue para `https://api.plugnotas.com.br`. Qualquer outro
+  destino com chave é recusado antes de sair do navegador.
+- **Repasse**: toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`, e
+  HTML ou SVG do Nacional vira download. A entrada aceita só `https`, os
+  domínios da lista na porta padrão, sem usuário e senha na URL, corpo até
+  64 KB e certificado em PEM válido. Cada consulta tem prazo total de 30 s, e
+  respostas acima de 4 MB viram erro explicado. Não há limitador por IP no
+  código; a recomendação é uma regra de rate limit no WAF da Vercel (detalhes
+  na seção 5.5 do CLAUDE.md).
+- **Forge**: vendorizado com a versão no nome (`assets/vendor/forge-1.4.0.min.js`)
+  e carregado com SRI. O `.gitattributes` impede que o Git troque o fim de linha
+  e altere o hash.
+
 ## Estrutura
 
 ```
 index.html               estrutura, menu lateral e modais
 styles.css               tema claro e escuro alinhado à marca
-assets/                  logo, ícone e favicon
+assets/                  logo, ícone, favicon e vendor/forge-1.4.0.min.js
 js/app.js                menu, título de cada tela e montagem das telas
 js/definicoes.js         leitura das definições, com carregamento sob demanda
 js/info.js               ícone de informação e popup fixável
