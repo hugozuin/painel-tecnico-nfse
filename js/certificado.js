@@ -5,6 +5,11 @@
 
 import { criar, mostrarAviso, registrarLog } from "./shared.js";
 
+export const BIBLIOTECA_FORGE = {
+  endereco: "assets/vendor/forge-1.4.0.min.js",
+  integridade: "sha384-wX64sW+w67fcBkYc40eYEvKyZMtpFujAPnxJPPMvE6fT3WDOJDZOAAny4rWgoBYq"
+};
+
 let carregado = null;
 let carregamentoDaBiblioteca = null;
 
@@ -21,7 +26,8 @@ function carregarBiblioteca() {
   if (!carregamentoDaBiblioteca) {
     carregamentoDaBiblioteca = new Promise((resolve, reject) => {
       const script = document.createElement("script");
-      script.src = "assets/vendor/forge.min.js";
+      script.src = BIBLIOTECA_FORGE.endereco;
+      script.integrity = BIBLIOTECA_FORGE.integridade;
       script.onload = () => resolve(globalThis.forge);
       script.onerror = () => {
         carregamentoDaBiblioteca = null;

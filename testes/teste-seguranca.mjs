@@ -1,5 +1,7 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
+import { JSDOM } from "jsdom";
 
 let falhas = 0;
 const conferir = (titulo, condicao, extra = "") => {
@@ -54,6 +56,34 @@ for (const [nome, padrao] of Object.entries(SINKS_PROIBIDOS)) {
   const ocorrencias = procurar(codigoDoSite, padrao);
   conferir(`sem ${nome} em js/ e api/`, ocorrencias.length === 0, ocorrencias.join(", "));
 }
+
+console.log("\n== integridade do forge ==");
+const SHA256_FORGE = "d9b9074e6861200d676e25dcfe97889db5e8f4150bb766d29c491ad709a51b58";
+const domCertificado = new JSDOM('<!DOCTYPE html><div id="tela"></div>', { url: "https://painel.local/" });
+global.window = domCertificado.window;
+global.document = domCertificado.window.document;
+const { BIBLIOTECA_FORGE, montarCartaoCertificado } = await import("../js/certificado.js");
+const versaoForgeDosTestes = JSON.parse(readFileSync("testes/package.json", "utf8")).devDependencies["node-forge"];
+conferir("forge existe no caminho que a tela carrega", existsSync(BIBLIOTECA_FORGE.endereco), BIBLIOTECA_FORGE.endereco);
+conferir("nenhuma cópia sem versão no nome", !existsSync("assets/vendor/forge.min.js"));
+conferir("nome do arquivo traz a versão do node-forge dos testes", BIBLIOTECA_FORGE.endereco.endsWith(`forge-${versaoForgeDosTestes}.min.js`), versaoForgeDosTestes);
+const bytesForge = existsSync(BIBLIOTECA_FORGE.endereco) ? readFileSync(BIBLIOTECA_FORGE.endereco) : Buffer.alloc(0);
+conferir("SHA-256 do forge igual ao registrado", createHash("sha256").update(bytesForge).digest("hex") === SHA256_FORGE);
+conferir("SRI do carregamento igual ao do arquivo", `sha384-${createHash("sha384").update(bytesForge).digest("base64")}` === BIBLIOTECA_FORGE.integridade);
+const forgeDoNpm = "testes/node_modules/node-forge/dist/forge.min.js";
+if (existsSync(forgeDoNpm)) {
+  conferir("idêntico ao forge.min.js distribuído no npm", Buffer.compare(bytesForge, readFileSync(forgeDoNpm)) === 0);
+}
+const telaCertificado = document.getElementById("tela");
+montarCartaoCertificado(telaCertificado);
+Object.defineProperty(telaCertificado.querySelector('input[type="file"]'), "files", {
+  value: [new domCertificado.window.File(["pfx"], "certificado.pfx")]
+});
+[...telaCertificado.querySelectorAll("button")].find((botao) => botao.textContent === "Carregar certificado").click();
+await new Promise((pronto) => setTimeout(pronto, 20));
+const scriptForge = document.head.querySelector("script");
+conferir("tela carrega o forge pelo caminho versionado", scriptForge?.getAttribute("src") === BIBLIOTECA_FORGE.endereco, scriptForge?.getAttribute("src"));
+conferir("tela exige a integridade (SRI) do forge", scriptForge?.integrity === BIBLIOTECA_FORGE.integridade);
 
 console.log(falhas === 0 ? "\nTeste de segurança passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

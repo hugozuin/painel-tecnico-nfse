@@ -74,8 +74,13 @@ lado do Nacional.
   do `package.json`; a Vercel descontinua o Node 20 para builds e funções em
   01/10/2026).
 - **Biblioteca no navegador:** node-forge 1.4.0 vendorizado em
-  `assets/vendor/forge.min.js` (licença em `forge-LICENSE.txt`), carregado sob
-  demanda só para ler o certificado A1. Nada vem de CDN.
+  `assets/vendor/forge-1.4.0.min.js` (licença em `forge-LICENSE.txt`), carregado
+  sob demanda com SRI (`BIBLIOTECA_FORGE` em `js/certificado.js`) só para ler o
+  certificado A1. Nada vem de CDN. Para atualizar: trocar o arquivo e o nome com
+  a nova versão, a versão em `testes/package.json`, a integridade em
+  `BIBLIOTECA_FORGE` e o SHA-256 em `testes/teste-seguranca.mjs`. O
+  `.gitattributes` impede a conversão de fim de linha em `assets/vendor/` e nos
+  PDFs, que mudaria o hash num clone com `core.autocrlf=true`.
 - **Fonte:** Quicksand pelo Google Fonts.
 - **Dados:** JSON versionados em `definicoes/`. Sem banco de dados.
 - **Ferramentas Python (fora do site):** openpyxl no gerador; reportlab e svglib
@@ -95,7 +100,7 @@ deploy simples na web; backend só o mínimo necessário (hoje, o repasse).
 ```
 index.html              estrutura, cabeçalho (Logs, Documentação, tema), menu lateral, modais, painel de logs
 styles.css              tema claro e escuro com tokens da marca (índigo, Quicksand)
-assets/                 logo.svg e logoicon.svg (brancos), favicon.svg (fundo índigo), vendor/forge.min.js
+assets/                 logo.svg e logoicon.svg (brancos), favicon.svg (fundo índigo), vendor/forge-1.4.0.min.js
 js/app.js               catálogo de telas, menu, título e legenda de cada tela, roteamento por hash, painel de logs
 js/definicoes.js        leitura de definicoes/ com conferência de formato; de-para e ibscbs sob demanda
 js/shared.js            criar(), avisos, confirmação, logs da sessão, pool de concorrência, CSV, cópia, arquivos
@@ -120,7 +125,8 @@ ferramentas/            gerar_definicoes.py, gerar_manual.py, relatorio-geracao.
 testes/                 suítes Node, executar.mjs, teste_fontes.py, certificados de teste
 documentacao.pdf        manual de uso (gerado)
 vercel.json             cabeçalhos HTTP
-.vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md
+.vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md, .gitattributes
+.gitattributes          sem conversão de fim de linha em assets/vendor/ e nos PDFs
 ```
 
 Tamanho atual dos módulos maiores: `resolve.js` 695 linhas, `analise.js` 571,
