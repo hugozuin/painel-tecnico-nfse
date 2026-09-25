@@ -15,6 +15,24 @@ export const DOMINIOS_LIBERADOS = [
 
 const TEMPO_LIMITE_MS = 30000;
 
+const CABECALHOS_DO_REPASSE = {
+  "Content-Security-Policy": "default-src 'none'; sandbox",
+  "X-Content-Type-Options": "nosniff",
+  "Cache-Control": "no-store"
+};
+
+const TIPOS_QUE_O_NAVEGADOR_EXECUTA = /^\s*(?:text\/html|application\/xhtml\+xml|image\/svg\+xml)\s*(?:;|$)/i;
+
+export function cabecalhosDaResposta(tipo = "") {
+  return TIPOS_QUE_O_NAVEGADOR_EXECUTA.test(tipo)
+    ? { ...CABECALHOS_DO_REPASSE, "Content-Disposition": "attachment" }
+    : { ...CABECALHOS_DO_REPASSE };
+}
+
+function aplicarCabecalhos(resposta, tipo) {
+  Object.entries(cabecalhosDaResposta(tipo)).forEach(([nome, valor]) => resposta.setHeader(nome, valor));
+}
+
 export function consultarNacional(endereco, certificado) {
   return new Promise((resolve, reject) => {
     const opcoes = {
@@ -70,6 +88,7 @@ function lerCorpo(requisicao) {
 }
 
 export default async function handler(requisicao, resposta) {
+  aplicarCabecalhos(resposta);
   let destino = "";
   let certificado = null;
 
@@ -119,7 +138,7 @@ export default async function handler(requisicao, resposta) {
     const retorno = await consultarNacional(endereco.toString(), certificado);
     resposta.status(retorno.status);
     resposta.setHeader("Content-Type", retorno.tipo);
-    resposta.setHeader("Cache-Control", "no-store");
+    aplicarCabecalhos(resposta, retorno.tipo);
     resposta.send(retorno.corpo);
   } catch (erro) {
     resposta.status(502).json({

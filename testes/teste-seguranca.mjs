@@ -1,5 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { EventEmitter } from "node:events";
+import https from "node:https";
 import path from "node:path";
 import { JSDOM } from "jsdom";
 
@@ -120,6 +122,72 @@ enviados.length = 0;
 const semChave = await requisitar({ url: "api/proxy?url=x" });
 conferir("repasse sem chave segue normalmente", semChave.ok && enviados.length === 1 && enviados[0].chave === null);
 delete global.location;
+
+console.log("\n== cabeçalhos das respostas do repasse ==");
+const { default: repasse, cabecalhosDaResposta } = await import("../api/proxy.js");
+const chamarRepasse = async (requisicao) => {
+  const registro = { cabecalhos: {} };
+  const resposta = {
+    status(codigo) { registro.status = codigo; return this; },
+    json(corpo) { registro.corpo = corpo; return this; },
+    send(corpo) { registro.corpo = corpo; return this; },
+    setHeader(nome, valor) { registro.cabecalhos[nome] = valor; return this; }
+  };
+  await repasse({ headers: {}, query: {}, ...requisicao }, resposta);
+  return registro;
+};
+const protegeResposta = (cabecalhos) =>
+  cabecalhos["Content-Security-Policy"] === "default-src 'none'; sandbox"
+  && cabecalhos["X-Content-Type-Options"] === "nosniff"
+  && cabecalhos["Cache-Control"] === "no-store";
+const respostasDeErro = {
+  "405": await chamarRepasse({ method: "PUT" }),
+  "400": await chamarRepasse({ method: "GET" }),
+  "403": await chamarRepasse({ method: "GET", query: { url: "https://exemplo.invalid/x" } })
+};
+for (const [codigo, registro] of Object.entries(respostasDeErro)) {
+  conferir(`resposta ${codigo} do repasse sai com CSP sandbox, nosniff e no-store`, registro.status === Number(codigo) && protegeResposta(registro.cabecalhos), JSON.stringify(registro.cabecalhos));
+}
+const requestOriginal = https.request;
+const simularNacional = ({ status = 200, tipo, partes }) => {
+  const pedidosAoNacional = [];
+  https.request = (endereco, opcoes, aoResponder) => {
+    const pedido = new EventEmitter();
+    pedidosAoNacional.push({ endereco: String(endereco), opcoes });
+    pedido.destroy = () => { pedido.destruido = true; };
+    pedido.end = () => setImmediate(() => {
+      const resposta = new EventEmitter();
+      resposta.statusCode = status;
+      resposta.headers = { "content-type": tipo };
+      aoResponder(resposta);
+      for (const parte of partes) {
+        if (pedido.destruido) return;
+        resposta.emit("data", parte);
+      }
+      resposta.emit("end");
+    });
+    return pedido;
+  };
+  return pedidosAoNacional;
+};
+simularNacional({ tipo: "text/html; charset=utf-8", partes: [Buffer.from("<p>pagina</p>")] });
+const sucessoHtml = await chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/x" } });
+conferir("resposta HTML do Nacional sai protegida e como download",
+  sucessoHtml.status === 200 && protegeResposta(sucessoHtml.cabecalhos) && sucessoHtml.cabecalhos["Content-Disposition"] === "attachment" && sucessoHtml.cabecalhos["Content-Type"] === "text/html; charset=utf-8",
+  JSON.stringify(sucessoHtml.cabecalhos));
+simularNacional({ tipo: "application/json", partes: [Buffer.from('{"ok":true}')] });
+const sucessoJson = await chamarRepasse({ method: "GET", query: { url: "https://adn.nfse.gov.br/x" } });
+conferir("resposta JSON do Nacional sai protegida e sem download forçado",
+  sucessoJson.status === 200 && protegeResposta(sucessoJson.cabecalhos) && !sucessoJson.cabecalhos["Content-Disposition"] && String(sucessoJson.corpo) === '{"ok":true}');
+https.request = requestOriginal;
+for (const tipo of ["text/html", "TEXT/HTML; charset=utf-8", "application/xhtml+xml", "image/svg+xml"]) {
+  const cabecalhos = cabecalhosDaResposta(tipo);
+  conferir(`${tipo} do Nacional vira download`, cabecalhos["Content-Disposition"] === "attachment" && protegeResposta(cabecalhos));
+}
+for (const tipo of ["application/json", "application/pdf", "application/xml", "text/plain", "text/htmlx", ""]) {
+  const cabecalhos = cabecalhosDaResposta(tipo);
+  conferir(`${tipo || "tipo vazio"} segue sem download forçado e protegido`, !cabecalhos["Content-Disposition"] && protegeResposta(cabecalhos));
+}
 
 console.log(falhas === 0 ? "\nTeste de segurança passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

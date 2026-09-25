@@ -247,6 +247,13 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - O repasse só aceita `https` e os domínios exatos de `DOMINIOS_LIBERADOS`
   (adn e sefin, produção e produção restrita). Tempo limite de 30 s. Erros viram
   502 com `erro`, `codigo`, `dica` e `certificadoEnviado`.
+- Toda resposta do repasse, inclusive as de erro, sai com
+  `Content-Security-Policy: default-src 'none'; sandbox`,
+  `X-Content-Type-Options: nosniff` e `Cache-Control: no-store`
+  (`cabecalhosDaResposta`). HTML, XHTML e SVG do Nacional saem também com
+  `Content-Disposition: attachment`. Assim, quem abrir `/api/proxy?url=...` no
+  navegador não executa conteúdo repassado na origem do painel, onde ficam os
+  perfis com API Key. O app lê o repasse por `fetch`, então nada muda na tela.
 - O A1 é lido no navegador com node-forge porque o Node atual recusa o PFX em
   RC2-40, formato comum de A1 ICP-Brasil ("Unsupported PKCS12 PFX data"). A
   senha nunca sai do navegador; só a chave e a cadeia em PEM seguem para o
