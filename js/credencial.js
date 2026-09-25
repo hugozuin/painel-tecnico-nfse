@@ -38,7 +38,7 @@ function gravarPerfis(lista) {
 
 function desenharPerfis(selecionado = "") {
   const perfis = lerPerfis();
-  seletorPerfil.innerHTML = "";
+  seletorPerfil.replaceChildren();
   const padrao = document.createElement("option");
   padrao.value = "";
   padrao.textContent = "Chave digitada agora";

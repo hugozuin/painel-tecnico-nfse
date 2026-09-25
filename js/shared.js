@@ -46,12 +46,6 @@ export const CHAVES_ARMAZENAMENTO = {
 
 export const pausar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export function textoSeguro(valor) {
-  const caixa = document.createElement("div");
-  caixa.textContent = String(valor ?? "");
-  return caixa.innerHTML;
-}
-
 export function aguardarDigitacao(acao, espera = 300) {
   let temporizador = null;
   return (...argumentos) => {

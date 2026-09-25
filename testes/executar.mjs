@@ -12,7 +12,8 @@ const suites = [
   "teste-interface.mjs",
   "teste-execucao.mjs",
   "teste-atualizacao.mjs",
-  "teste-certificado.mjs"
+  "teste-certificado.mjs",
+  "teste-seguranca.mjs"
 ];
 
 let suitesComFalha = 0;
