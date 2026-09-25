@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { analisarEmissao, derivarTipoRetencao, documentoValido, arredondar, truncar, resolverCaminho, significadoDoCodigo, CHAVES } from "../js/analise.js";
 import { normalizarItem, normalizarIndOp, buscarItens, buscarIndOp, agruparRelacoes } from "../js/telas/ibscbs.js";
 import { filtrarDePara, prepararItensDePara, grupoDoCaminho } from "../js/telas/depara.js";
+import { ORIGEM_PLUGNOTAS } from "../js/plugnotas.js";
 
 const ler = (nome) => JSON.parse(readFileSync(`./definicoes/${nome}.json`, "utf8"));
 const dePara = ler("de-para-nacional");
@@ -161,6 +162,8 @@ const divergentes = Object.entries(contrato).filter(([id, esperado]) => {
   return !rota || `${rota.metodo} ${rota.caminho}` !== esperado;
 });
 conferir("método e caminho de todas as rotas iguais aos da documentação", divergentes.length === 0, JSON.stringify(divergentes));
+conferir("base do catálogo igual à origem que pode receber a API Key", JSON.parse(readFileSync("./definicoes/rotas.json", "utf8")).base === ORIGEM_PLUGNOTAS);
+conferir("todo caminho do catálogo começa com /", catalogo.filter((rota) => rota.caminho).every((rota) => rota.caminho.startsWith("/")));
 const destinos = (id) => (porIdCatalogo.get(id).campos || []).map((c) => `${c.destino}${c.obrigatorio ? "*" : ""}`).sort().join(",");
 conferir("período com parâmetros na URL e só cpfCnpj obrigatório", destinos("consulta-periodo") === "consulta.cpfCnpj*,consulta.dataFinal,consulta.dataInicial,consulta.hashProximaPagina", destinos("consulta-periodo"));
 conferir("cancelamento com codigo e motivo no corpo", destinos("cancelar") === "corpo.codigo,corpo.motivo");

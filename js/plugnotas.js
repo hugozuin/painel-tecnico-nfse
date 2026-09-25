@@ -3,13 +3,13 @@
 
 import { pausar, registrarLog } from "./shared.js";
 
+export const ORIGEM_PLUGNOTAS = "https://api.plugnotas.com.br";
+
 export const API = {
-  resolve: "https://api.plugnotas.com.br/nfse/resolve",
-  eventos: "https://api.plugnotas.com.br/nfse/eventos",
-  consultaResumida: "https://api.plugnotas.com.br/nfse/consultar",
-  consultaCompleta: "https://api.plugnotas.com.br/nfse",
-  xml: "https://api.plugnotas.com.br/nfse/xml",
-  pdf: "https://api.plugnotas.com.br/nfse/pdf"
+  resolve: `${ORIGEM_PLUGNOTAS}/nfse/resolve`,
+  eventos: `${ORIGEM_PLUGNOTAS}/nfse/eventos`,
+  consultaResumida: `${ORIGEM_PLUGNOTAS}/nfse/consultar`,
+  consultaCompleta: `${ORIGEM_PLUGNOTAS}/nfse`
 };
 
 export const TEMPO_LIMITE_MS = 120000;
@@ -37,7 +37,28 @@ export function criarSessaoRequisicoes() {
 /* Executa uma requisição única com timeout e devolve status, corpo e
    mensagem já extraída. Não aplica retry: isso é responsabilidade de quem chama.
    Com comoBlob, devolve o arquivo em vez de tentar interpretar JSON. */
+export function podeLevarApiKey(url) {
+  try {
+    return new URL(url, globalThis.location?.href).origin === ORIGEM_PLUGNOTAS;
+  } catch {
+    return false;
+  }
+}
+
 export async function requisitar({ url, metodo = "GET", corpo, apiKey, sessao, comoBlob = false }) {
+  if (apiKey && !podeLevarApiKey(url)) {
+    return {
+      ok: false,
+      status: null,
+      dados: null,
+      falhaLocal: true,
+      recusada: true,
+      excedeuTempo: false,
+      mensagem: `Requisição recusada: a API Key só pode seguir para ${ORIGEM_PLUGNOTAS}.`,
+      duracaoMs: 0
+    };
+  }
+
   const controlador = new AbortController();
   sessao?.controladores.add(controlador);
   const temporizador = setTimeout(() => controlador.abort("tempoLimite"), TEMPO_LIMITE_MS);
@@ -108,6 +129,10 @@ function lerRetryAfter(resposta) {
   if (Number.isFinite(segundos)) return Math.max(segundos * 1000, 0);
   const data = Date.parse(cabecalho);
   return Number.isNaN(data) ? null : Math.max(data - Date.now(), 0);
+}
+
+function falhaTemporaria(resposta) {
+  return (resposta.falhaLocal && !resposta.recusada) || STATUS_TEMPORARIOS.includes(resposta.status);
 }
 
 export function extrairMensagem(dados) {
@@ -182,8 +207,7 @@ export async function consultarEventos({ id, apiKey, sessao, tentativas, interva
       return { ok: true, mensagem: resposta.mensagem };
     }
 
-    const temporario = resposta.falhaLocal || STATUS_TEMPORARIOS.includes(resposta.status);
-    if (temporario && tentativa < tentativas) {
+    if (falhaTemporaria(resposta) && tentativa < tentativas) {
       const espera = resposta.esperaSugerida ?? intervalo;
       registrarLog(`ID ${id}: falha temporária na consulta de eventos. Nova tentativa em ${espera}ms.`, "warn");
       await pausar(espera);
@@ -235,10 +259,9 @@ export async function executarResolve({ id, identificacao, apiKey, sessao, tenta
       };
     }
 
-    const temporario = resposta.falhaLocal || STATUS_TEMPORARIOS.includes(resposta.status);
     if (resposta.status === 429) aoReduzirRitmo?.();
 
-    if (temporario && tentativa < tentativas) {
+    if (falhaTemporaria(resposta) && tentativa < tentativas) {
       const espera = resposta.esperaSugerida ?? intervalo;
       registrarLog(`ID ${id}: ${resposta.mensagem}. Nova tentativa em ${espera}ms.`, "warn");
       await pausar(espera);
@@ -253,11 +276,4 @@ export async function executarResolve({ id, identificacao, apiKey, sessao, tenta
       duracaoMs: resposta.duracaoMs
     };
   }
-}
-
-export async function baixarArquivoNota({ id, apiKey, formato }) {
-  const url = `${formato === "pdf" ? API.pdf : API.xml}/${encodeURIComponent(id)}`;
-  const resposta = await fetch(url, { headers: { "x-api-key": apiKey } });
-  if (!resposta.ok) throw new Error(`HTTP ${resposta.status} ao baixar o ${formato.toUpperCase()}`);
-  return resposta.blob();
 }

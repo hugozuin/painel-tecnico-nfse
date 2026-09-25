@@ -85,5 +85,41 @@ const scriptForge = document.head.querySelector("script");
 conferir("tela carrega o forge pelo caminho versionado", scriptForge?.getAttribute("src") === BIBLIOTECA_FORGE.endereco, scriptForge?.getAttribute("src"));
 conferir("tela exige a integridade (SRI) do forge", scriptForge?.integrity === BIBLIOTECA_FORGE.integridade);
 
+console.log("\n== API Key só para a API PlugNotas ==");
+const { requisitar, ORIGEM_PLUGNOTAS } = await import("../js/plugnotas.js");
+const enviados = [];
+global.fetch = async (url, opcoes = {}) => {
+  enviados.push({ url: String(url), chave: opcoes.headers?.["x-api-key"] ?? null });
+  return { ok: true, status: 200, headers: { get: () => null }, text: async () => '{"message":"ok"}' };
+};
+const pedirComChave = async (url) => {
+  enviados.length = 0;
+  return requisitar({ url, apiKey: "chave-de-teste" });
+};
+for (const url of [`${ORIGEM_PLUGNOTAS}/nfse/consultar/X1`, "https://API.PLUGNOTAS.COM.BR:443/nfse/X1"]) {
+  const resposta = await pedirComChave(url);
+  conferir(`chave segue para ${url}`, resposta.ok && enviados.length === 1 && enviados[0].chave === "chave-de-teste");
+}
+const destinosRecusados = [
+  "https://exemplo.invalid/nfse/X1",
+  "https://api.plugnotas.com.br.exemplo.invalid/nfse/X1",
+  "https://api.plugnotas.com.br@exemplo.invalid/nfse/X1",
+  "http://api.plugnotas.com.br/nfse/X1",
+  "https://api.plugnotas.com.br:8443/nfse/X1",
+  "//exemplo.invalid/nfse/X1",
+  "api/proxy?url=https%3A%2F%2Fadn.nfse.gov.br%2Fx"
+];
+for (const [contexto, localizacao] of [["sem location", undefined], ["na página", domCertificado.window.location]]) {
+  global.location = localizacao;
+  for (const url of destinosRecusados) {
+    const resposta = await pedirComChave(url);
+    conferir(`recusa ${url} com chave (${contexto})`, enviados.length === 0 && resposta.falhaLocal && resposta.recusada && !resposta.ok, JSON.stringify(enviados));
+  }
+}
+enviados.length = 0;
+const semChave = await requisitar({ url: "api/proxy?url=x" });
+conferir("repasse sem chave segue normalmente", semChave.ok && enviados.length === 1 && enviados[0].chave === null);
+delete global.location;
+
 console.log(falhas === 0 ? "\nTeste de segurança passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

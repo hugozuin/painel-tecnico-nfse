@@ -32,7 +32,7 @@ const resposta = (status, corpo, tipo = "json") => ({
 
 global.fetch = async (url, opcoes = {}) => {
   const endereco = String(url);
-  chamadas.push({ url: endereco, metodo: opcoes.method || "GET", corpo: opcoes.body ? JSON.parse(opcoes.body) : null });
+  chamadas.push({ url: endereco, metodo: opcoes.method || "GET", corpo: opcoes.body ? JSON.parse(opcoes.body) : null, chave: opcoes.headers?.["x-api-key"] ?? null });
 
   if (endereco.startsWith("https://raw.githubusercontent.com")) return { ok: false, status: 404, json: async () => ({}) };
   const local = endereco.match(/^definicoes\/(.+)\.json$/);
@@ -212,7 +212,8 @@ conferir("passou pelo repasse", Boolean(chamadaProxy), chamadaProxy?.url);
 conferir("repasse aponta para o ADN",
   decodeURIComponent(chamadaProxy?.url || "").includes("https://adn.nfse.gov.br/parametrizacao/4115200/convenio"),
   decodeURIComponent(chamadaProxy?.url || ""));
-conferir("não mandou API Key ao Nacional", true);
+const chamadasAoRepasse = chamadas.filter((c) => c.url.startsWith("api/proxy"));
+conferir("não mandou API Key ao Nacional", chamadasAoRepasse.length > 0 && chamadasAoRepasse.every((c) => c.chave === null));
 const retorno = document.querySelector(".retorno");
 conferir("retorno visível na tela", Boolean(retorno) && !retorno.closest(".card").hidden && retorno.closest(".card").classList.contains("cartao-retorno"));
 conferir("retorno mostra a URL chamada no Nacional", retorno?.querySelector(".retorno-url")?.textContent === "GET https://adn.nfse.gov.br/parametrizacao/4115200/convenio", retorno?.querySelector(".retorno-url")?.textContent);
@@ -248,6 +249,13 @@ conferir("retorno do contribuinte exibido e visível", retornoCnc?.querySelector
 clicar("Consultar");
 await esperar(400);
 conferir("sem certificado volta para GET", chamadas[chamadas.length - 1].url.startsWith("api/proxy?url="));
+
+console.log("\n== destino da API Key em todos os fluxos ==");
+const comChave = chamadas.filter((c) => c.chave);
+conferir("toda chamada com API Key vai só para a API PlugNotas",
+  comChave.length > 0 && comChave.every((c) => new URL(c.url).origin === "https://api.plugnotas.com.br"),
+  comChave.filter((c) => !c.url.startsWith("https://api.plugnotas.com.br/")).map((c) => c.url).join(", "));
+conferir("nenhuma chamada ao repasse leva API Key", chamadas.filter((c) => c.url.startsWith("api/proxy")).every((c) => c.chave === null));
 
 console.log(falhas === 0 ? "\nTeste de execução passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

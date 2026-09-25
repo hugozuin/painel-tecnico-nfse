@@ -318,8 +318,11 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    Use valores fictícios ou públicos (códigos IBGE, dados de exemplo da
    documentação oficial).
 3. **API Key.** Nunca enviar ao servidor da ferramenta, nunca registrar em log,
-   nunca incluir em exportação. `X-API-KEY` só pode ir para a base da API
-   PlugNotas do catálogo.
+   nunca incluir em exportação. `X-API-KEY` só pode ir para a origem fixa
+   `ORIGEM_PLUGNOTAS` (`js/plugnotas.js`): `requisitar` recusa, sem chamar o
+   `fetch`, qualquer outro destino com chave, e a `base` do `rotas.json` tem de
+   ser igual a ela (teste de contrato). Nenhum código envia a chave por fora de
+   `requisitar`.
 4. **Certificado A1.** Nunca persistir em `localStorage`, `sessionStorage`,
    cookies ou logs. A senha não sai do navegador. O repasse usa chave e cadeia
    só durante a conexão e não registra o corpo da requisição.
