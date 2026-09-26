@@ -1,8 +1,3 @@
-/* Certificado A1 do consultor para as consultas do Nacional que exigem
-   TLS com certificado. O arquivo e a senha são lidos no navegador; só a
-   chave e o certificado em PEM seguem para o repasse, na hora da consulta.
-   Nada é gravado: o certificado vive na memória da aba. */
-
 import { criar, mostrarAviso, registrarLog } from "./shared.js";
 
 export const BIBLIOTECA_FORGE = {

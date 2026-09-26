@@ -1,9 +1,3 @@
-/* Repasse das consultas do Ambiente Nacional. Existe porque os servidores
-   do gov.br não liberam CORS para o navegador. Aceita GET simples ou POST
-   com a chave e o certificado do consultor, usados só na conexão TLS e
-   descartados ao fim da chamada, sem registro. Só consulta os domínios da
-   lista e nunca guarda nada. */
-
 import https from "node:https";
 
 export const DOMINIOS_LIBERADOS = [

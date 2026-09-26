@@ -1,7 +1,3 @@
-/* Relação de dados do IBS e da CBS. Pesquisa por item da LC 116 ou por
-   indicador de operação e mostra NBS e cClassTrib relacionados, tudo lido
-   dos anexos VII e VIII. */
-
 import { criar, aguardarDigitacao } from "../shared.js";
 import { carregarDefinicao } from "../definicoes.js";
 import { iconeInfo } from "../info.js";
@@ -54,7 +50,6 @@ export function buscarIndOp(dados, consulta) {
     .map(([codigo]) => codigo);
 }
 
-/* Junta as linhas da correlação que só diferem no cClassTrib. */
 export function agruparRelacoes(relacoes, chave) {
   const grupos = new Map();
   relacoes.forEach((relacao) => {

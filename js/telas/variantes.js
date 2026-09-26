@@ -1,8 +1,3 @@
-/* Tela que agrupa rotas parecidas. Um seletor escolhe a forma e, quando a
-   tela define uma alternância, um toggle troca para a rota alternativa da
-   forma escolhida, como a consulta completa ou o envio de teste. Os dois
-   ficam dentro do cartão da requisição da rota escolhida. */
-
 import { criar, CHAVES_ARMAZENAMENTO } from "../shared.js";
 
 export function varianteEscolhida(rota, modo, alternada) {

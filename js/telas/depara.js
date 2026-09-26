@@ -1,7 +1,3 @@
-/* De-para do Nacional por tag do XML. Descrição, notas e regras de negócio
-   vêm do anexo VI; o lado do PlugNotas vem da cadeia lib, script e
-   mapeamento, só quando ela fecha nos arquivos analisados. */
-
 import { criar, aguardarDigitacao } from "../shared.js";
 import { carregarDefinicao } from "../definicoes.js";
 import { iconeDaTag, reiniciarIndiceTags } from "../tags.js";

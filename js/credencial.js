@@ -1,6 +1,3 @@
-/* Credencial usada por todos os módulos. Sem a opção de manter a chave,
-   ela fica apenas na sessão do navegador e some ao fechar a aba. */
-
 import { elemento, CHAVES_ARMAZENAMENTO, mostrarAviso, pedirConfirmacao, registrarLog } from "./shared.js";
 
 let campoChave;

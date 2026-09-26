@@ -1,10 +1,5 @@
-/* Recursos compartilhados pelos módulos: toast, modais, logs, tema,
-   armazenamento local, pool de concorrência e exportações. */
-
 export const elemento = (id) => document.getElementById(id);
 
-/* Criação de elementos sem montar HTML por string, o que evita injeção
-   de marcação vinda de retorno de API ou de arquivo do repositório. */
 export function criar(tag, atributos = {}, filhos = []) {
   const alvo = document.createElement(tag);
   Object.entries(atributos).forEach(([chave, valor]) => {
@@ -54,8 +49,6 @@ export function aguardarDigitacao(acao, espera = 300) {
   };
 }
 
-/* Converte texto colado em lista de identificadores únicos.
-   Aceita quebra de linha, espaço, tabulação, vírgula e ponto e vírgula. */
 export function separarIdentificadores(textoBruto) {
   const vistos = new Set();
   const lista = [];
@@ -169,8 +162,6 @@ export function iniciarTema() {
   });
 }
 
-/* Identificação simples do consultor, usada nos registros da base e no
-   cabeçalho dos logs exportados. Não é autenticação. */
 export const identificacao = {
   ler() {
     return localStorage.getItem(CHAVES_ARMAZENAMENTO.usuario) || "";
@@ -227,8 +218,6 @@ export function atualizarRotuloUsuario() {
   if (rotulo) rotulo.textContent = nome || "Identificar-se";
 }
 
-/* Pool de execução com concorrência ajustável em tempo real.
-   A concorrência cai quando a API responde 429 e volta ao normal depois. */
 export function criarPoolExecucao(limiteInicial = 5) {
   const controle = {
     limite: limiteInicial,

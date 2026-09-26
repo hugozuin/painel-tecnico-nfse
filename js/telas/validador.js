@@ -1,6 +1,3 @@
-/* Tela do validador. Cada achado mostra a fonte e as tags do XML afetadas,
-   com o popup das regras de negócio de cada tag. */
-
 import { criar, mostrarAviso, registrarLog, copiarTexto, lerArquivoTexto } from "../shared.js";
 import { analisarEmissao } from "../analise.js";
 import { definicoes, carregarDefinicao } from "../definicoes.js";

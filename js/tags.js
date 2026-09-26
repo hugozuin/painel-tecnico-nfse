@@ -1,6 +1,3 @@
-/* Acesso ao de-para do Nacional por tag e conteúdo do popup de cada tag:
-   regras de negócio, descrição e notas explicativas do anexo VI. */
-
 import { criar } from "./shared.js";
 import { iconeInfo } from "./info.js";
 import { definicoes } from "./definicoes.js";

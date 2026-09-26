@@ -1,7 +1,3 @@
-/* Telas do Ambiente Nacional. As consultas passam pelo repasse em api/proxy
-   porque os servidores do gov.br não liberam CORS para o navegador. Com um
-   certificado carregado, o repasse o usa na conexão TLS. */
-
 import { criar, CHAVES_ARMAZENAMENTO, registrarLog } from "../shared.js";
 import { definicoes } from "../definicoes.js";
 import { montarTelaRota } from "./lote.js";

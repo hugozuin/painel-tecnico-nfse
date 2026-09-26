@@ -1,7 +1,3 @@
-/* Monta a tela de uma rota a partir da definição do catálogo. Tudo que
-   aparece aqui vem do arquivo de definições: título, campos, método,
-   caminho e formato do resultado. */
-
 import {
   criar, mostrarAviso, pedirConfirmacao, registrarLog, separarIdentificadores,
   aguardarDigitacao, criarPoolExecucao, baixarArquivo, carimboDeTempo, montarCsv,

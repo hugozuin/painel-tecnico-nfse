@@ -1,9 +1,3 @@
-/* As definições ficam em arquivos versionados. A aplicação usa a cópia
-   publicada com ela e, quando a atualização remota está ligada, tenta a
-   versão mais recente do repositório. Conteúdo remoto só substitui o local
-   depois de passar na conferência de formato. O de-para e as tabelas do
-   IBS e da CBS são maiores e carregam só quando alguma tela precisa. */
-
 import { registrarLog } from "./shared.js";
 
 export const definicoes = {

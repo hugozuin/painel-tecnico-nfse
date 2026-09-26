@@ -1,6 +1,3 @@
-/* Ponto de entrada. O menu e as telas saem do catálogo de rotas, então
-   acrescentar uma rota no arquivo de definições cria a tela sem mexer aqui. */
-
 import {
   elemento, criar, iniciarTema, identificacao, atualizarRotuloUsuario,
   mostrarAviso, baixarArquivo, carimboDeTempo, limparLogs, textoDosLogs, registrarLog

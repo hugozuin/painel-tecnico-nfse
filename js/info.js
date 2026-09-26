@@ -1,7 +1,3 @@
-/* Ícone de informação com popup. Passar o mouse mostra o conteúdo; com o
-   popup aberto, Shift ou clique no ícone o deixam fixo para ler, rolar e
-   copiar. Esc, clique fora ou o botão de fechar soltam o popup. */
-
 import { criar, copiarTexto, mostrarAviso } from "./shared.js";
 
 const construtores = new Map();

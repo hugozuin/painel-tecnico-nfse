@@ -1,6 +1,3 @@
-/* Cliente da API PlugNotas. Todas as requisições saem do navegador do
-   consultor direto para a API, levando a chave informada na interface. */
-
 import { pausar, registrarLog } from "./shared.js";
 
 export const ORIGEM_PLUGNOTAS = "https://api.plugnotas.com.br";
@@ -42,9 +39,6 @@ export function podeLevarApiKey(url) {
   }
 }
 
-/* Executa uma requisição única com timeout e devolve status, corpo e
-   mensagem já extraída. Não aplica retry: isso é responsabilidade de quem chama.
-   Com comoBlob, devolve o arquivo em vez de tentar interpretar JSON. */
 export async function requisitar({ url, metodo = "GET", corpo, apiKey, sessao, comoBlob = false }) {
   if (apiKey && !podeLevarApiKey(url)) {
     return {
@@ -150,8 +144,6 @@ export function extrairMensagem(dados) {
   return JSON.stringify(dados).slice(0, 200);
 }
 
-/* Consulta a situação de uma nota. A resumida traz os campos usados na
-   conferência pós resolve; a completa devolve o documento inteiro. */
 export async function consultarNota({ identificador, apiKey, sessao, tipo = "resumida", cnpj = "" }) {
   const alvo = cnpj
     ? `${API.consultaResumida}/${encodeURIComponent(identificador)}/${encodeURIComponent(cnpj)}`
@@ -163,7 +155,6 @@ export async function consultarNota({ identificador, apiKey, sessao, tipo = "res
   return { ...resposta, url: alvo, nota: normalizarNota(resposta.dados) };
 }
 
-/* A API responde ora com objeto, ora com lista de um item. */
 export function normalizarNota(dados) {
   if (!dados) return null;
   const documento = Array.isArray(dados) ? dados[0] : dados;
@@ -185,8 +176,6 @@ export function normalizarNota(dados) {
   };
 }
 
-/* Consulta de eventos usada antes do resolve nas notas do Nacional.
-   O 400 "evento de manifestacao em processamento" faz parte do fluxo normal. */
 export async function consultarEventos({ id, apiKey, sessao, tentativas, intervalo }) {
   const url = `${API.eventos}/${encodeURIComponent(id)}`;
   let tentativa = 0;
@@ -219,8 +208,6 @@ export async function consultarEventos({ id, apiKey, sessao, tentativas, interva
   }
 }
 
-/* Dispara o resolve de uma nota. Quando a API informa que o processo já
-   está em execução, aguarda e tenta de novo sem consumir tentativa de erro. */
 export async function executarResolve({ id, identificacao, apiKey, sessao, tentativas, intervalo, aoReduzirRitmo }) {
   const url = `${API.resolve}/${encodeURIComponent(id)}`;
   const corpo = identificacao ? { identificacaoNota: identificacao } : {};
