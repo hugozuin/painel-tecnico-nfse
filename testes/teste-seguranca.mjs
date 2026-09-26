@@ -608,9 +608,13 @@ conferir("controle: hashes do forge só passam como permitidos",
 const varredura = varrerSigilo(permitidosDoForge);
 const essenciais = [
   "js/telas/resolve.js", "api/proxy.js", "definicoes/de-para-nacional.json", "definicoes/ibscbs.json", "index.html",
-  "CLAUDE.md", "README.md", "vercel.json", ".vercelignore", "ferramentas/gerar_manual.py", "testes/teste.mjs", "testes/sigilo.mjs"
+  "CLAUDE.md", "README.md", "vercel.json", ".vercelignore", "ferramentas/gerar_manual.py", "testes/teste.mjs", "testes/sigilo.mjs",
+  "CHANGELOG.md", "docs/governanca/README.md", "docs/governanca/dados-e-lgpd.md"
 ];
 conferir("varredura cobre tudo o que o Git versiona ou vai versionar, inclusive a raiz", essenciais.every((arquivo) => varredura.arquivos.includes(arquivo)), essenciais.filter((arquivo) => !varredura.arquivos.includes(arquivo)).join(", "));
+const foraDoDeploy = readFileSync(".vercelignore", "utf8").split(/\r?\n/).map((linha) => linha.trim()).filter(Boolean);
+const internosNoDeploy = ["docs", "CHANGELOG.md", "CLAUDE.md", "README.md", "ferramentas", "fontes", "testes"].filter((caminho) => !foraDoDeploy.includes(caminho));
+conferir("documentação interna, ferramentas e testes fora do deploy", internosNoDeploy.length === 0, internosNoDeploy.join(", "));
 conferir("varredura fica fora só do forge e das dependências",
   !varredura.arquivos.some((arquivo) => arquivo === BIBLIOTECA_FORGE.endereco || /^testes\/node_modules\/|package-lock/.test(arquivo))
   && varredura.arquivos.includes("assets/vendor/forge-1.4.0-LICENSE.txt"));
