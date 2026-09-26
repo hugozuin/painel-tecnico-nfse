@@ -9,6 +9,7 @@ const raizRepositorio = path.resolve(pastaTestes, "..");
 const detalhado = process.argv.includes("--detalhes");
 const suites = [
   "teste.mjs",
+  "teste-analise.mjs",
   "teste-fluxo.mjs",
   "teste-resolve.mjs",
   "teste-componentes.mjs",
