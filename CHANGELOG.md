@@ -44,7 +44,7 @@
   responsabilidade; cartão, interruptor e popup unificados; código e CSS sem
   uso removidos; sem comentários no código.
 - Suítes novas: segurança, padrões, fluxo do Resolve, componentes, módulos do
-  validador e desempenho. De 258 para 621 verificações, e a suíte inteira cai
+  validador e desempenho. De 258 para 628 verificações, e a suíte inteira cai
   de cerca de 40 s para cerca de 17 s.
 
 ## 4.0.0
