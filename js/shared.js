@@ -242,10 +242,8 @@ export const identificacao = {
 
 export function atualizarRotuloUsuario() {
   const rotulo = elemento("usuarioChipLabel");
-  const distintivo = elemento("curadorAutorBadge");
   const nome = identificacao.ler();
   if (rotulo) rotulo.textContent = nome || "Identificar-se";
-  if (distintivo) distintivo.textContent = nome ? `Editando como ${nome}` : "Sem identificação";
 }
 
 /* Pool de execução com concorrência ajustável em tempo real.
