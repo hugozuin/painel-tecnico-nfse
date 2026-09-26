@@ -23,7 +23,7 @@ const conferir = (titulo, condicao, extra = "") => {
   if (condicao) console.log(`  ok   ${titulo}`);
   else { console.log(`  FALHA ${titulo} ${extra}`); falhas++; }
 };
-const executar = async (requisicao) => {
+const executarCom = async (funcao, requisicao) => {
   const registro = { cabecalhos: {} };
   const resposta = {
     status(codigo) { registro.status = codigo; return this; },
@@ -31,9 +31,12 @@ const executar = async (requisicao) => {
     send(corpo) { registro.corpo = corpo; return this; },
     setHeader(nome, valor) { registro.cabecalhos[nome] = valor; return this; }
   };
-  chamadasAoRepasse++;
-  await handler({ headers: {}, query: {}, ...requisicao }, resposta);
+  await funcao({ headers: {}, query: {}, ...requisicao }, resposta);
   return registro;
+};
+const executar = (requisicao) => {
+  chamadasAoRepasse++;
+  return executarCom(handler, requisicao);
 };
 const pem = { chave: "-----BEGIN RSA PRIVATE KEY-----", certificado: "-----BEGIN CERTIFICATE-----" };
 
@@ -65,6 +68,16 @@ conferir("cada chamada ao repasse gera uma linha de log", registrosDoRepasse.len
 conferir("recusa antes do destino registra método e status, sem domínio", registrosDoRepasse[0]?.metodo === "PUT" && registrosDoRepasse[0].status === 405 && !("dominio" in registrosDoRepasse[0]));
 conferir("rota perde os trechos com número", rotaSemIdentificadores("/parametros_municipais/3504107/convenio") === "/parametros_municipais/{id}/convenio"
   && rotaSemIdentificadores("/danfse/NFS35503081234") === "/danfse/{id}" && rotaSemIdentificadores("/") === "/");
+
+console.log("\n== verificação de saúde ==");
+const { default: responderSaude, VERSAO } = await import("../api/saude.js");
+const saude = await executarCom(responderSaude, { method: "GET" });
+const versaoDoPacote = JSON.parse(readFileSync("package.json", "utf8")).version;
+conferir("GET /api/saude responde 200 com situação e versão", saude.status === 200 && saude.corpo.situacao === "ok" && saude.corpo.versao === versaoDoPacote, JSON.stringify(saude.corpo));
+conferir("versão da saúde acompanha o package.json", VERSAO === versaoDoPacote, `${VERSAO} e ${versaoDoPacote}`);
+conferir("saúde sai sem cache e com nosniff", saude.cabecalhos["Cache-Control"] === "no-store" && saude.cabecalhos["X-Content-Type-Options"] === "nosniff");
+const saudePorPost = await executarCom(responderSaude, { method: "POST" });
+conferir("saúde recusa outros métodos e informa os aceitos", saudePorPost.status === 405 && saudePorPost.cabecalhos.Allow === "GET, HEAD");
 
 console.log("\n== dicas de erro ==");
 conferir("tempo esgotado", dicaDoErro({ code: "ETIMEDOUT" }, false).includes("tempo limite"));
