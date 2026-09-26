@@ -77,6 +77,10 @@ for (const pasta of ["js", "api"]) {
 const estilos = readFileSync("styles.css", "utf8");
 const comentariosNoCss = [...estilos.matchAll(/\/\*/g)].map((achado) => estilos.slice(0, achado.index).split("\n").length);
 conferir("sem comentários em styles.css", comentariosNoCss.length === 0, comentariosNoCss.join(", "));
+const scriptsPython = [...listarArquivos("ferramentas", ".py"), ...listarArquivos("testes", ".py").filter((arquivo) => !arquivo.includes("node_modules"))];
+const linhasDeComentarioPython = scriptsPython.flatMap((arquivo) => readFileSync(arquivo, "utf8").split(/\r?\n/)
+  .flatMap((linha, indice) => (/^\s*#/.test(linha) ? [`${arquivo}:${indice + 1}`] : [])));
+conferir("sem linhas de comentário nos scripts Python", scriptsPython.length > 0 && linhasDeComentarioPython.length === 0, linhasDeComentarioPython.join(", "));
 conferir("atributo hidden vence o display das classes", /\[hidden\]\s*\{\s*display:\s*none\s*!important;?\s*\}/.test(estilos));
 
 console.log(falhas === 0 ? "\nTeste de padrões passou." : `\n${falhas} teste(s) falharam.`);

@@ -35,7 +35,6 @@ ANEXO_VII = "anexovii-indop_ibscbs_v1-02-00.xlsx"
 ANEXO_VIII = "anexoviii-correlacaoitemnbsindopcclasstrib_ibscbs_v1-01-00.xlsx"
 PREFIXO_NFSE = "NFSe/infNFSe/"
 
-# Raízes do JSON confirmadas pelo exemplo de emissão da coleção do Postman.
 RAIZES_JSON_CONFIRMADAS = {
     "prestador": "prestador",
     "tomador": "tomador",
@@ -43,8 +42,6 @@ RAIZES_JSON_CONFIRMADAS = {
     "ibscbs": "ibscbs",
 }
 
-# Gravações que copiam o valor sem conversão quando recebem CampoTecno puro.
-# As de moeda convertem o formato numérico, então não contam como cópia direta.
 SETTERS = {
     "SetarCampoValorTamanhoObrigatorio": (0, 1, True),
     "SetarCampoValorTamanho": (0, 1, True),
@@ -66,7 +63,6 @@ def vazio(valor):
 
 
 def grade_com_mesclagens(aba):
-    """Lê a aba replicando o valor de cada mesclagem em todas as células dela."""
     grade = [[celula.value for celula in linha] for linha in aba.iter_rows()]
     for faixa in aba.merged_cells.ranges:
         origem = grade[faixa.min_row - 1][faixa.min_col - 1]
@@ -85,8 +81,6 @@ def caminho_normalizado(caminho):
 
 
 def titulo_da_descricao(descricao):
-    """Título curto tirado da própria descrição: o trecho antes dos dois
-    pontos ou a primeira frase. Não reescreve nada do anexo."""
     corrido = re.sub(r"\s+", " ", descricao).strip()
     if ":" in corrido:
         corrido = corrido.split(":", 1)[0]
@@ -97,8 +91,6 @@ def titulo_da_descricao(descricao):
     corrido = corrido.strip().rstrip(" .;")
     return corrido if len(corrido) <= 120 else corrido[:117].rstrip() + "…"
 
-
-# ------------------------------------------------------------------ Anexo VI
 
 def ler_leiaute(pasta_anexos):
     livro = openpyxl.load_workbook(pasta_anexos / ANEXO_VI, data_only=True)
@@ -153,9 +145,6 @@ def ler_regras(pasta_anexos):
 
 
 def aproximar_caminho(chave, entradas):
-    """Casa um caminho da aba de regras com o leiaute quando os dois diferem
-    na grafia, como totalTrib e totTrib. Exige a mesma tag e uma semelhança
-    alta e sem empate."""
     tag = chave.rstrip("/").rsplit("/", 1)[-1]
     candidatos = sorted(
         ((difflib.SequenceMatcher(None, chave, e["caminho"] + e["tag"]).ratio(), indice)
@@ -168,8 +157,6 @@ def aproximar_caminho(chave, entradas):
         return None
     return entradas[candidatos[0][1]]
 
-
-# ------------------------------------------------------------------ Mapping
 
 def ler_mapeamento(arquivo):
     campos = {}
@@ -186,8 +173,6 @@ def ler_mapeamento(arquivo):
         campos[chave.strip()] = PREFIXO_NFSE + "/".join(partes[:-1]) + "/" + partes[-1]
     return campos
 
-
-# ------------------------------------------------------------------ script Pascal
 
 def sem_comentarios(linha):
     resultado = []
@@ -236,15 +221,6 @@ def campos_tx2(expressao):
 
 
 def ler_script(arquivo):
-    """Liga cada campo do dataset aos campos do TX2 que determinam seu valor.
-
-      direto     o campo TX2 aparece na própria chamada que grava o dataset
-      calculado  o valor gravado é uma variável montada a partir de campos TX2
-      condicao   o valor gravado é fixo e depende do if ou case que o controla
-
-    A análise considera os blocos begin, case e try para não ligar uma
-    atribuição feita em outro ramo do mesmo case.
-    """
     linhas = [sem_comentarios(linha) for linha in arquivo.read_text(encoding="latin-1").splitlines()]
     conteudo = "\n".join(linhas)
     sem_textos = re.sub(r"'[^']*'", lambda achado: " " * len(achado.group(0)), conteudo)
@@ -307,8 +283,6 @@ def ler_script(arquivo):
         return pilha_em(posicao_uso)[:len(origem)] == origem
 
     def guarda(posicao):
-        """Condição de uma atribuição de linha única (if/then, else ou rótulo
-        de case). None quando a atribuição não é condicional."""
         numero = numero_da_linha(posicao)
         antes = sem_textos[inicio_linha[numero - 1]:posicao]
         anterior = ""
@@ -328,8 +302,6 @@ def ler_script(arquivo):
             return ""
         return None
 
-    # Uma atribuição termina no ponto e vírgula ou antes de else/end, como em
-    # "if X then v := A else v := B;".
     atribuicoes = [
         (achado.start(), achado.group(1), achado.end())
         for achado in re.finditer(r"\b(\w+)\s*:=\s*(?:(?!\belse\b|\bend\b)[^;])*", sem_textos, flags=re.IGNORECASE)
@@ -439,8 +411,6 @@ def ler_script(arquivo):
                 anterior["copiaDireta"] = anterior["copiaDireta"] and puro
     return resultado
 
-
-# ------------------------------------------------------------------ lib do PlugNotas
 
 def ler_parametros_do_servico(pasta_lib):
     arquivo = pasta_lib / "servico" / "getServicoProps.js"
@@ -559,8 +529,6 @@ def ler_lib(pasta_lib):
     return resultado, sorted(raizes_sem_confirmacao)
 
 
-# ------------------------------------------------------------------ de-para
-
 def gerar_de_para(pasta_anexos, script, mapeamento, lib):
     entradas = ler_leiaute(pasta_anexos)
     regras = ler_regras(pasta_anexos)
@@ -642,8 +610,6 @@ def gerar_de_para(pasta_anexos, script, mapeamento, lib):
     return entradas, relatorio
 
 
-# ------------------------------------------------------------------ IBS e CBS
-
 def ler_indop(pasta_anexos):
     livro = openpyxl.load_workbook(pasta_anexos / ANEXO_VII, data_only=True)
     grade = grade_com_mesclagens(livro["cIndOp Public"])
@@ -706,8 +672,6 @@ def ler_regra_inciso_x(pasta_anexos):
     livro = openpyxl.load_workbook(pasta_anexos / ANEXO_VIII, data_only=True)
     return [[texto(valor) for valor in linha] for linha in grade_com_mesclagens(livro["REGRA inc. X"])]
 
-
-# ------------------------------------------------------------------ execução
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
