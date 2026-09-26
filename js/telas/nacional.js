@@ -2,6 +2,7 @@ import { criar, CHAVES_ARMAZENAMENTO, registrarLog } from "../shared.js";
 import { definicoes } from "../definicoes.js";
 import { montarTelaRota } from "./lote.js";
 import { certificadoAtual, montarCartaoCertificado } from "../certificado.js";
+import { montarCartao } from "../componentes.js";
 
 export function montarTelaNacional(container, rota) {
   const ambientes = definicoes.rotasNacional?.ambientes || [];
@@ -14,14 +15,11 @@ export function montarTelaNacional(container, rota) {
     registrarLog(`Ambiente do Nacional alterado para ${seletor.value}.`);
   });
 
-  container.appendChild(criar("section", { class: "card card-credencial" }, [
-    criar("div", { class: "card-header" }, [criar("h2", { texto: "Ambiente do Nacional" })]),
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({ titulo: "Ambiente do Nacional", classe: "card-credencial" }, [
       criar("div", { class: "config-row" }, [
         criar("div", { class: "config-field" }, [criar("label", { class: "field-label", texto: "Servidor usado nas consultas" }), seletor])
       ]),
       criar("p", { class: "field-hint", texto: "As consultas do Nacional não usam a API Key do PlugNotas. Elas passam pelo repasse da própria aplicação, porque os servidores do gov.br não aceitam chamadas direto do navegador." })
-    ])
   ]));
 
   montarCartaoCertificado(container);

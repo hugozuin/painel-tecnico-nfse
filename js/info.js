@@ -3,6 +3,18 @@ import { criar, copiarTexto, mostrarAviso } from "./shared.js";
 const construtores = new Map();
 const estado = { popup: null, corpo: null, situacao: null, icone: null, fixado: false, espera: null };
 
+export function conteudoDoPopup(titulo, blocos) {
+  return criar("div", {}, [criar("p", { class: "popup-titulo" }, titulo), ...blocos]);
+}
+
+export function secaoDoPopup(rotulo, texto) {
+  return [criar("h4", { texto: rotulo }), criar("p", { class: "popup-texto", texto })];
+}
+
+export function fonteDoPopup(fonte) {
+  return criar("p", { class: "popup-fonte", texto: `Fonte: ${fonte}` });
+}
+
 export function iconeInfo(chave, construir, rotulo = "Ver detalhes", contador = "") {
   construtores.set(chave, construir);
   const icone = criar("button", { type: "button", class: "info-icone", dados: { info: chave } }, [

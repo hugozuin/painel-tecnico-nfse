@@ -1,5 +1,5 @@
 import { criar } from "./shared.js";
-import { iconeInfo } from "./info.js";
+import { iconeInfo, conteudoDoPopup, secaoDoPopup, fonteDoPopup } from "./info.js";
 import { definicoes } from "./definicoes.js";
 
 let indice = null;
@@ -21,7 +21,6 @@ export function entradaPorChave(chave) {
 function conteudoDaTag(entrada) {
   const regras = entrada.regras || [];
   const blocos = [
-    criar("p", { class: "popup-titulo" }, [criar("code", { texto: entrada.tag }), ` ${entrada.titulo}`]),
     criar("h4", { texto: regras.length ? `Regras de negócio (${regras.length})` : "Regras de negócio" })
   ];
 
@@ -45,11 +44,10 @@ function conteudoDaTag(entrada) {
     ]));
   });
 
-  if (entrada.descricao) blocos.push(criar("h4", { texto: "Descrição" }), criar("p", { class: "popup-texto", texto: entrada.descricao }));
-  if (entrada.notas) blocos.push(criar("h4", { texto: "Notas explicativas" }), criar("p", { class: "popup-texto", texto: entrada.notas }));
-  const fonte = definicoes.dePara?.fontes?.leiaute || "anexo VI";
-  blocos.push(criar("p", { class: "popup-fonte", texto: `Fonte: ${fonte}` }));
-  return criar("div", {}, blocos);
+  if (entrada.descricao) blocos.push(...secaoDoPopup("Descrição", entrada.descricao));
+  if (entrada.notas) blocos.push(...secaoDoPopup("Notas explicativas", entrada.notas));
+  blocos.push(fonteDoPopup(definicoes.dePara?.fontes?.leiaute || "anexo VI"));
+  return conteudoDoPopup([criar("code", { texto: entrada.tag }), ` ${entrada.titulo}`], blocos);
 }
 
 export function iconeDaTag(entrada) {

@@ -1,4 +1,5 @@
 import { criar, mostrarAviso, registrarLog } from "./shared.js";
+import { montarCartao } from "./componentes.js";
 
 export const BIBLIOTECA_FORGE = {
   endereco: "assets/vendor/forge-1.4.0.min.js",
@@ -132,9 +133,7 @@ export function montarCartaoCertificado(container) {
     mostrarSituacao();
   });
 
-  container.appendChild(criar("section", { class: "card" }, [
-    criar("div", { class: "card-header" }, [criar("h2", { texto: "Certificado digital" })]),
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({ titulo: "Certificado digital" }, [
       criar("p", { class: "field-hint", texto: "Algumas consultas do Nacional exigem certificado digital na conexão. Pode ser qualquer certificado A1 ICP-Brasil válido, não precisa ser do CNPJ consultado." }),
       criar("div", { class: "config-row" }, [
         criar("div", { class: "config-field" }, [criar("label", { class: "field-label", texto: "Arquivo do certificado (.pfx ou .p12)" }), arquivo]),
@@ -143,7 +142,6 @@ export function montarCartaoCertificado(container) {
       criar("div", { class: "card-actions" }, [botaoCarregar, botaoRemover]),
       situacao,
       criar("p", { class: "field-hint", texto: "O arquivo e a senha são lidos no seu navegador. Só a chave e o certificado seguem para o repasse da aplicação durante a consulta, sem serem guardados. Ao recarregar a página, o certificado precisa ser carregado de novo." })
-    ])
   ]));
   mostrarSituacao();
 }

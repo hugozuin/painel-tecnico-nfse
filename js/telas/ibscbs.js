@@ -1,6 +1,7 @@
 import { criar, aguardarDigitacao } from "../shared.js";
 import { carregarDefinicao } from "../definicoes.js";
-import { iconeInfo } from "../info.js";
+import { iconeInfo, conteudoDoPopup, secaoDoPopup, fonteDoPopup } from "../info.js";
+import { montarCartao } from "../componentes.js";
 import { normalizarBusca } from "./depara.js";
 
 const LIMITE_ITENS = 20;
@@ -83,13 +84,11 @@ export async function montarTelaIbsCbs(container) {
 
   const rotulos = dados.cabecalhoIndOp || [];
 
-  container.appendChild(criar("section", { class: "card" }, [
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({}, [
       criar("div", { class: "modo-seletor" }, [botaoItem, botaoIndOp]),
       busca,
       sugestoes,
       criar("p", { class: "field-hint", texto: `Fontes: ${dados.fontes?.indOp || "anexo VII"} e ${dados.fontes?.correlacao || "anexo VIII"}. Passe o mouse no ícone de cada código para ver a descrição.` })
-    ])
   ]));
   container.appendChild(resultado);
   container.appendChild(montarRegraIncisoX(dados.regraIncisoX));
@@ -124,9 +123,7 @@ export async function montarTelaIbsCbs(container) {
 
     const encontrados = modo === "item" ? buscarItens(dados, consulta) : buscarIndOp(dados, consulta);
     if (encontrados.length === 0) {
-      resultado.appendChild(criar("section", { class: "card" }, [
-        criar("div", { class: "card-body" }, [criar("p", { class: "field-hint", texto: "Nada encontrado nos anexos para essa pesquisa." })])
-      ]));
+      resultado.appendChild(montarCartao({}, [criar("p", { class: "field-hint", texto: "Nada encontrado nos anexos para essa pesquisa." })]));
       return;
     }
 
@@ -147,10 +144,9 @@ export async function montarTelaIbsCbs(container) {
   }
 
   function popupSimples(titulo, texto, fonte) {
-    return () => criar("div", {}, [
-      criar("p", { class: "popup-titulo", texto: titulo }),
+    return () => conteudoDoPopup(titulo, [
       criar("p", { class: "popup-texto", texto: texto || "Sem descrição no anexo." }),
-      criar("p", { class: "popup-fonte", texto: `Fonte: ${fonte}` })
+      fonteDoPopup(fonte)
     ]);
   }
 
@@ -165,10 +161,7 @@ export async function montarTelaIbsCbs(container) {
   function conteudoIndOp(codigo) {
     const info = dados.indOp[codigo];
     if (!info) {
-      return criar("div", {}, [
-        criar("p", { class: "popup-titulo", texto: `indOp ${codigo}` }),
-        criar("p", { class: "popup-vazio", texto: "Código não encontrado no anexo VII." })
-      ]);
+      return conteudoDoPopup(`indOp ${codigo}`, [criar("p", { class: "popup-vazio", texto: "Código não encontrado no anexo VII." })]);
     }
     const campos = [
       [rotulos[1] || "Tipo de operação", info.tipoOperacao],
@@ -179,10 +172,9 @@ export async function montarTelaIbsCbs(container) {
       [rotulos[6] || "indNFe", info.indNFe],
       [rotulos[7] || "indNFSe", info.indNFSe]
     ].filter(([, valor]) => valor);
-    return criar("div", {}, [
-      criar("p", { class: "popup-titulo", texto: `indOp ${codigo}` }),
-      ...campos.flatMap(([rotulo, valor]) => [criar("h4", { texto: rotulo }), criar("p", { class: "popup-texto", texto: valor })]),
-      criar("p", { class: "popup-fonte", texto: `Fonte: ${dados.fontes.indOp}` })
+    return conteudoDoPopup(`indOp ${codigo}`, [
+      ...campos.flatMap(([rotulo, valor]) => secaoDoPopup(rotulo, valor)),
+      fonteDoPopup(dados.fontes.indOp)
     ]);
   }
 
@@ -214,14 +206,11 @@ export async function montarTelaIbsCbs(container) {
       celula(dados.locais[relacao[5]] || "—"),
       celula(chips(classificacoes))
     ]));
-    return criar("section", { class: "card" }, [
-      criar("div", { class: "card-header" }, [
-        criar("h2", {}, [infoItem(item)]),
-        criar("span", { class: "ibscbs-descricao", texto: dados.itens[item] })
-      ]),
-      criar("div", { class: "card-body" }, [
-        tabela(["NBS", "indOp", "PS onerosa? (S/N)", "Adq. exterior? (S/N)", "Local incidência IBS", "cClassTrib"], linhas)
-      ])
+    return montarCartao({
+      titulo: [infoItem(item)],
+      cabecalho: [criar("span", { class: "ibscbs-descricao", texto: dados.itens[item] })]
+    }, [
+      tabela(["NBS", "indOp", "PS onerosa? (S/N)", "Adq. exterior? (S/N)", "Local incidência IBS", "cClassTrib"], linhas)
     ]);
   }
 
@@ -241,12 +230,10 @@ export async function montarTelaIbsCbs(container) {
       [rotulos[3] || "Local do fornecimento", info.local],
       [rotulos[4] || "Dispositivo legal", info.dispositivoLegal]
     ].filter(([, valor]) => valor);
-    return criar("section", { class: "card" }, [
-      criar("div", { class: "card-header" }, [
-        criar("h2", {}, [infoIndOp(codigo)]),
-        criar("span", { class: "ibscbs-descricao", texto: info.tipoOperacao })
-      ]),
-      criar("div", { class: "card-body" }, [
+    return montarCartao({
+      titulo: [infoIndOp(codigo)],
+      cabecalho: [criar("span", { class: "ibscbs-descricao", texto: info.tipoOperacao })]
+    }, [
         criar("dl", { class: "ibscbs-detalhes" }, detalhes.flatMap(([rotulo, valor]) => [
           criar("dt", { texto: rotulo }), criar("dd", { texto: valor })
         ])),
@@ -256,7 +243,6 @@ export async function montarTelaIbsCbs(container) {
         grupos.length > LIMITE_LINHAS
           ? criar("p", { class: "field-hint", texto: `Mostrando ${LIMITE_LINHAS} de ${grupos.length} linhas.` })
           : null
-      ])
     ]);
   }
 

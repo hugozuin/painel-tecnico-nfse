@@ -6,6 +6,7 @@ import {
 } from "../shared.js";
 import { criarSessaoRequisicoes } from "../plugnotas.js";
 import { exigirApiKey } from "../credencial.js";
+import { montarCartao, montarInterruptor } from "../componentes.js";
 import {
   executarLoteResolve, montarItensResolve, normalizarConfiguracaoResolve, mensagemDeConfirmacaoResolve,
   idsComFalha, CABECALHO_CSV_RESOLVE, linhasCsvResolve, resumoParaTicket
@@ -116,9 +117,7 @@ export function montarTelaResolve(container) {
   const contadorLinhas = criar("span", { class: "badge badge-neutral", texto: "0 linhas" });
   const botaoCsv = criar("button", { type: "button", class: "btn btn-outline btn-sm", texto: "Exportar CSV", disabled: true });
   const botaoResumo = criar("button", { type: "button", class: "btn btn-outline btn-sm", texto: "Copiar resumo para o ticket", disabled: true });
-  const cartaoResultados = criar("section", { class: "card", hidden: true }, [
-    criar("div", { class: "card-header" }, [criar("h2", { texto: "Resultados" }), botaoResumo, botaoCsv]),
-    criar("div", { class: "card-body" }, [
+  const cartaoResultados = montarCartao({ titulo: "Resultados", oculto: true, cabecalho: [botaoResumo, botaoCsv] }, [
       criar("div", { class: "table-toolbar" }, [filtro, contadorLinhas]),
       criar("div", { class: "table-wrapper" }, [
         criar("table", { class: "data-table" }, [
@@ -128,12 +127,9 @@ export function montarTelaResolve(container) {
           corpoResultados
         ])
       ])
-    ])
   ]);
 
-  container.appendChild(criar("section", { class: "card" }, [
-    criar("div", { class: "card-header" }, [criar("span", { class: "card-step", texto: "1" }), criar("h2", { texto: "IDs das notas" }), contadorIds]),
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({ titulo: "IDs das notas", passo: "1", cabecalho: [contadorIds] }, [
       criar("label", { class: "field-label", texto: "Cole um ID por linha" }),
       areaIds,
       criar("div", { class: "card-actions" }, [
@@ -143,43 +139,27 @@ export function montarTelaResolve(container) {
         criar("button", { type: "button", class: "btn btn-ghost", texto: "Limpar lista", aoClicar: limpar })
       ]),
       criar("div", { class: "nacional-box" }, [
-        criar("label", { class: "switch-row" }, [
-          criar("span", { class: "switch" }, [nacional, criar("span", { class: "switch-slider" })]),
-          criar("span", { class: "switch-text" }, [
-            criar("strong", { texto: "Emissões do emissor Nacional" }),
-            criar("small", { texto: "Envia a consulta de eventos antes do resolve, recomendado quando o resolve sozinho não traz todos os dados da emissão." })
-          ])
-        ]),
+        montarInterruptor(nacional, "Emissões do emissor Nacional",
+          "Envia a consulta de eventos antes do resolve, recomendado quando o resolve sozinho não traz todos os dados da emissão."),
         blocoNacional
       ])
-    ])
   ]));
 
-  container.appendChild(criar("section", { class: "card" }, [
-    criar("div", { class: "card-header" }, [criar("span", { class: "card-step", texto: "2" }), criar("h2", { texto: "Identificação da nota" })]),
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({ titulo: "Identificação da nota", passo: "2" }, [
       criar("div", { class: "tabs" }, [abaUnica, abaIndividual]),
       painelUnica,
       painelIndividual
-    ])
   ]));
 
-  container.appendChild(criar("section", { class: "card" }, [
-    criar("div", { class: "card-header" }, [criar("span", { class: "card-step", texto: "3" }), criar("h2", { texto: "Execução" })]),
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({ titulo: "Execução", passo: "3" }, [
       criar("div", { class: "config-row" }, [
         criar("div", { class: "config-field" }, [criar("label", { class: "field-label", texto: "Tentativas por nota" }), tentativas]),
         criar("div", { class: "config-field" }, [criar("label", { class: "field-label", texto: "Intervalo entre tentativas (ms)" }), intervalo])
       ]),
       criar("p", { class: "field-hint", texto: "As tentativas valem para erros temporários. No HTTP 429 a ferramenta respeita o Retry-After e reduz a concorrência. A espera de quando o resolve já está em execução é independente disso." }),
       criar("div", { class: "verify-box" }, [
-        criar("label", { class: "switch-row" }, [
-          criar("span", { class: "switch" }, [verificar, criar("span", { class: "switch-slider" })]),
-          criar("span", { class: "switch-text" }, [
-            criar("strong", { texto: "Conferir a situação na rota de consulta após o resolve" }),
-            criar("small", { texto: "O resolve responde apenas que a solicitação foi recebida. Com esta opção o resultado mostra a situação real da nota." })
-          ])
-        ]),
+        montarInterruptor(verificar, "Conferir a situação na rota de consulta após o resolve",
+          "O resolve responde apenas que a solicitação foi recebida. Com esta opção o resultado mostra a situação real da nota."),
         blocoVerificacao
       ]),
       criar("div", { class: "exec-buttons" }, [botaoExecutar, botaoReprocessar, botaoCancelar]),
@@ -191,7 +171,6 @@ export function montarTelaResolve(container) {
         criar("div", { class: "stat stat-success" }, [estatisticas.sucessos, criar("span", { class: "stat-label", texto: "Sucessos" })]),
         criar("div", { class: "stat stat-error" }, [estatisticas.falhas, criar("span", { class: "stat-label", texto: "Falhas" })])
       ])
-    ])
   ]));
 
   container.appendChild(cartaoResultados);

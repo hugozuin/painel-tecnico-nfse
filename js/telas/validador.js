@@ -2,6 +2,7 @@ import { criar, mostrarAviso, registrarLog, copiarTexto, lerArquivoTexto } from 
 import { analisarEmissao } from "../analise.js";
 import { definicoes, carregarDefinicao } from "../definicoes.js";
 import { chipDaTag, entradaPorChave, reiniciarIndiceTags } from "../tags.js";
+import { montarCartao } from "../componentes.js";
 
 const rotuloSeveridade = { erro: "Erro", alerta: "Alerta", informacao: "Observação" };
 const classeSeveridade = { erro: "badge-error", alerta: "badge-warning", informacao: "badge-info" };
@@ -16,17 +17,13 @@ export async function montarTelaValidador(container) {
   const botaoAnalisar = criar("button", { type: "button", class: "btn btn-primary", texto: "Analisar JSON", disabled: true });
   const resumo = criar("div", { class: "findings-summary" });
   const lista = criar("div", { class: "findings-list" });
-  const cartaoResultado = criar("section", { class: "card", hidden: true }, [
-    criar("div", { class: "card-header" }, [
-      criar("h2", { texto: "Achados da análise" }),
-      criar("button", { type: "button", class: "btn btn-outline btn-sm", texto: "Copiar achados", aoClicar: copiarAchados })
-    ]),
-    criar("div", { class: "card-body" }, [resumo, lista])
-  ]);
+  const cartaoResultado = montarCartao({
+    titulo: "Achados da análise",
+    oculto: true,
+    cabecalho: [criar("button", { type: "button", class: "btn btn-outline btn-sm", texto: "Copiar achados", aoClicar: copiarAchados })]
+  }, [resumo, lista]);
 
-  container.appendChild(criar("section", { class: "card" }, [
-    criar("div", { class: "card-header" }, [criar("h2", { texto: "JSON de emissão" }), distintivo]),
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({ titulo: "JSON de emissão", cabecalho: [distintivo] }, [
       criar("p", { class: "field-hint", texto: "Cole o corpo enviado no POST /nfse. A análise acontece no seu navegador e nada é enviado para a API nem para o servidor desta ferramenta." }),
       area,
       criar("div", { class: "card-actions" }, [
@@ -63,7 +60,6 @@ export async function montarTelaValidador(container) {
         })
       ]),
       criar("p", { class: "field-hint", texto: `Regras declarativas: ${definicoes.regras?.regras?.length || 0}, em definicoes/regras-validacao.json. As conferências de leiaute usam o de-para do Nacional.` })
-    ])
   ]));
   container.appendChild(cartaoResultado);
 

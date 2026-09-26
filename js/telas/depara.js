@@ -1,6 +1,7 @@
 import { criar, aguardarDigitacao } from "../shared.js";
 import { carregarDefinicao } from "../definicoes.js";
 import { iconeDaTag, reiniciarIndiceTags } from "../tags.js";
+import { montarCartao } from "../componentes.js";
 
 const POR_PAGINA = 100;
 
@@ -78,8 +79,7 @@ export async function montarTelaDePara(container) {
   const botaoMais = criar("button", { type: "button", class: "btn btn-outline", texto: "Mostrar mais", hidden: true });
 
   const geradoEm = dados.geradoEm ? new Date(dados.geradoEm).toLocaleDateString("pt-BR") : "";
-  container.appendChild(criar("section", { class: "card" }, [
-    criar("div", { class: "card-body" }, [
+  container.appendChild(montarCartao({}, [
       criar("div", { class: "table-toolbar" }, [busca, seletorGrupo]),
       criar("div", { class: "table-toolbar" }, [
         criar("label", { class: "checkbox-row" }, [somentePlugNotas, criar("span", { texto: "Somente tags preenchidas pelo PlugNotas" })]),
@@ -88,7 +88,6 @@ export async function montarTelaDePara(container) {
       criar("p", { class: "field-hint", texto: `Passe o mouse no ícone de cada tag para ver as regras de negócio. Shift ou clique fixam o popup. Fonte: ${dados.fontes?.leiaute || "anexo VI"}${geradoEm ? `, gerado em ${geradoEm}` : ""}.` }),
       lista,
       botaoMais
-    ])
   ]));
 
   function desenhar() {
@@ -103,7 +102,7 @@ export async function montarTelaDePara(container) {
     }
 
     const fragmento = document.createDocumentFragment();
-    filtrados.slice(0, visiveis).forEach((item) => fragmento.appendChild(montarCartao(item.entrada)));
+    filtrados.slice(0, visiveis).forEach((item) => fragmento.appendChild(montarItemDePara(item.entrada)));
     lista.appendChild(fragmento);
     botaoMais.hidden = filtrados.length <= visiveis;
     botaoMais.textContent = `Mostrar mais (${filtrados.length - visiveis} restantes)`;
@@ -117,7 +116,7 @@ export async function montarTelaDePara(container) {
   desenhar();
 }
 
-function montarCartao(entrada) {
+function montarItemDePara(entrada) {
   const meta = [
     entrada.elemento && entrada.elemento !== "-" ? `Elemento ${entrada.elemento}` : "",
     entrada.tipo && entrada.tipo !== "-" ? `Tipo ${entrada.tipo}` : "",

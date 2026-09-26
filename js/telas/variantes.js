@@ -1,4 +1,5 @@
 import { criar, chaveDaVariante } from "../shared.js";
+import { montarInterruptor } from "../componentes.js";
 
 export function varianteEscolhida(rota, modo, alternada) {
   const variante = rota.variantes.find((item) => item.id === modo) || rota.variantes[0];
@@ -28,12 +29,7 @@ export function montarTelaVariantes(container, rota, { rotaPorId, montarSubtela 
       criar("span", { class: "field-label", texto: rota.rotuloVariantes || "Consultar por" }),
       criar("div", { class: "modo-seletor" }, botoes)
     ]),
-    alternancia
-      ? criar("label", { class: "switch-row" }, [
-          criar("span", { class: "switch" }, [alternador, criar("span", { class: "switch-slider" })]),
-          criar("span", { class: "switch-text" }, [criar("strong", { texto: alternancia.rotulo }), explicacao])
-        ])
-      : null
+    alternancia ? montarInterruptor(alternador, alternancia.rotulo, explicacao) : null
   ]);
 
   function desenhar() {
