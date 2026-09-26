@@ -643,8 +643,8 @@ conferir("regra das páginas cobre site e manual e deixa o repasse com a própri
 const CSP_APROVADA = {
   "default-src": ["'self'"],
   "script-src": ["'self'"],
-  "style-src": ["'self'", "https://fonts.googleapis.com"],
-  "font-src": ["https://fonts.gstatic.com"],
+  "style-src": ["'self'"],
+  "font-src": ["'self'"],
   "img-src": ["'self'"],
   "connect-src": ["'self'", ORIGEM_PLUGNOTAS],
   "object-src": ["'none'"],
@@ -690,7 +690,7 @@ conferir("scripts só por arquivo local, sem código inline",
 conferir("sem <style> e sem atributo style", !paginaEstatica.querySelector("style") && !todosOsElementos.some((elemento) => elemento.hasAttribute("style")));
 conferir("sem atributos de evento inline", !todosOsElementos.some((elemento) => [...elemento.attributes].some((atributo) => /^on/i.test(atributo.name))));
 conferir("sem endereços javascript:", !todosOsElementos.some((elemento) => [...elemento.attributes].some((atributo) => /^\s*javascript:/i.test(atributo.value))));
-conferir("folhas de estilo locais ou do Google Fonts liberado no style-src",
+conferir("folhas de estilo só locais, como pede o style-src",
   [...paginaEstatica.querySelectorAll('link[rel="stylesheet"]')].every((folha) => {
     const endereco = folha.getAttribute("href");
     return !/^(?:[a-z]+:)?\/\//i.test(endereco) || (diretivas["style-src"] || []).includes(new URL(endereco).origin);
@@ -700,6 +700,12 @@ conferir("links em nova aba com rel=noopener", [...paginaEstatica.querySelectorA
 const estilos = readFileSync("styles.css", "utf8");
 conferir("styles.css sem @import", !/@import/i.test(estilos));
 conferir("styles.css só com url() local", [...estilos.matchAll(/url\(\s*["']?([^"')]+)/gi)].every(([, endereco]) => !/^(?:[a-z]+:|\/\/)/i.test(endereco)));
+const arquivosDoCss = [...estilos.matchAll(/url\(\s*["']?([^"')]+)/gi)].map(([, endereco]) => endereco);
+const arquivosDoCssAusentes = arquivosDoCss.filter((endereco) => !existsSync(endereco));
+conferir("fonte servida pelo próprio site: toda url() do styles.css existe", arquivosDoCss.some((endereco) => endereco.endsWith(".woff2")) && arquivosDoCssAusentes.length === 0, arquivosDoCssAusentes.join(", "));
+const precarregadas = [...paginaEstatica.querySelectorAll('link[rel="preload"]')].map((link) => link.getAttribute("href"));
+conferir("fonte pré-carregada é uma das do styles.css", precarregadas.length > 0 && precarregadas.every((endereco) => arquivosDoCss.includes(endereco)), precarregadas.join(", "));
+conferir("licença OFL da Quicksand no repositório", readFileSync("assets/vendor/quicksand-v37-OFL.txt", "utf8").includes("SIL Open Font License"));
 const svgsDoSite = readdirSync("assets").filter((nome) => nome.endsWith(".svg")).map((nome) => `assets/${nome}`);
 const svgsComConteudoAtivo = svgsDoSite.filter((arquivo) => /<script|<style|\sstyle=|\son\w+=|href=["']\s*(?:https?:|javascript:)/i.test(readFileSync(arquivo, "utf8")));
 conferir("SVGs sem script, estilo inline nem referência externa", svgsDoSite.length > 0 && svgsComConteudoAtivo.length === 0, svgsComConteudoAtivo.join(", "));

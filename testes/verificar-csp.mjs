@@ -18,7 +18,7 @@ const NAVEGADORES = [
 const PFX_DE_TESTE = path.join(garantirCertificadosDeTeste(), "cliente-legado.pfx");
 const TIPOS = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
-  ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".pdf": "application/pdf", ".txt": "text/plain; charset=utf-8"
+  ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".pdf": "application/pdf", ".txt": "text/plain; charset=utf-8", ".woff2": "font/woff2"
 };
 
 const pausar = (ms) => new Promise((pronto) => setTimeout(pronto, ms));
