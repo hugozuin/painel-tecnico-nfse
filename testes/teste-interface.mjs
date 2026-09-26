@@ -37,9 +37,17 @@ dom.window.addEventListener("error", (e) => erros.push(e.message));
 
 await import("../js/app.js");
 const { estadoDoPopup } = await import("../js/info.js");
+const aguardarAte = async (condicao, limiteMs = 5000) => {
+  const fim = Date.now() + limiteMs;
+  while (!condicao() && Date.now() < fim) await esperar(10);
+};
+const telaMontada = (id) => {
+  const tela = document.querySelector(id ? `.tela[data-rota="${id}"]` : ".tela");
+  return tela?.childElementCount > 0 && !tela.textContent.includes("Carregando");
+};
 document.dispatchEvent(new dom.window.Event("DOMContentLoaded"));
-await esperar(500);
-const abrir = async (id) => { document.querySelector(`.menu-item[data-rota="${id}"]`).click(); await esperar(450); };
+await aguardarAte(() => document.querySelectorAll(".menu-item").length > 0 && telaMontada());
+const abrir = async (id) => { document.querySelector(`.menu-item[data-rota="${id}"]`).click(); await aguardarAte(() => telaMontada(id)); };
 
 console.log("\n== identidade ==");
 conferir("sem erro de janela", erros.length === 0, erros.join(" | "));

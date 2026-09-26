@@ -29,12 +29,21 @@ global.fetch = async () => {
     ? resposta(400, { message: "O processo de resolve ja esta sendo executado para esse documento" })
     : resposta(200, { message: "ok" });
 };
-saida = await Promise.race([
-  executarResolve({ id: "A2", apiKey: "k", sessao: criarSessaoRequisicoes(), tentativas: 3, intervalo: 1 }),
-  new Promise((r) => setTimeout(() => r({ desfecho: "tempo-do-teste" }), 11000))
-]);
+const { mock } = await import("node:test");
+mock.timers.enable({ apis: ["setTimeout"] });
+let terminado = null;
+executarResolve({ id: "A2", apiKey: "k", sessao: criarSessaoRequisicoes(), tentativas: 3, intervalo: 1 }).then((resultado) => { terminado = resultado; });
+const esperaAntesDaSegunda = [];
+for (let passo = 0; passo < 20 && !terminado; passo++) {
+  await new Promise((pronto) => setImmediate(pronto));
+  if (chamadas === 1) esperaAntesDaSegunda.push(passo);
+  mock.timers.tick(1000);
+}
+mock.timers.reset();
+saida = terminado || { desfecho: "sem resposta no tempo simulado" };
 conferir("aguarda e conclui como solicitado", saida.desfecho === "solicitado", JSON.stringify(saida));
 conferir("consumiu duas chamadas", chamadas === 2, `chamadas=${chamadas}`);
+conferir("esperou cerca de 10 s simulados antes da segunda chamada", esperaAntesDaSegunda.length >= 10 && esperaAntesDaSegunda.length <= 11, `${esperaAntesDaSegunda.length} s`);
 
 console.log("\n== erro 400 definitivo ==");
 global.fetch = async () => resposta(400, { message: "Falha ao buscar NFSE, o ID utilizado e invalido" });
