@@ -154,7 +154,9 @@ js/tags.js               conteúdo do popup de cada tag do anexo VI
 js/analise.js            agregador do validador (analisarEmissao)
 js/analise/              uma conferência do validador por módulo, com fonte em cada achado
 js/fluxo-resolve.js      regras e orquestração do Resolve, sem DOM
+js/componentes.js        cartão e interruptor usados por todas as telas
 js/telas/                telas de rota, resolve, Nacional, de-para, IBS e CBS e validador
+js/telas/lote/           entrada, execução e Retorno do motor das telas de rota
 api/proxy.js             repasse das consultas públicas do Nacional
 definicoes/              catálogos, regras, de-para e tabelas do IBS e da CBS
 fontes/nacional/         anexos VI, VII e VIII

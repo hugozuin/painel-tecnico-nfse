@@ -9,6 +9,7 @@ const suites = [
   "teste.mjs",
   "teste-fluxo.mjs",
   "teste-resolve.mjs",
+  "teste-componentes.mjs",
   "teste-proxy.mjs",
   "teste-interface.mjs",
   "teste-execucao.mjs",

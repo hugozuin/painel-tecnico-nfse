@@ -119,7 +119,10 @@ js/analise.js           agregador do validador: analisarEmissao e a API pública
 js/analise/             uma conferência por módulo: achado, caminhos, contexto, regras-declarativas, texto,
                         campos, documentos, leiaute, valores, retencoes, iss, ibscbs
 js/fluxo-resolve.js     regras e orquestração do Resolve, sem DOM (executarLoteResolve)
-js/telas/lote.js        motor genérico das telas de rota (Requisição e Retorno)
+js/componentes.js       montarCartao e montarInterruptor, usados por todas as telas
+js/telas/lote.js        motor genérico das telas de rota: liga Requisição, execução e Retorno
+js/telas/lote/          entrada.js (cartão Requisição e leitura dos campos), execucao.js (endereço,
+                        pedido, item a item e conjunto), retorno.js (cartão Retorno, tabela, CSV, cópia)
 js/telas/variantes.js   telas agrupadas: seletor e toggle dentro do cartão Requisição
 js/telas/resolve.js     tela do Resolve: cartões, tabela e andamento por callbacks
 js/telas/nacional.js    telas do Nacional pelo repasse, com certificado opcional
@@ -139,8 +142,8 @@ vercel.json             cabeçalhos HTTP
 .gitattributes          sem conversão de fim de linha em assets/vendor/ e nos PDFs
 ```
 
-Tamanho atual dos módulos maiores: `resolve.js` 695 linhas, `analise.js` 571,
-`lote.js` 484, `styles.css` 1026.
+Tamanho atual dos módulos maiores: `telas/resolve.js` 493 linhas, `fluxo-resolve.js`
+247, `telas/lote/retorno.js` 224, `analise/retencoes.js` 111, `styles.css` 898.
 
 ## 5. Arquitetura e fluxos
 
@@ -217,7 +220,7 @@ servem às telas agrupadas.
   todas da conta, logotipo); Webhook (empresa ou organização, com toggle
   "Enviar um teste"); Certificado (por ID ou CPF/CNPJ, ou todos da conta).
 
-### 5.3 Motor das telas de rota (`js/telas/lote.js`)
+### 5.3 Motor das telas de rota (`js/telas/lote.js` e `js/telas/lote/`)
 
 - A lista é separada por quebra de linha, espaço, vírgula ou ponto e vírgula, e
   os repetidos saem (`separarIdentificadores`). Os itens `.` e `..` são
