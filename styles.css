@@ -38,9 +38,6 @@
   --shadow-card: 0 2px 8px rgba(38, 35, 110, 0.07);
   --shadow-hover: 0 4px 14px rgba(38, 35, 110, 0.12);
 
-  --logo-dark: #2d2a8c;
-  --logo-light: #6c63e0;
-
   --radius: 12px;
   --radius-sm: 8px;
   --font: "Quicksand", "Segoe UI", system-ui, sans-serif;
@@ -75,9 +72,6 @@
 
   --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.35);
   --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.45);
-
-  --logo-dark: #8b84f0;
-  --logo-light: #4db8ec;
 }
 
 /* ---------- Reset básico ---------- */
@@ -121,16 +115,6 @@ body {
 }
 
 .header-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
-
-.brand-logo {
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
-}
-.app-header .brand-logo path { fill: #fff; }
-.app-header .brand-logo path:nth-child(2),
-.app-header .brand-logo path:nth-child(3) { fill: #4db8ec; }
 
 .header-titles h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.2px; }
 .header-titles p { font-size: 0.82rem; opacity: 0.82; font-weight: 500; }
@@ -491,40 +475,9 @@ body {
 .stat-success .stat-value { color: var(--success); }
 .stat-error .stat-value { color: var(--danger); }
 
-/* ---------- Resumo final ---------- */
-.summary {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-muted);
-  padding: 16px 18px;
-  animation: fadeUp 0.35s ease;
-}
-.summary h3 { font-size: 0.95rem; color: var(--text-strong); margin-bottom: 12px; }
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
-}
-.summary-grid div { display: flex; flex-direction: column; }
-.summary-grid strong { font-size: 1.15rem; color: var(--text-strong); }
-.summary-grid span { font-size: 0.75rem; color: var(--text-soft); }
-.summary-grid .ok strong { color: var(--success); }
-.summary-grid .err strong { color: var(--danger); }
-
 @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* ---------- Logs ---------- */
-#logsDetails summary { list-style: none; cursor: pointer; }
-#logsDetails summary::-webkit-details-marker { display: none; }
-.logs-summary {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 22px;
-}
-.logs-summary h2 { font-size: 1.02rem; font-weight: 700; color: var(--text-strong); flex: 1; }
-#logsDetails[open] .logs-summary { border-bottom: 1px solid var(--border); }
-
 .logs-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
 
 .logs-panel {
@@ -618,7 +571,7 @@ body {
   .app-header { padding: 14px 16px; flex-wrap: wrap; }
   .header-titles h1 { font-size: 1.05rem; }
   .app-main { padding: 18px 12px 50px; }
-  .card-header, .card-body, .logs-summary { padding-left: 16px; padding-right: 16px; }
+  .card-header, .card-body { padding-left: 16px; padding-right: 16px; }
   .exec-buttons .btn { flex: 1; }
   .toast-container { left: 12px; right: 12px; bottom: 12px; }
   .toast { max-width: none; }
@@ -745,33 +698,6 @@ body {
 }
 .linha-resultado.erro { border-left-color: var(--danger); }
 
-.bloco-json {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-muted);
-}
-.bloco-json summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  cursor: pointer;
-  font-size: 0.84rem;
-}
-.bloco-json pre {
-  margin: 0;
-  padding: 12px;
-  font-family: "Consolas", "Menlo", monospace;
-  font-size: 0.76rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 340px;
-  overflow: auto;
-  border-top: 1px solid var(--border);
-  color: var(--text-base);
-}
-
 .cell-status.status-ok { color: var(--success); font-weight: 600; }
 .cell-status.status-erro { color: var(--danger); font-weight: 600; }
 
@@ -826,9 +752,6 @@ body {
   gap: 7px;
 }
 .depara-item header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.depara-item header strong { color: var(--text-strong); font-size: 0.92rem; }
-.depara-descricao { font-size: 0.83rem; line-height: 1.5; }
-.depara-campos { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .campo-json {
   font-family: "Consolas", "Menlo", monospace;
@@ -840,13 +763,6 @@ body {
   border-radius: 5px;
   word-break: break-all;
 }
-
-.depara-nota { font-size: 0.78rem; color: var(--text-soft); }
-.depara-origem { font-size: 0.72rem; color: var(--text-soft); opacity: 0.8; }
-
-.tabela-valores { font-size: 0.78rem; max-width: 560px; }
-.tabela-valores thead th { padding: 7px 10px; }
-.tabela-valores tbody td { padding: 6px 10px; }
 
 /* ---------- Rodapé ---------- */
 .app-footer { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
