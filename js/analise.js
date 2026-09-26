@@ -10,7 +10,7 @@ import { analisarIss } from "./analise/iss.js";
 import { analisarIbsCbs } from "./analise/ibscbs.js";
 
 export { CHAVES, significadoDoCodigo } from "./analise/contexto.js";
-export { percorrerValores, resolverCaminho } from "./analise/caminhos.js";
+export { resolverCaminho } from "./analise/caminhos.js";
 export { documentoValido } from "./analise/documentos.js";
 export { arredondar, truncar } from "./analise/valores.js";
 export { derivarTipoRetencao } from "./analise/retencoes.js";
