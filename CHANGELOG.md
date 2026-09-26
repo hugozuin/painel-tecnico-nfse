@@ -29,6 +29,7 @@
 - Itens `.` e `..` recusados nas listas de identificadores.
 - Senha do A1 apagada do campo depois de cada leitura.
 - Certificados de teste gerados na execução, fora do Git.
+- Gancho `pre-push` versionado que roda o `npm test` antes de cada push.
 - Documentação de governança em `docs/governanca/`.
 
 ### Desempenho

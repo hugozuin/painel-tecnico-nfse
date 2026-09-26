@@ -13,7 +13,7 @@ Segurança da Informação).
 | Situação | Repositório privado no GitHub pessoal do responsável técnico; site e funções na Vercel em conta pessoal (plano Hobby); site sem login |
 | Justificativa | A ferramenta nasceu como apoio individual e passou a ser usada pela equipe antes das políticas; a migração depende de repositório, hospedagem e SSO fornecidos por Tecnologia |
 | Risco | Código proprietário e dados de consulta em conta pessoal; site e repasse acessíveis a qualquer pessoa; plano Hobby não é para uso comercial |
-| Controles compensatórios | Repositório privado; nenhum segredo da aplicação no código; a API Key não passa pelo servidor e fica só na aba; o repasse aceita só domínios do gov.br, sem guardar corpo nem certificado; CSP estrita; site não indexável; log estruturado sem dados sensíveis; varredura de dados sensíveis a cada teste |
+| Controles compensatórios | Repositório privado; nenhum segredo da aplicação no código; a API Key não passa pelo servidor e fica só na aba; o repasse aceita só domínios do gov.br, sem guardar corpo nem certificado; CSP estrita; site não indexável; log estruturado sem dados sensíveis; varredura de dados sensíveis a cada teste; gancho `pre-push` que roda o `npm test` antes de publicar |
 | Plano de saída | Onda 3 do plano de conformidade: GitLab corporativo com pipeline, hospedagem corporativa com SSO e WAF (OCI São Paulo, preferência da política, ou conta corporativa da Vercel) |
 | Responsável pelo aceite | A definir |
 | Prazo proposto | 90 dias a partir do aceite |

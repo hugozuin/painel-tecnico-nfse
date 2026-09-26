@@ -42,7 +42,8 @@ Público: consultores internos. Não é produto para cliente final.
 ## 2. Comandos
 
 ```bash
-# testes (uma vez: cd testes && npm install)
+# testes (uma vez: cd testes && npm install; e git config core.hooksPath .githooks,
+# para o push rodar o npm test antes de enviar)
 cd testes && npm test
 cd testes && npm run test:detalhes
 
@@ -157,8 +158,9 @@ docs/governanca/        ficha, checklist, dados e LGPD, operação e exceções 
 CHANGELOG.md            histórico de versões
 documentacao.pdf        manual de uso (gerado)
 vercel.json             cabeçalhos HTTP
-.vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md, .gitattributes, docs, CHANGELOG.md
-.gitattributes          sem conversão de fim de linha em assets/vendor/ e nos PDFs
+.vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md, .gitattributes, docs, CHANGELOG.md, .githooks
+.gitattributes          sem conversão de fim de linha em assets/vendor/ e nos PDFs; LF em .githooks/
+.githooks/pre-push      roda o npm test antes de cada push (ativar com git config core.hooksPath .githooks)
 ```
 
 Tamanho atual dos módulos maiores: `telas/resolve.js` 494 linhas, `fluxo-resolve.js`
@@ -510,7 +512,8 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Toda rota nova ou alterada é conferida antes na documentação do PlugNotas e
   entra no teste de contrato.
 - Commits pequenos, mensagem no imperativo em português (ex.: "Adiciona CSP no
-  vercel.json"). `npm test` verde antes de cada commit.
+  vercel.json"). `npm test` verde antes de cada commit; o gancho `.githooks/pre-push`
+  roda de novo antes de cada push, porque todo commit no `main` vai ao ar.
 
 ## 8. Decisões registradas (não reverter sem falar com o Hugo)
 

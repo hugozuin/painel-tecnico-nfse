@@ -101,7 +101,9 @@ Duplo clique em `iniciar.bat` no Windows. Ele confere o Node.js, sobe um
 servidor na porta 3500 e abre o navegador. As telas do Nacional dependem do
 repasse em `api/proxy`, que só existe no ambiente publicado.
 
-Testes: `cd testes && npm install` uma vez e depois `npm test`. O guia das
+Testes: `cd testes && npm install` uma vez e depois `npm test`. Para o push
+rodar os testes antes de enviar, ative o gancho uma vez por clone:
+`git config core.hooksPath .githooks`. O guia das
 suítes está em `testes/README.md`.
 
 ## Publicação

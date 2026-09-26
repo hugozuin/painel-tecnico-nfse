@@ -61,8 +61,9 @@ homologada.
 ## Implantação
 
 1. Commit no branch `main` gera deploy automático na Vercel, em geral em
-   cerca de um minuto. A Vercel não roda os testes: rode `npm test` antes de
-   cada commit (regra do projeto) até existir pipeline.
+   cerca de um minuto. A Vercel não roda os testes: até existir pipeline, o
+   gancho `.githooks/pre-push` roda o `npm test` antes de cada push (ative uma
+   vez por clone com `git config core.hooksPath .githooks`).
 2. Depois do deploy, confira `GET /api/saude` (versão esperada) e os
    cabeçalhos com `curl -sI` na produção.
 3. Configuração da Vercel: Framework Preset "Other", sem comando de build e

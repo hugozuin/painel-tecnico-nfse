@@ -98,7 +98,7 @@ crítica.
 | Criptografia em trânsito | OK | HTTPS em todos os destinos |
 | Criptografia em repouso | N/A | Nada é gravado no servidor; no navegador, a API Key fica só na aba (sessionStorage) |
 | Segredos fora do código | OK | Sem segredo da aplicação; certificados de teste gerados na execução, fora do Git |
-| CI/CD configurado | Pendente | Deploy automático sem pipeline de testes; pipeline entra com o GitLab |
+| CI/CD configurado | Parcial | Gancho `pre-push` versionado roda o `npm test` antes de cada push (controle compensatório); o pipeline entra com o GitLab |
 | Aceite formal da área de negócio | Pendente | |
 
 ### Etapa 5: Operar

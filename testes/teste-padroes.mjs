@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 
 let falhas = 0;
 const conferir = (titulo, condicao, extra = "") => {
@@ -81,6 +82,11 @@ const scriptsPython = [...listarArquivos("ferramentas", ".py"), ...listarArquivo
 const linhasDeComentarioPython = scriptsPython.flatMap((arquivo) => readFileSync(arquivo, "utf8").split(/\r?\n/)
   .flatMap((linha, indice) => (/^\s*#/.test(linha) ? [`${arquivo}:${indice + 1}`] : [])));
 conferir("sem linhas de comentário nos scripts Python", scriptsPython.length > 0 && linhasDeComentarioPython.length === 0, linhasDeComentarioPython.join(", "));
+const gancho = readFileSync(".githooks/pre-push", "utf8");
+const modoDoGancho = execFileSync("git", ["ls-files", "-s", ".githooks/pre-push"], { encoding: "utf8" });
+conferir("gancho pre-push roda o npm test, com fim de linha LF e permissão de execução",
+  gancho.startsWith("#!/bin/sh\n") && gancho.includes("npm test") && modoDoGancho.startsWith("100755")
+  && /^\.githooks\/\*\* text eol=lf\r?$/m.test(readFileSync(".gitattributes", "utf8")), modoDoGancho);
 conferir("atributo hidden vence o display das classes", /\[hidden\]\s*\{\s*display:\s*none\s*!important;?\s*\}/.test(estilos));
 
 console.log(falhas === 0 ? "\nTeste de padrões passou." : `\n${falhas} teste(s) falharam.`);
