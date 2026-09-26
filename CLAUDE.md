@@ -78,13 +78,13 @@ lado do Nacional.
   do `package.json`; a Vercel descontinua o Node 20 para builds e funções em
   01/10/2026).
 - **Biblioteca no navegador:** node-forge 1.4.0 vendorizado em
-  `assets/vendor/forge-1.4.0.min.js` (licença em `forge-LICENSE.txt`), carregado
+  `assets/vendor/forge-1.4.0.min.js` (licença em `forge-1.4.0-LICENSE.txt`), carregado
   sob demanda com SRI (`BIBLIOTECA_FORGE` em `js/certificado.js`) só para ler o
   certificado A1. Nada vem de CDN. Para atualizar: trocar o arquivo e o nome com
   a nova versão, a versão em `testes/package.json` e rodar `npm install` em
   `testes/` (o teste compara o arquivo vendorizado com o do `node_modules`), a
   integridade em `BIBLIOTECA_FORGE`, o SHA-256 em `testes/teste-seguranca.mjs`
-  e, se a licença mudar, o `forge-LICENSE.txt`. O
+  e o nome da licença (`forge-<versão>-LICENSE.txt`). O
   `.gitattributes` impede a conversão de fim de linha em `assets/vendor/` e nos
   PDFs, que mudaria o hash num clone com `core.autocrlf=true`.
 - **Fonte:** Quicksand pelo Google Fonts.

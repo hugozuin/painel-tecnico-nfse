@@ -611,7 +611,7 @@ const essenciais = [
 conferir("varredura cobre tudo o que o Git versiona ou vai versionar, inclusive a raiz", essenciais.every((arquivo) => varredura.arquivos.includes(arquivo)), essenciais.filter((arquivo) => !varredura.arquivos.includes(arquivo)).join(", "));
 conferir("varredura fica fora só do forge e das dependências",
   !varredura.arquivos.some((arquivo) => arquivo === BIBLIOTECA_FORGE.endereco || /^testes\/node_modules\/|package-lock/.test(arquivo))
-  && varredura.arquivos.includes("assets/vendor/forge-LICENSE.txt"));
+  && varredura.arquivos.includes("assets/vendor/forge-1.4.0-LICENSE.txt"));
 const chavesNoRepositorio = arquivosDeChave();
 conferir("nenhum .pfx, .p12, .key ou .pem no repositório", chavesNoRepositorio.length === 0, chavesNoRepositorio.join(", "));
 const certificadosIgnorados = ["ca.pem", "servidor.key", "cliente-legado.pfx"]
@@ -655,6 +655,13 @@ const diretivas = Object.fromEntries((dasPaginas["Content-Security-Policy"] || "
 const ordenar = (politica) => JSON.stringify(Object.entries(politica).sort(([a], [b]) => a.localeCompare(b)));
 conferir("CSP com exatamente as diretivas aprovadas", ordenar(diretivas) === ordenar(CSP_APROVADA), dasPaginas["Content-Security-Policy"]);
 conferir("CSP sem unsafe, curinga, data: nem blob:", !Object.values(diretivas).flat().some((valor) => /unsafe|^\*$|^data:$|^blob:$/.test(valor)));
+const REGRA_DO_VENDOR = "/assets/vendor/(.*)";
+const regrasComCache = [...regrasDoVercel].filter(([, cabecalhos]) => cabecalhos["Cache-Control"]).map(([fonte]) => fonte);
+conferir("cache imutável de um ano só em assets/vendor",
+  regrasDoVercel.get(REGRA_DO_VENDOR)?.["Cache-Control"] === "public, max-age=31536000, immutable" && JSON.stringify(regrasComCache) === JSON.stringify([REGRA_DO_VENDOR]),
+  JSON.stringify(regrasComCache));
+const arquivosSemVersao = readdirSync("assets/vendor").filter((nome) => !/-(?:\d+\.\d+\.\d+|v\d+)[-.]/.test(nome));
+conferir("todo arquivo de assets/vendor traz a versão no nome, porque sai com cache imutável", arquivosSemVersao.length === 0, arquivosSemVersao.join(", "));
 conferir("Permissions-Policy e COOP aprovadas",
   dasPaginas["Permissions-Policy"] === "camera=(), microphone=(), geolocation=()" && dasPaginas["Cross-Origin-Opener-Policy"] === "same-origin");
 
