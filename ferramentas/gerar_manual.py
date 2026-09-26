@@ -121,10 +121,13 @@ def construir():
                        "alteram ou apagam dado aparecem marcadas como sensíveis e pedem confirmação antes de executar.", corpo))
 
     h.append(Paragraph("2. Credencial", secao))
-    h.append(Paragraph("A API Key fica no topo das telas do PlugNotas. Sem marcar a opção de manter a chave, ela vive "
-                       "apenas na sessão do navegador. Os perfis guardam chaves por apelido, o que ajuda a não rodar um "
-                       "lote na conta errada. A chave só segue para a API PlugNotas. As telas do Nacional não usam a "
-                       "API Key: passam pelo repasse da aplicação, e algumas exigem certificado digital.", corpo))
+    h.append(Paragraph("A API Key fica no topo das telas do PlugNotas. Sem marcar a opção de manter a chave, ela fica só "
+                       "na aba e some quando a aba é fechada; com a opção marcada, fica gravada no navegador até ser "
+                       "desmarcada. Os perfis guardam chaves por apelido, o que ajuda a não rodar um lote na conta "
+                       "errada, e ficam gravados no navegador sem criptografia até serem removidos. Não salve perfis "
+                       "em computador compartilhado. O botão Apagar todos os perfis limpa todos de uma vez, com "
+                       "confirmação. A chave só segue para a API PlugNotas. As telas do Nacional não usam a API Key: "
+                       "passam pelo repasse da aplicação, e algumas exigem certificado digital.", corpo))
 
     h.append(Paragraph("3. Resolve em lote", secao))
     h.append(Paragraph("A rota de resolve confirma apenas que a solicitação foi recebida. Por isso o painel lê a "

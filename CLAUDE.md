@@ -339,8 +339,13 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Identificação: nome declarado, só para rastreabilidade nos logs exportados.
   Não há login.
 - API Key: `sessionStorage` por padrão; `localStorage` só com "Manter a chave".
-  Perfis salvos ficam em `localStorage`. A chave vai direto do navegador para a
-  API PlugNotas e nunca passa pelo servidor da ferramenta.
+  Perfis salvos ficam em `localStorage`, sem criptografia. A chave vai direto do
+  navegador para a API PlugNotas e nunca passa pelo servidor da ferramenta. O
+  cartão da credencial traz um aviso que explica essas três formas de guarda e o
+  risco de salvar perfis em computador compartilhado, e o botão "Apagar todos os
+  perfis" (com confirmação). Apagar ou remover perfil também tira do campo e do
+  armazenamento a chave que for de um perfil apagado; chave digitada que não é
+  de perfil fica.
 - Rodapé: "**Painel Técnico NFS-e · Consultoria Técnica NFS-e** · TecnoSpeed" e
   "Desenvolvido por Hugo Zuin" com menos destaque.
 

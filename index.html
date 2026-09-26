@@ -145,7 +145,18 @@
           <input type="checkbox" id="rememberApiKey" />
           <span>Manter a chave digitada após fechar o navegador</span>
         </label>
-        <p class="field-hint">Sem essa opção a chave vive apenas na sessão atual. Ela nunca é enviada ao servidor desta ferramenta: as requisições saem direto do seu navegador para a API PlugNotas.</p>
+        <div class="aviso-caixa" id="avisoGuardaChave">
+          <strong>Como a API Key fica guardada neste navegador</strong>
+          <ul class="aviso-lista">
+            <li><strong>Chave digitada:</strong> fica só nesta aba (sessionStorage) e some quando a aba é fechada.</li>
+            <li><strong>Com "Manter a chave digitada" marcado:</strong> fica gravada no navegador (localStorage), mesmo depois de fechá-lo, até a opção ser desmarcada.</li>
+            <li><strong>Perfis salvos:</strong> ficam gravados no navegador (localStorage), sem criptografia, até serem removidos. Quem usar este navegador, ou uma extensão instalada nele, consegue lê-los. Não salve perfis em computador compartilhado.</li>
+            <li>A chave nunca passa pelo servidor desta ferramenta: vai direto do seu navegador para a API PlugNotas.</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <button type="button" id="apagarPerfisBtn" class="btn btn-danger btn-sm">Apagar todos os perfis</button>
+        </div>
       </div>
     </section>
   </template>

@@ -52,11 +52,21 @@ function desenharPerfis(selecionado = "") {
   });
 
   seletorPerfil.value = selecionado;
+  elemento("apagarPerfisBtn").disabled = perfis.length === 0;
   distintivoPerfil.textContent = perfis.length === 0
     ? "Nenhum perfil salvo"
     : selecionado
       ? `Perfil ativo: ${selecionado}`
       : `${perfis.length} perfil(is) salvo(s)`;
+}
+
+function apagarChavesDosPerfis(perfisApagados, perfisRestantes) {
+  const aindaEmUso = new Set(perfisRestantes.map((perfil) => perfil.chave));
+  const chavesApagadas = new Set(perfisApagados.map((perfil) => perfil.chave).filter((chave) => !aindaEmUso.has(chave)));
+  if (chavesApagadas.has(lerApiKey())) campoChave.value = "";
+  [localStorage, sessionStorage].forEach((armazenamento) => {
+    if (chavesApagadas.has(armazenamento.getItem(CHAVES_ARMAZENAMENTO.apiKey))) armazenamento.removeItem(CHAVES_ARMAZENAMENTO.apiKey);
+  });
 }
 
 function guardarChaveDigitada() {
@@ -137,12 +147,36 @@ export function iniciarCredencial() {
       mostrarAviso("Selecione um perfil salvo para remover.", "info");
       return;
     }
-    const confirmou = await pedirConfirmacao("Remover perfil", `O perfil ${escolhido} será apagado deste navegador. Deseja continuar?`);
+    const confirmou = await pedirConfirmacao("Remover perfil",
+      `O perfil ${escolhido} será apagado deste navegador. Se a chave dele estiver no campo, ela também será apagada. Deseja continuar?`);
     if (!confirmou) return;
-    gravarPerfis(lerPerfis().filter((item) => item.nome !== escolhido));
+    const perfis = lerPerfis();
+    const restantes = perfis.filter((item) => item.nome !== escolhido);
+    gravarPerfis(restantes);
     localStorage.removeItem(CHAVES_ARMAZENAMENTO.perfilAtivo);
+    apagarChavesDosPerfis(perfis.filter((item) => item.nome === escolhido), restantes);
     desenharPerfis("");
     registrarLog(`Perfil de credencial "${escolhido}" removido.`, "warn");
     mostrarAviso("Perfil removido.", "success");
+  });
+
+  elemento("apagarPerfisBtn").addEventListener("click", async () => {
+    const perfis = lerPerfis();
+    if (perfis.length === 0) {
+      mostrarAviso("Não há perfis salvos neste navegador.", "info");
+      return;
+    }
+    const descricao = perfis.length === 1
+      ? "O perfil salvo neste navegador será apagado, com a API Key dele."
+      : `Os ${perfis.length} perfis salvos neste navegador serão apagados, com as API Keys deles.`;
+    const confirmou = await pedirConfirmacao("Apagar todos os perfis",
+      `${descricao} Se a chave no campo for de um perfil, ela também será apagada. Deseja continuar?`);
+    if (!confirmou) return;
+    localStorage.removeItem(CHAVES_ARMAZENAMENTO.perfis);
+    localStorage.removeItem(CHAVES_ARMAZENAMENTO.perfilAtivo);
+    apagarChavesDosPerfis(perfis, []);
+    desenharPerfis("");
+    registrarLog(`Todos os perfis de credencial apagados deste navegador (${perfis.length}).`, "warn");
+    mostrarAviso("Perfis apagados deste navegador.", "success");
   });
 }

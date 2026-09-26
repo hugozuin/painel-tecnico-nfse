@@ -408,6 +408,80 @@ conferir("Remover descarta o certificado da memória", certificadoAtual() === nu
 const armazenamentosSemTeste = procurar(codigoDoSite, /\bindexedDB\b|\bcaches\.|\bdocument\.cookie\b|\bcookieStore\b|\bsendBeacon\b/);
 conferir("código não usa IndexedDB, CacheStorage, cookie nem sendBeacon, que o jsdom não cobre", armazenamentosSemTeste.length === 0, armazenamentosSemTeste.join(", "));
 
+console.log("\n== perfis e guarda da API Key ==");
+const { CHAVES_ARMAZENAMENTO } = await import("../js/shared.js");
+document.querySelector('.menu-item[data-rota="consulta"]').click();
+await esperar(120);
+const campoApiKey = document.getElementById("apiKeyInput");
+const seletorDePerfis = document.getElementById("perfilSelect");
+const botaoApagarPerfis = document.getElementById("apagarPerfisBtn");
+const avisoDeGuarda = document.getElementById("avisoGuardaChave")?.textContent.replace(/\s+/g, " ") || "";
+conferir("aviso explica onde a chave digitada, a mantida e a dos perfis ficam guardadas",
+  ["só nesta aba (sessionStorage)", "Manter a chave digitada", "(localStorage), mesmo depois de fechá-lo", "sem criptografia", "computador compartilhado", "nunca passa pelo servidor desta ferramenta"]
+    .every((trecho) => avisoDeGuarda.includes(trecho)), avisoDeGuarda);
+conferir("aviso sem travessão", !/[–—]/.test(avisoDeGuarda));
+conferir("botão de apagar perfis desabilitado sem perfis", botaoApagarPerfis.disabled);
+const digitarChave = (chave) => {
+  campoApiKey.value = chave;
+  campoApiKey.dispatchEvent(new domApp.window.Event("input"));
+};
+const salvarPerfil = (apelido, chave) => {
+  digitarChave(chave);
+  document.getElementById("perfilNomeInput").value = apelido;
+  document.getElementById("salvarPerfilBtn").click();
+};
+const escolherPerfil = (apelido) => {
+  seletorDePerfis.value = apelido;
+  seletorDePerfis.dispatchEvent(new domApp.window.Event("change"));
+};
+const confirmarModal = async () => {
+  await esperar(40);
+  document.getElementById("confirmOk").click();
+  await esperar(40);
+};
+const perfisGravados = () => JSON.parse(localStorage.getItem(CHAVES_ARMAZENAMENTO.perfis) || "[]");
+const chaveGuardada = () => [localStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey), sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey)];
+
+salvarPerfil("Perfil A", "chave-do-perfil-a");
+salvarPerfil("Perfil B", "chave-do-perfil-b");
+conferir("botão de apagar perfis habilitado com perfis salvos", !botaoApagarPerfis.disabled && perfisGravados().length === 2);
+escolherPerfil("Perfil A");
+conferir("perfil escolhido leva a chave ao campo e à aba", campoApiKey.value === "chave-do-perfil-a" && chaveGuardada()[1] === "chave-do-perfil-a");
+document.getElementById("removerPerfilBtn").click();
+await confirmarModal();
+conferir("Remover apaga o perfil e a chave dele do campo e do armazenamento",
+  perfisGravados().map((perfil) => perfil.nome).join() === "Perfil B" && campoApiKey.value === "" && !chaveGuardada().includes("chave-do-perfil-a"));
+
+escolherPerfil("Perfil B");
+const opcaoManter = document.getElementById("rememberApiKey");
+opcaoManter.checked = true;
+opcaoManter.dispatchEvent(new domApp.window.Event("change"));
+conferir("com Manter marcado a chave do perfil fica no localStorage", chaveGuardada()[0] === "chave-do-perfil-b");
+botaoApagarPerfis.click();
+await esperar(40);
+const mensagemDeConfirmacao = document.getElementById("confirmMessage").textContent;
+document.getElementById("confirmCancel").click();
+await esperar(40);
+conferir("cancelar a confirmação não apaga nada", perfisGravados().length === 1 && campoApiKey.value === "chave-do-perfil-b");
+conferir("confirmação diz quantos perfis e o que acontece com a chave do campo",
+  mensagemDeConfirmacao.includes("O perfil salvo neste navegador será apagado") && mensagemDeConfirmacao.includes("chave no campo"), mensagemDeConfirmacao);
+botaoApagarPerfis.click();
+await confirmarModal();
+conferir("Apagar todos os perfis limpa perfis, perfil ativo, campo e chave guardada",
+  localStorage.getItem(CHAVES_ARMAZENAMENTO.perfis) === null && localStorage.getItem(CHAVES_ARMAZENAMENTO.perfilAtivo) === null
+  && campoApiKey.value === "" && !chaveGuardada().includes("chave-do-perfil-b") && botaoApagarPerfis.disabled);
+
+salvarPerfil("Perfil C", "chave-do-perfil-c");
+digitarChave("chave-digitada-sem-perfil");
+botaoApagarPerfis.click();
+await confirmarModal();
+conferir("chave digitada que não é de perfil continua no campo e guardada",
+  perfisGravados().length === 0 && campoApiKey.value === "chave-digitada-sem-perfil" && chaveGuardada().includes("chave-digitada-sem-perfil"));
+conferir("nenhuma chave de perfil foi para o log", !/chave-do-perfil|chave-digitada-sem-perfil/.test(textoDosLogs()));
+opcaoManter.checked = false;
+opcaoManter.dispatchEvent(new domApp.window.Event("change"));
+digitarChave("");
+
 console.log("\n== dados sensíveis no que é publicado e versionado ==");
 const { varrerSigilo, acharDadosSensiveis, cnpjValido, cpfValido, textosDoConteudo, arquivosDeChaveForaDosTestes } = await import("./sigilo.mjs");
 const permitidosDoForge = new Map([

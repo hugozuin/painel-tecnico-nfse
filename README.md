@@ -123,7 +123,11 @@ site.
   leitura remota das definições for religada, `https://raw.githubusercontent.com`
   precisa entrar no `connect-src`; o teste de segurança cobra isso.
 - **API Key**: só segue para `https://api.plugnotas.com.br`. Qualquer outro
-  destino com chave é recusado antes de sair do navegador.
+  destino com chave é recusado antes de sair do navegador. A chave digitada
+  fica só na aba (sessionStorage); com "Manter a chave digitada", fica no
+  navegador (localStorage); os perfis ficam no localStorage, sem criptografia,
+  até serem removidos. O cartão da credencial explica isso e traz o botão
+  "Apagar todos os perfis".
 - **Repasse**: toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`, e
   HTML ou SVG do Nacional vira download. A entrada aceita só `https`, os
   domínios da lista na porta padrão, sem usuário e senha na URL, corpo até
