@@ -38,6 +38,10 @@ formato, tamanho, faixa, enumerado, condicional (`quandoValorEm` ou
 `quandoPreenchido` mais `exige`) e umDeles (`alternativas`). `apelidos` lista
 nomes de campo escritos errado com frequência.
 
+O `campo` aceita `[]` para listas, como em `servico[].iss.aliquota`: a regra
+vale para cada item presente, e o achado cita o caminho real, como
+`servico[0].iss.aliquota`.
+
 ## Arquivos gerados
 
 **de-para-nacional.json** e **ibscbs.json** saem do gerador

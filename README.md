@@ -151,7 +151,9 @@ js/app.js                menu, título de cada tela e montagem das telas
 js/definicoes.js         leitura das definições, com carregamento sob demanda
 js/info.js               ícone de informação e popup fixável
 js/tags.js               conteúdo do popup de cada tag do anexo VI
-js/analise.js            conferências do validador, com fonte em cada achado
+js/analise.js            agregador do validador (analisarEmissao)
+js/analise/              uma conferência do validador por módulo, com fonte em cada achado
+js/fluxo-resolve.js      regras e orquestração do Resolve, sem DOM
 js/telas/                telas de rota, resolve, Nacional, de-para, IBS e CBS e validador
 api/proxy.js             repasse das consultas públicas do Nacional
 definicoes/              catálogos, regras, de-para e tabelas do IBS e da CBS

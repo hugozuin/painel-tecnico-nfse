@@ -115,10 +115,13 @@ js/credencial.js        API Key e perfis salvos
 js/certificado.js       leitura do A1 no navegador (forge) e cartão do certificado
 js/info.js              ícone de informação com popup (passar o mouse, Shift ou clique fixa, Esc fecha)
 js/tags.js              conteúdo do popup de cada tag do anexo VI
-js/analise.js           conferências do validador, cada achado com fonte e tags do XML
+js/analise.js           agregador do validador: analisarEmissao e a API pública (reexports)
+js/analise/             uma conferência por módulo: achado, caminhos, contexto, regras-declarativas, texto,
+                        campos, documentos, leiaute, valores, retencoes, iss, ibscbs
+js/fluxo-resolve.js     regras e orquestração do Resolve, sem DOM (executarLoteResolve)
 js/telas/lote.js        motor genérico das telas de rota (Requisição e Retorno)
 js/telas/variantes.js   telas agrupadas: seletor e toggle dentro do cartão Requisição
-js/telas/resolve.js     resolve em lote com conferência antes e depois
+js/telas/resolve.js     tela do Resolve: cartões, tabela e andamento por callbacks
 js/telas/nacional.js    telas do Nacional pelo repasse, com certificado opcional
 js/telas/depara.js      de-para por tag, com busca e popup de regras
 js/telas/ibscbs.js      relação item LC 116, NBS, indOp e cClassTrib
@@ -230,19 +233,30 @@ servem às telas agrupadas.
 - Requisições sem campos de corpo saem sem corpo (ex.: teste de webhook).
 - As telas de rota **não** repetem em falha temporária nem tratam 429; só o
   Resolve faz isso (decisão da seção 8).
+- `requisitar` (`js/plugnotas.js`) faz uma chamada só, com tempo limite e sem
+  repetir; com `comoBlob`, devolve o arquivo em vez de interpretar JSON. Quem
+  repete são `executarResolve` e `consultarEventos`.
 
-### 5.4 Resolve (`js/telas/resolve.js`, `js/plugnotas.js`)
+### 5.4 Resolve (`js/telas/resolve.js`, `js/fluxo-resolve.js`, `js/plugnotas.js`)
 
-1. Consulta a situação antes (`GET /nfse/consultar/{id}`).
+A tela monta os cartões e a tabela; `js/fluxo-resolve.js` tem as regras e a
+orquestração sem DOM (`executarLoteResolve`, que avisa a tela por callbacks) e
+é coberto por `testes/teste-resolve.mjs`.
+
+1. Consulta a situação antes (`GET /nfse/consultar/{id}`). A consulta pode
+   voltar como objeto ou como lista de um item; `normalizarNota` e
+   `primeiroDocumento` (`lote.js`) aceitam os dois.
 2. Emissor Nacional: chama `POST /nfse/eventos/{id}` antes do resolve e espera
    uma única vez pelo lote inteiro (padrão 15 s), porque o resolve isolado não
-   traz todos os dados.
+   traz todos os dados. O 400 "evento de manifestacao em processamento" faz
+   parte do fluxo normal e segue para a espera.
 3. `POST /nfse/resolve/{id}` com tentativas (padrão 3, intervalo 1000 ms) para
    os status de `STATUS_TEMPORARIOS` (429, 500, 502, 503). Respeita
-   `Retry-After` e, no 429, reduz a concorrência.
+   `Retry-After` e, no 429, reduz a concorrência, que volta ao limite a cada
+   nota concluída.
 4. Mensagem de resolve em execução (`RESOLVE_EM_ANDAMENTO`, `/sendo executad/i`)
    gera espera de `ESPERA_RESOLVE_MS` (10 s), até `MAXIMO_VERIFICACOES_RESOLVE`
-   (12) vezes.
+   (12) vezes, sem consumir tentativa.
 5. Verificação depois do resolve, com intervalo configurável (padrão 10 s).
 6. Desfechos: Resolvido; Já estava concluída; Continua rejeitada; Cancelada na
    prefeitura; Ainda em processamento; Resolve recusado pela API.
@@ -319,11 +333,25 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Volume atual: 430 tags e 579 regras (anexo VI); 39 indOp, 208 itens, 731 NBS,
   28 cClassTrib e 1.514 relações (anexos VII e VIII).
 - `ferramentas/relatorio-geracao.json` lista as lacunas da última geração.
+- A tela de IBS e CBS junta as linhas da correlação que só diferem no
+  cClassTrib e mostra os cClassTrib juntos (`agruparRelacoes`).
 
 ### 5.8 Validador
 
-- `js/analise.js` (conferências calculadas) e `definicoes/regras-validacao.json`
-  (regras declarativas com `fonte` e `tags` obrigatórios).
+- `js/analise.js` é o agregador: `analisarEmissao` roda as conferências da nota
+  (regras declarativas, texto, nomes de campo, tipos trocados, documentos,
+  leiaute), as de cada serviço (valores, retenções, ISS, descrição) e a de IBS e
+  CBS, nessa ordem, e reexporta a API pública. Cada conferência fica num módulo
+  de `js/analise/`, sem DOM e sem `definicoes.js`: os dados chegam por
+  parâmetro. A ordem importa, porque decide empates no mesmo campo e severidade.
+- Conferências calculadas em `js/analise/` e regras declarativas em
+  `definicoes/regras-validacao.json` (com `fonte` e `tags` obrigatórios). Nas
+  regras, `campo` aceita `[]` para listas (`servico[].iss.aliquota`): a regra
+  vale para cada item presente e o achado cita o caminho real
+  (`servico[0].iss.aliquota`).
+- `derivarTipoRetencao` reproduz a regra de `getTipoRetPisCofinsRtc007` da lib
+  do PlugNotas. Só o nome da função vai para a documentação; o código da lib não
+  entra no repositório (seção 6.1).
 - Tipos de regra: `obrigatorio`, `digitos` (número ou lista), `formato`,
   `tamanho`, `faixa`, `enumerado`, `condicional` e `umDeles`.
 - Todo achado tem `fonte`: anexo VI, VII ou VIII, lib do PlugNotas, script do
