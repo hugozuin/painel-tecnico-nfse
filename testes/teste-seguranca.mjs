@@ -623,7 +623,9 @@ conferir("nenhum ID, chave, token, CNPJ, CPF ou e-mail fora da lista de permitid
   varredura.achados.map((achado) => `${achado.arquivo}:${achado.linha}:${achado.coluna} ${achado.padrao} ${achado.valor}`).join("; "));
 
 console.log("\n== cabeçalhos do site e CSP (vercel.json) ==");
-const regrasDoVercel = new Map(JSON.parse(readFileSync("vercel.json", "utf8")).headers
+const configuracaoDoVercel = JSON.parse(readFileSync("vercel.json", "utf8"));
+conferir("função do repasse em São Paulo (gru1), perto do gov.br", JSON.stringify(configuracaoDoVercel.regions) === '["gru1"]', JSON.stringify(configuracaoDoVercel.regions));
+const regrasDoVercel = new Map(configuracaoDoVercel.headers
   .map((regra) => [regra.source, Object.fromEntries(regra.headers.map(({ key, value }) => [key, value]))]));
 const REGRA_GLOBAL = "/(.*)";
 const REGRA_DAS_PAGINAS = "/((?!api/).*)";
