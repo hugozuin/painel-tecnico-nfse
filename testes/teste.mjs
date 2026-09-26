@@ -133,6 +133,47 @@ const limpo = analisarEmissao({
 const graves = limpo.filter((a) => a.severidade !== "informacao");
 conferir("JSON correto sem erro nem alerta", graves.length === 0, JSON.stringify(graves.map((a) => a.titulo)));
 
+console.log("\n== validador: cada conferência em js/analise ==");
+const notaCorreta = () => ({
+  prestador: { cpfCnpj: "29062609000177", endereco: { codigoCidade: "4115200", cep: "87010000" } },
+  tomador: { cpfCnpj: "12345678909", razaoSocial: "Cliente", endereco: { codigoCidade: "4115200", cep: "87010000" } },
+  servico: [{ codigo: "010101", valor: { servico: 1000 }, discriminacao: "Consultoria", iss: { aliquota: 2, tipoTributacao: 6, exigibilidade: 1 } }],
+  ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct: "000001" } } }
+});
+const analisarVariacao = (mudar) => {
+  const nota = notaCorreta();
+  mudar(nota);
+  return analisarEmissao(nota, dados);
+};
+const acusa = (achados, titulo, campo) => achados.some((a) => a.titulo.startsWith(titulo) && a.campo === campo);
+const casosPorConferencia = [
+  ["texto: caractere invisível", (n) => { n.tomador.razaoSocial = "Cliente X"; }, "Caractere invisível", "tomador.razaoSocial"],
+  ["texto: espaço nas extremidades", (n) => { n.tomador.razaoSocial = " Cliente "; }, "Espaço nas extremidades", "tomador.razaoSocial"],
+  ["texto: campo vazio", (n) => { n.tomador.razaoSocial = ""; }, "Campo enviado vazio", "tomador.razaoSocial"],
+  ["campos: vírgula decimal", (n) => { n.servico[0].valor.servico = "1,5"; }, "Número com vírgula decimal", "servico[0].valor.servico"],
+  ["campos: booleano como texto", (n) => { n.servico[0].iss.retido = "true"; }, "Booleano enviado como texto", "servico[0].iss.retido"],
+  ["documentos: documento com pontuação", (n) => { n.prestador.cpfCnpj = "29.062.609/0001-77"; }, "Documento com pontuação", "prestador.cpfCnpj"],
+  ["valores: valor negativo", (n) => { n.servico[0].valor.servico = -10; }, "Valor negativo", "servico[0].valor.servico"],
+  ["retenções: alíquota sem valor", (n) => { n.servico[0].retencao = { pis: { aliquota: 0.65, baseCalculo: 1000 } }; }, "Alíquota de PIS sem valor", "servico[0].retencao.pis"],
+  ["retenções: PIS truncado", (n) => { n.servico[0].retencao = { pis: { aliquota: 3, baseCalculo: 333.33, valor: 9.99 } }; }, "PIS calculado com truncamento", "servico[0].retencao.pis.valor"],
+  ["retenções: CSLL arredondada", (n) => { n.servico[0].retencao = { csll: { aliquota: 1, baseCalculo: 1234.56, valor: 12.35 } }; }, "CSLL calculado com arredondamento", "servico[0].retencao.csll.valor"],
+  ["retenções: tipo divergente", (n) => { n.servico[0].retencao = { pis: { aliquota: 0.65, baseCalculo: 1000, valor: 6.5 }, tipoRetencaoPisCofinsCSLL: "3" }; }, "tipoRetencaoPisCofinsCSLL diferente dos valores retidos", "servico[0].retencao.tipoRetencaoPisCofinsCSLL"],
+  ["retenções: apuração própria com retenção", (n) => { n.servico[0].apuracaoPropria = true; n.servico[0].retencao = { pis: { aliquota: 0.65, baseCalculo: 1000, valor: 6.5 } }; }, "Apuração própria junto com retenção", "servico[0].apuracaoPropria"],
+  ["ISS: serviço sem o grupo iss", (n) => { delete n.servico[0].iss; }, "Serviço sem o grupo iss", "servico[0].iss"],
+  ["ISS: alíquota em fração", (n) => { n.servico[0].iss.aliquota = 0.05; }, "Alíquota de ISS possivelmente em fração", "servico[0].iss.aliquota"],
+  ["agregador: serviço como objeto", (n) => { n.servico = { ...n.servico[0], valor: { servico: -1 } }; }, "Valor negativo", "servico.valor.servico"]
+];
+for (const [titulo, mudar, achadoEsperado, campo] of casosPorConferencia) {
+  const achados = analisarVariacao(mudar);
+  conferir(titulo, acusa(achados, achadoEsperado, campo), JSON.stringify(achados.map((a) => `${a.titulo} @ ${a.campo}`)));
+}
+const duasNotas = [notaCorreta(), notaCorreta()];
+duasNotas[1].servico[0].valor.servico = -5;
+conferir("agregador: lista de notas prefixa o campo com a posição", acusa(analisarEmissao(duasNotas, dados), "Valor negativo", "nota[1].servico[0].valor.servico"));
+const empate = analisarVariacao((n) => { n.prestador.endereco.cep = "8701000 "; }).map((a) => a.titulo);
+conferir("agregador: no mesmo campo e severidade, regras declarativas vêm antes das de texto",
+  empate.indexOf("CEP do prestador fora do leiaute") >= 0 && empate.indexOf("CEP do prestador fora do leiaute") < empate.findIndex((t) => t.startsWith("Caractere invisível")), JSON.stringify(empate));
+
 console.log("\n== tela agrupada de consulta ==");
 const catalogo = JSON.parse(readFileSync("./definicoes/rotas.json", "utf8")).rotas;
 const porIdCatalogo = new Map(catalogo.map((rota) => [rota.id, rota]));
