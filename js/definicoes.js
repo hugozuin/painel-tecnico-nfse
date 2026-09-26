@@ -137,7 +137,3 @@ export function enderecoRepositorio() {
   const config = definicoes.config;
   return config?.repositorio ? `https://github.com/${config.repositorio}` : "";
 }
-
-export function resumoOrigem() {
-  return Object.entries(definicoes.origem).map(([arquivo, dado]) => ({ arquivo, ...dado }));
-}

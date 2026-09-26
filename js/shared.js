@@ -123,9 +123,6 @@ const classePorNivel = {
   warn: "log-warn"
 };
 
-/* O histórico vive em memória porque o painel é remontado a cada troca de
-   tela. Assim nada se perde e mensagens emitidas antes da montagem aparecem
-   quando o painel entra. */
 export function registrarLog(mensagem, nivel = "info") {
   const registro = { horario: new Date().toLocaleTimeString("pt-BR"), mensagem, nivel };
   historicoLogs.push(registro);
@@ -149,17 +146,6 @@ function atualizarContadorLogs() {
   if (noCabecalho) noCabecalho.textContent = String(total);
   const noPainel = elemento("logContagemPainel");
   if (noPainel) noPainel.textContent = `${total} registro${total === 1 ? "" : "s"}`;
-}
-
-export function restaurarLogs() {
-  const painel = elemento("logsPanel");
-  if (!painel) return;
-  painel.textContent = "";
-  const fragmento = document.createDocumentFragment();
-  historicoLogs.forEach((registro) => fragmento.appendChild(montarLinhaLog(registro)));
-  painel.appendChild(fragmento);
-  painel.scrollTop = painel.scrollHeight;
-  atualizarContadorLogs();
 }
 
 export function limparLogs() {
@@ -232,11 +218,6 @@ export const identificacao = {
       modal.onclick = (evento) => { if (evento.target === modal) encerrar(""); };
       document.addEventListener("keydown", aoTeclar);
     });
-  },
-  async garantir() {
-    const atual = identificacao.ler();
-    if (atual) return atual;
-    return identificacao.solicitar();
   }
 };
 

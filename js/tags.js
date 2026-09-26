@@ -21,12 +21,6 @@ export function entradaPorChave(chave) {
   return indice.get(chave) || null;
 }
 
-/* Entradas cujo campo do JSON chega à tag pelas fontes analisadas. */
-export function entradasDoCampoJson(caminhoJson) {
-  if (!definicoes.dePara) return [];
-  return definicoes.dePara.entradas.filter((entrada) => entrada.plugnotas?.json?.includes(caminhoJson));
-}
-
 export function conteudoDaTag(entrada) {
   const regras = entrada.regras || [];
   const blocos = [
