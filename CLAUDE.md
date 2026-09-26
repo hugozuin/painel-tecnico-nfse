@@ -36,6 +36,7 @@ Público: consultores internos. Não é produto para cliente final.
 | Pasta local | `C:\Users\Hugo\Documents\painel-tecnico-nfse` |
 | Repositório (privado) | https://github.com/hugozuin/painel-tecnico-nfse |
 | Publicação | Vercel, deploy automático a cada commit no `main`; site aberto, sem login |
+| Governança | Aplicação crítica pelas políticas corporativas; ficha, checklist, dados, operação e exceções em `docs/governanca/` |
 | Documentação da API | https://docs.plugnotas.com.br (só renderiza com JavaScript) |
 
 ## 2. Comandos
@@ -46,8 +47,14 @@ cd testes && npm test
 cd testes && npm run test:detalhes
 
 # CSP e SRI num Chrome ou Edge real, com os cabeçalhos do vercel.json (fora do npm test;
-# exige internet: carrega a Quicksand e faz uma consulta à API PlugNotas com chave fictícia, que volta 401)
+# exige internet: faz uma consulta à API PlugNotas com chave fictícia, que volta 401)
 cd testes && npm run verificar:csp
+
+# certificados de teste (o npm test já chama; só para rodar uma suíte sozinha pela primeira vez)
+node testes/gerar-certificados.mjs
+
+# depois do deploy: saúde e cabeçalhos da produção
+curl -s https://<domínio>/api/saude && curl -sI https://<domínio>/
 
 # conferência dos dados contra as planilhas dos anexos (Python 3.10+ e openpyxl)
 python testes/teste_fontes.py
@@ -74,9 +81,10 @@ lado do Nacional.
 
 - **Front-end:** HTML, CSS e JavaScript em módulos ES, sem framework e sem etapa
   de build. `index.html` carrega `js/app.js`.
-- **Função serverless:** `api/proxy.js` na Vercel, Node `24.x` (campo `engines`
-  do `package.json`; a Vercel descontinua o Node 20 para builds e funções em
-  01/10/2026).
+- **Funções serverless:** `api/proxy.js` (repasse) e `api/saude.js` (saúde)
+  na Vercel, região `gru1` (`regions` do `vercel.json`), Node `24.x` (campo
+  `engines` do `package.json`; a Vercel descontinua o Node 20 para builds e
+  funções em 01/10/2026).
 - **Biblioteca no navegador:** node-forge 1.4.0 vendorizado em
   `assets/vendor/forge-1.4.0.min.js` (licença em `forge-1.4.0-LICENSE.txt`), carregado
   sob demanda com SRI (`BIBLIOTECA_FORGE` em `js/certificado.js`) só para ler o
@@ -87,7 +95,10 @@ lado do Nacional.
   e o nome da licença (`forge-<versão>-LICENSE.txt`). O
   `.gitattributes` impede a conversão de fim de linha em `assets/vendor/` e nos
   PDFs, que mudaria o hash num clone com `core.autocrlf=true`.
-- **Fonte:** Quicksand pelo Google Fonts.
+- **Fonte:** Quicksand v37 vendorizada em `assets/vendor/quicksand-v37-latin.woff2`
+  e `quicksand-v37-latin-ext.woff2` (fonte variável, pesos 400 a 700), licença em
+  `quicksand-v37-OFL.txt`, declarada no topo do `styles.css` e pré-carregada no
+  `index.html`. Nada vem do Google Fonts.
 - **Dados:** JSON versionados em `definicoes/`. Sem banco de dados.
 - **Ferramentas Python (fora do site):** openpyxl no gerador; reportlab e svglib
   no manual.
@@ -96,7 +107,8 @@ lado do Nacional.
 - **Hospedagem:** Vercel, Framework Preset "Other", sem comando de build e sem
   variáveis de ambiente. Deployment Protection com Vercel Authentication em
   **Standard Protection**: produção aberta e prévias de outros branches
-  protegidas.
+  protegidas. `assets/vendor/` sai com cache imutável de um ano, por isso todo
+  arquivo ali leva a versão no nome (há teste).
 
 Restrições de arquitetura definidas pelo Hugo: sem MongoDB, PostgreSQL ou AWS;
 deploy simples na web; backend só o mínimo necessário (hoje, o repasse).
@@ -106,8 +118,11 @@ deploy simples na web; backend só o mínimo necessário (hoje, o repasse).
 ```
 index.html              estrutura, cabeçalho (Logs, Documentação, tema), menu lateral, modais, painel de logs
 styles.css              tema claro e escuro com tokens da marca (índigo, Quicksand)
-assets/                 logo.svg e logoicon.svg (brancos), favicon.svg (fundo índigo), vendor/forge-1.4.0.min.js
-js/app.js               catálogo de telas, menu, título e legenda de cada tela, roteamento por hash, painel de logs
+assets/                 logo.svg e logoicon.svg (brancos), favicon.svg (fundo índigo); logoicon.svg não é usado
+                        pelo site e fica como arquivo-fonte da identidade
+assets/vendor/          forge-1.4.0.min.js, quicksand-v37-*.woff2 e as licenças, todos com a versão no nome
+js/app.js               catálogo de telas, menu, título e legenda de cada tela, roteamento por hash, painel de logs;
+                        carrega o código de cada tela com import() só quando ela é aberta
 js/definicoes.js        leitura de definicoes/ com conferência de formato; de-para e ibscbs sob demanda
 js/shared.js            criar(), avisos, confirmação, logs da sessão, pool de concorrência, CSV, cópia, arquivos
 js/plugnotas.js         cliente HTTP: tempo limite, Retry-After, sessão cancelável, resolve, eventos, consulta
@@ -129,21 +144,26 @@ js/telas/nacional.js    telas do Nacional pelo repasse, com certificado opcional
 js/telas/depara.js      de-para por tag, com busca e popup de regras
 js/telas/ibscbs.js      relação item LC 116, NBS, indOp e cClassTrib
 js/telas/validador.js   tela do validador
-api/proxy.js            repasse GET, ou POST com certificado, só para domínios do gov.br da lista
+api/proxy.js            repasse GET ou POST, com certificado opcional, só para domínios do gov.br da lista
+api/saude.js            verificação de saúde: situação e versão
 definicoes/             rotas.json, rotas-nacional.json, regras-validacao.json, config.json (manuais)
                         de-para-nacional.json, ibscbs.json (gerados, não editar à mão)
 fontes/nacional/        anexos VI (v1.04, NT009), VII (v1.02) e VIII (v1.01), públicos
-ferramentas/            gerar_definicoes.py, gerar_manual.py, relatorio-geracao.json
-testes/                 suítes Node, executar.mjs, teste_fontes.py, sigilo.mjs (varredura de dados sensíveis),
-                        verificar-csp.mjs (CSP e SRI no navegador, fora do npm test), certificados de teste
+ferramentas/            gerar_definicoes.py, gerar_manual.py, relatorio-geracao.json, README.md (heurísticas do gerador)
+testes/                 suítes Node (guia em testes/README.md), executar.mjs, teste_fontes.py, sigilo.mjs
+                        (varredura de dados sensíveis), verificar-csp.mjs (CSP e SRI no navegador, fora do
+                        npm test), gerar-certificados.mjs (certificados de teste em testes/certificados/, fora do Git)
+docs/governanca/        ficha, checklist, dados e LGPD, operação e exceções (políticas corporativas)
+CHANGELOG.md            histórico de versões
 documentacao.pdf        manual de uso (gerado)
 vercel.json             cabeçalhos HTTP
-.vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md, .gitattributes
+.vercelignore           ferramentas, fontes, iniciar.bat, README.md, testes, CLAUDE.md, .gitattributes, docs, CHANGELOG.md
 .gitattributes          sem conversão de fim de linha em assets/vendor/ e nos PDFs
 ```
 
-Tamanho atual dos módulos maiores: `telas/resolve.js` 493 linhas, `fluxo-resolve.js`
-247, `telas/lote/retorno.js` 224, `analise/retencoes.js` 111, `styles.css` 898.
+Tamanho atual dos módulos maiores: `telas/resolve.js` 494 linhas, `fluxo-resolve.js`
+270, `api/proxy.js` 230, `telas/lote/retorno.js` 224, `analise/retencoes.js` 111,
+`styles.css` 915.
 
 ## 5. Arquitetura e fluxos
 
@@ -262,15 +282,23 @@ orquestração sem DOM (`executarLoteResolve`, que avisa a tela por callbacks) e
    (12) vezes, sem consumir tentativa.
 5. Verificação depois do resolve, com intervalo configurável (padrão 10 s).
 6. Desfechos: Resolvido; Já estava concluída; Continua rejeitada; Cancelada na
-   prefeitura; Ainda em processamento; Resolve recusado pela API.
+   prefeitura; Ainda em processamento; Resolve recusado pela API; Cancelado.
+7. Cancelar: toda nota ainda aberta no fim do lote termina como Cancelado
+   (`concluirAbertasComoCanceladas`), inclusive as que nem começaram e as que
+   estavam na espera do Nacional. Cancelar durante a conferência fecha a nota
+   como Cancelado com o que já foi lido, sem nova consulta depois da pausa. As
+   pausas em andamento (espera do Nacional, intervalo da conferência) não são
+   interrompidas: as linhas fecham quando a pausa termina.
 
 Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 
 ### 5.5 Nacional e certificado
 
-- O navegador não chama o gov.br direto (sem CORS). As telas do Nacional usam
-  `api/proxy`: `GET ?url=` sem certificado, ou `POST` com
-  `{ url, certificado: { chave, certificado } }` em PEM.
+- O navegador não chama o gov.br direto (sem CORS). O repasse `api/proxy` aceita
+  `GET ?url=` ou `POST` com `{ url }` e, quando a rota exige,
+  `certificado: { chave, certificado }` em PEM. A tela usa sempre POST, para a
+  URL com chave de acesso e CNPJ não aparecer nos logs de acesso da
+  hospedagem; o GET continua aceito.
 - O repasse só aceita `https` e os domínios exatos de `DOMINIOS_LIBERADOS`
   (adn e sefin, produção e produção restrita), na porta padrão e sem usuário ou
   senha na URL (o Node os transformaria em cabeçalho `Authorization`). Prazo
@@ -282,12 +310,22 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   cadeia de 1 a 10 blocos `CERTIFICATE`, com fim de linha LF ou CRLF
   (`problemaNoCertificado`, que confere só o formato; conteúdo inválido cai no
   502 com a dica de par inválido). O domínio é conferido antes do PEM. O corpo
-  da requisição nunca é registrado (o repasse não tem `console`; há teste). O
+  da requisição nunca é registrado: o único `console` do repasse é o log
+  estruturado, uma linha JSON por chamada com `evento`, `horario`, `metodo`,
+  `status`, `dominio`, `rota` (trechos com número viram `{id}`),
+  `certificado`, `codigo` e `duracaoMs`; há teste de que nada mais entra. O
   corpo gerado pela tela com os PFX de teste tem 2.930 e 4.114 bytes, e o teste
   exige que fique abaixo de 8 KB.
 - Saída: respostas do Nacional acima de 4 MB viram 502 com código
   `ERESPOSTAGRANDE`. A Vercel corta respostas de função em 4,5 MB com um 500
   genérico.
+- Conexões: sem certificado, o agente global do Node 24 já reaproveita a
+  conexão (keepAlive, 5 s). Com certificado, `agent: false` abre uma conexão só
+  para a consulta, fechada ao fim, para o socket autenticado com o A1 não ficar
+  no pool.
+- Saúde: `GET /api/saude` devolve `{ situacao: "ok", versao }`, sem cache. A
+  versão fica em `api/saude.js` e o teste exige que seja igual à do
+  `package.json`.
 - Limitação de uso: não há limitador no código. Um contador em memória valeria
   por instância (a Vercel sobe várias e as zera a cada deploy), não protege
   custo (a invocação já foi cobrada) e, com os consultores saindo pelo mesmo IP
@@ -369,14 +407,15 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   cabeçalho, com contador. Traz Identificar-se, Exportar (TXT) e Limpar.
 - Identificação: nome declarado, só para rastreabilidade nos logs exportados.
   Não há login.
-- API Key: `sessionStorage` por padrão; `localStorage` só com "Manter a chave".
-  Perfis salvos ficam em `localStorage`, sem criptografia. A chave vai direto do
-  navegador para a API PlugNotas e nunca passa pelo servidor da ferramenta. O
-  cartão da credencial traz um aviso que explica essas três formas de guarda e o
-  risco de salvar perfis em computador compartilhado, e o botão "Apagar todos os
-  perfis" (com confirmação). Apagar ou remover perfil também tira do campo e do
-  armazenamento a chave que for de um perfil apagado; chave digitada que não é
-  de perfil fica.
+- API Key: a chave digitada, os perfis, o perfil ativo e a lista de IDs do
+  Resolve ficam só no `sessionStorage` da aba e somem ao fechá-la; não há opção
+  de manter a chave no navegador. Na abertura, `levarDadosSensiveisParaAba`
+  (`js/shared.js`) move para a aba e apaga do `localStorage` o que versões
+  anteriores gravaram. A chave vai direto do navegador para a API PlugNotas e
+  nunca passa pelo servidor da ferramenta. O cartão da credencial traz o aviso
+  de como a chave é guardada e o botão "Apagar todos os perfis" (com
+  confirmação). Apagar ou remover perfil também tira do campo e da aba a chave
+  que for de um perfil apagado; chave digitada que não é de perfil fica.
 - Rodapé: "**Painel Técnico NFS-e · Consultoria Técnica NFS-e** · TecnoSpeed" e
   "Desenvolvido por Hugo Zuin" com menos destaque.
 
@@ -400,7 +439,8 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    e-mails. A lista de permitidos fica em `testes/sigilo.mjs`, cada valor com a
    fonte pública; valor novo só entra com fonte.
 3. **API Key.** Nunca enviar ao servidor da ferramenta, nunca registrar em log,
-   nunca incluir em exportação. `X-API-KEY` só pode ir para a origem fixa
+   nunca incluir em exportação, nunca gravar no `localStorage` (só no
+   `sessionStorage` da aba; há teste). `X-API-KEY` só pode ir para a origem fixa
    `ORIGEM_PLUGNOTAS` (`js/plugnotas.js`): `requisitar` recusa, sem chamar o
    `fetch`, qualquer outro destino com chave, e a `base` do `rotas.json` tem de
    ser igual a ela (teste de contrato). Nenhum código envia a chave por fora de
@@ -408,7 +448,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 4. **Certificado A1.** Nunca persistir em `localStorage`, `sessionStorage`,
    cookies ou logs. A senha não sai do navegador e é apagada do campo depois de
    cada leitura do arquivo, com ou sem sucesso. O repasse usa chave e cadeia só durante a
-   conexão e não registra o corpo da requisição. `teste-seguranca.mjs` carrega e
+   conexão, que é fechada ao fim (`agent: false`), e não registra o corpo da requisição. `teste-seguranca.mjs` carrega e
    usa o A1 de teste e varre armazenamentos, cookie, logs, DOM, campos, área de
    transferência e arquivos exportados.
 5. **Repasse.** Somente `https`, domínios exatos da lista na porta padrão, sem
@@ -424,7 +464,8 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    nofollow`).
 9. **Cabeçalhos do site.** CSP, Permissions-Policy e
    `Cross-Origin-Opener-Policy: same-origin` valem nas páginas (regra
-   `/((?!api/).*)` do `vercel.json`); o repasse define a própria CSP. Nada
+   `/((?!api/).*)` do `vercel.json`); o repasse define a própria CSP. Scripts,
+   estilos e fontes só do próprio site. Nada
    inline: sem `<script>` ou `<style>` embutidos, sem atributo `style` ou `on*`,
    estilo dinâmico só por CSSOM (`elemento.style.x`). Origem nova de `fetch`
    precisa entrar no `connect-src`, e o teste de segurança falha até isso
@@ -446,7 +487,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Comportamento novo de tela entra de preferência pelo catálogo em `definicoes/`.
 - CSS com os tokens existentes (`--indigo-*`, `--bg-*`, `--text-*`, `--border*`,
   `--font-mono`), funcionando nos temas claro e escuro. O `styles.css` é um
-  arquivo só, sem comentários, na ordem: tokens e temas, base, componentes
+  arquivo só, sem comentários, na ordem: fontes (`@font-face`), tokens e temas, base, componentes
   (botões, campos, interruptor, badges, abas, cartões), estrutura (casca,
   cabeçalho, menu lateral, rodapé), tabelas e progresso, telas de rota e
   Retorno, popup de informação, painel de logs, modal, avisos e as telas
@@ -454,7 +495,12 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   bloco do seu componente. `[hidden] { display: none !important }` faz o
   atributo `hidden` vencer o `display` das classes: esconda sempre pelo
   atributo. `testes/teste-padroes.mjs` cobra a ausência de comentários em `js/`,
-  `api/` e no CSS.
+  `api/`, no CSS e nos scripts Python (fica só a docstring do módulo, que vira o
+  `--help`).
+- Testes: esperas longas da aplicação com o relógio simulado do `node:test`;
+  esperar tela ou chamada com `aguardarAte(condicao)`. Espera fixa só para
+  debounce e para conferir que algo não aconteceu. Todo defeito corrigido ganha
+  teste que falha no código antigo.
 - Textos da interface: português, concisos, sem jargão desnecessário, **sem
   travessões**.
 - **Rigor de fonte:** nenhum limite, regra ou comportamento pode ser afirmado
@@ -488,6 +534,16 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 | CSP só nas páginas, com `img-src 'self'` (sem `data:`) e sem liberar a Vercel Toolbar | Aprovado na rodada 1; nada do app usa `data:` e o repasse tem CSP própria |
 | Sem limitador por IP no código do repasse; limite pelo WAF da Vercel | Aprovado na rodada 1; contador em memória não protege e barraria lotes da equipe no mesmo IP |
 | Nome, logo, favicon e rodapé atuais | Identidade definida pelo Hugo |
+| API Key, perfis e lista do Resolve só na aba, sem "Manter a chave" | Aprovado na rodada 1: a API Key é informação Restrita pela política de dados |
+| Consultas do Nacional sempre por POST, GET ainda aceito no repasse | Identificadores fora da URL e dos logs de acesso; contrato do repasse mantido |
+| Quicksand servida pelo próprio site | Um terceiro a menos recebendo o IP do consultor; CSP só `'self'` |
+| Código de cada tela carregado sob demanda | Orçamento de 49 KB com gzip para o JS da abertura (`teste-desempenho.mjs`) |
+| Classificação como Aplicação crítica | Políticas corporativas (ação fiscal em produção, exposição externa, credenciais de clientes) |
+
+As três primeiras decisões da tabela (repositório pessoal, site aberto na
+Vercel e Standard Protection sem login) conflitam com as políticas
+corporativas. Valem sob a exceção temporária E1 (`docs/governanca/excecoes.md`)
+até a migração para GitLab, hospedagem corporativa e SSO.
 
 Rotas conferidas na documentação do PlugNotas (método e caminho):
 
@@ -523,6 +579,21 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
 - A documentação traz status de sincronização e de interrupção por protocolo e
   regeração de PDF por idIntegracao; oferecidos, ainda não decididos.
 - O anexo VI tem regras com código provisório (`EXXX`); são exibidas como estão.
+- Conformidade com as políticas corporativas (plano aprovado na rodada 1):
+  - Onda 0, com o Hugo e o gestor: registrar no TecnoApps como Aplicação
+    crítica, formalizar responsável de negócio e revisor independente, obter o
+    aceite das exceções de `docs/governanca/excecoes.md`, pedir à Tecnologia
+    GitLab, hospedagem corporativa com SSO e a confirmação de que o Claude Code
+    é homologado, com conta corporativa, e confirmar a classificação da
+    informação.
+  - Onda 3, depois da Tecnologia: repositório no GitLab com Merge Request e
+    revisão independente, pipeline (testes, dependências, segredos, deploy só
+    com tudo verde), hospedagem corporativa com SSO e WAF, auditoria das ações
+    sensíveis com a identidade do SSO, integração do log ao monitoramento
+    centralizado e responsável pelo custo.
+- Validar na produção, depois do merge: consultas do Nacional por POST (com e
+  sem certificado), `/api/saude`, região `gru1` e cabeçalhos de cache de
+  `assets/vendor/`.
 
 ## 10. Glossário
 

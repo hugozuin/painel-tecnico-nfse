@@ -1,4 +1,4 @@
-export const VERSAO = "4.0.0";
+export const VERSAO = "4.1.0";
 
 export default function responderSaude(requisicao, resposta) {
   resposta.setHeader("Cache-Control", "no-store");

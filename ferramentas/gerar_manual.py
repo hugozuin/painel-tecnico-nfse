@@ -108,7 +108,7 @@ def construir():
           Paragraph("Manual de uso da ferramenta interna da Consultoria Técnica NFS-e.<br/>"
                     "Operações da API PlugNotas e do Ambiente Nacional, de-para do XML,<br/>"
                     "relação IBS e CBS e validador de JSON.", subtitulo_capa),
-          Spacer(1, 40), Paragraph("Versão 4.0", subtitulo_capa), Paragraph("Setembro de 2026", subtitulo_capa),
+          Spacer(1, 40), Paragraph("Versão 4.1", subtitulo_capa), Paragraph("Setembro de 2026", subtitulo_capa),
           Paragraph("Desenvolvido por Hugo Zuin · Uso interno TecnoSpeed", subtitulo_capa),
           NextPageTemplate("conteudo"), PageBreak()]
 
@@ -121,13 +121,13 @@ def construir():
                        "alteram ou apagam dado aparecem marcadas como sensíveis e pedem confirmação antes de executar.", corpo))
 
     h.append(Paragraph("2. Credencial", secao))
-    h.append(Paragraph("A API Key fica no topo das telas do PlugNotas. Sem marcar a opção de manter a chave, ela fica só "
-                       "na aba e some quando a aba é fechada; com a opção marcada, fica gravada no navegador até ser "
-                       "desmarcada. Os perfis guardam chaves por apelido, o que ajuda a não rodar um lote na conta "
-                       "errada, e ficam gravados no navegador sem criptografia até serem removidos. Não salve perfis "
-                       "em computador compartilhado. O botão Apagar todos os perfis limpa todos de uma vez, com "
-                       "confirmação. A chave só segue para a API PlugNotas. As telas do Nacional não usam a API Key: "
-                       "passam pelo repasse da aplicação, e algumas exigem certificado digital.", corpo))
+    h.append(Paragraph("A API Key fica no topo das telas do PlugNotas. A chave digitada e os perfis ficam só na aba "
+                       "e somem quando ela é fechada; nada fica gravado no navegador. Os perfis guardam chaves por "
+                       "apelido enquanto a aba estiver aberta, o que ajuda a alternar entre contas sem rodar um lote na "
+                       "conta errada. Depois de fechar a aba, informe a chave de novo. O botão Apagar todos os perfis "
+                       "limpa todos de uma vez, com confirmação. A chave só segue para a API PlugNotas. As telas do "
+                       "Nacional não usam a API Key: passam pelo repasse da aplicação, e algumas exigem certificado "
+                       "digital.", corpo))
 
     h.append(Paragraph("3. Resolve em lote", secao))
     h.append(Paragraph("A rota de resolve confirma apenas que a solicitação foi recebida. Por isso o painel lê a "
@@ -141,6 +141,8 @@ def construir():
         ["Cancelada na prefeitura", "A consulta retornou a nota como cancelada.", "Confirmar com o cliente."],
         ["Ainda em processamento", "A situação seguia em andamento no fim das verificações.", "Consultar de novo em alguns minutos."],
         ["Resolve recusado pela API", "A API recusou a solicitação.", "Ler a mensagem de retorno."],
+        ["Cancelado", "O consultor cancelou antes de a nota terminar. A mensagem diz se o resolve chegou a ser aceito.",
+         "Usar Reprocessar apenas as falhas, que inclui as canceladas."],
     ], [95, 200, 170])))
     h.append(Spacer(1, 6))
 

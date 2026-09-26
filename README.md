@@ -101,52 +101,73 @@ Duplo clique em `iniciar.bat` no Windows. Ele confere o Node.js, sobe um
 servidor na porta 3500 e abre o navegador. As telas do Nacional dependem do
 repasse em `api/proxy`, que só existe no ambiente publicado.
 
+Testes: `cd testes && npm install` uma vez e depois `npm test`. O guia das
+suítes está em `testes/README.md`.
+
 ## Publicação
 
 Deploy na Vercel a partir do repositório privado, com Framework Preset Other e
 sem variável de ambiente. Em Deployment Protection, a Vercel Authentication fica
 em Standard Protection: o domínio de produção abre sem login e as prévias de
-outros branches continuam protegidas. A pasta `api/` vira função serverless; o
-repasse do Nacional aceita GET, ou POST com o certificado do consultor, e apenas os domínios do gov.br listados em
-`api/proxy.js`. O `.vercelignore` deixa o gerador, os anexos e os READMEs fora do
-site.
+outros branches continuam protegidas. A pasta `api/` vira função serverless, na
+região `gru1` (São Paulo). O repasse do Nacional aceita GET com `?url=` ou POST
+com `{ url, certificado }`, e apenas os domínios do gov.br listados em
+`api/proxy.js`; a tela usa sempre POST. `GET /api/saude` responde a situação e a
+versão, para monitoramento. O `.vercelignore` deixa o gerador, os anexos, os
+testes, a documentação e os READMEs fora do site.
+
+Depois de cada deploy, confira `/api/saude` e os cabeçalhos com `curl -sI`. O
+procedimento de recuperação está em `docs/governanca/operacao.md`.
 
 ## Segurança
 
 - **Cabeçalhos do site** (`vercel.json`): `nosniff`, `Referrer-Policy` e
   `X-Robots-Tag` em tudo. Nas páginas, fora de `/api/`, também valem a
-  Content-Security-Policy (scripts só do próprio site, estilos do próprio site e
-  da folha do Google Fonts, arquivos de fonte do Google Fonts, conexões só com o
-  próprio site e a API PlugNotas, sem objetos, sem moldura e sem formulário), a
+  Content-Security-Policy (scripts, estilos e fontes só do próprio site, conexões
+  só com o próprio site e a API PlugNotas, sem objetos, sem moldura e sem
+  formulário), a
   Permissions-Policy (câmera, microfone e localização desligados) e
   `Cross-Origin-Opener-Policy: same-origin`. Se a
   leitura remota das definições for religada, `https://raw.githubusercontent.com`
   precisa entrar no `connect-src`; o teste de segurança cobra isso.
 - **API Key**: só segue para `https://api.plugnotas.com.br`. Qualquer outro
-  destino com chave é recusado antes de sair do navegador. A chave digitada
-  fica só na aba (sessionStorage); com "Manter a chave digitada", fica no
-  navegador (localStorage); os perfis ficam no localStorage, sem criptografia,
-  até serem removidos. O cartão da credencial explica isso e traz o botão
-  "Apagar todos os perfis".
+  destino com chave é recusado antes de sair do navegador. A chave digitada, os
+  perfis e a lista do Resolve ficam só na aba (sessionStorage) e somem ao
+  fechá-la; nada fica gravado no navegador. O cartão da credencial explica isso
+  e traz o botão "Apagar todos os perfis".
 - **Repasse**: toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`, e
   HTML ou SVG do Nacional vira download. A entrada aceita só `https`, os
   domínios da lista na porta padrão, sem usuário e senha na URL, corpo até
   64 KB e certificado com o formato PEM conferido. Cada consulta tem prazo
-  total de 30 s, e respostas acima de 4 MB viram erro explicado. Não há
-  limitador por IP no código; a recomendação é uma regra de rate limit no WAF
-  da Vercel (detalhes na seção 5.5 do CLAUDE.md).
+  total de 30 s, e respostas acima de 4 MB viram erro explicado. A conexão com
+  certificado é fechada ao fim da consulta. Cada consulta gera uma linha de log
+  em JSON com método, status, domínio, rota sem identificadores, se levou
+  certificado, erro e duração; corpo, URL com identificadores, chave e
+  certificado nunca entram no log. Não há limitador por IP no código; a
+  recomendação é uma regra de rate limit no WAF da Vercel (detalhes na seção
+  5.5 do CLAUDE.md).
 - **Listas de identificadores**: os itens `.` e `..` são recusados com aviso,
   porque mudariam o caminho da rota chamada.
-- **Forge**: vendorizado com a versão no nome (`assets/vendor/forge-1.4.0.min.js`)
-  e carregado com SRI. O `.gitattributes` impede que o Git troque o fim de linha
-  e altere o hash.
+- **Forge e fonte**: vendorizados com a versão no nome
+  (`assets/vendor/forge-1.4.0.min.js`, `assets/vendor/quicksand-v37-*.woff2`),
+  com as licenças ao lado e cache imutável de um ano. O forge é carregado com
+  SRI, e o `.gitattributes` impede que o Git troque o fim de linha e altere o
+  hash.
+
+## Governança
+
+Pelas políticas corporativas de aplicações, dados e IA, o Painel é uma
+**Aplicação crítica**: executa ações fiscais na API de produção, fica exposto
+na internet e usa credenciais de clientes. A ficha, o checklist, o inventário
+de dados e LGPD, a operação e as exceções em aberto estão em
+`docs/governanca/`. O histórico de versões está no `CHANGELOG.md`.
 
 ## Estrutura
 
 ```
 index.html               estrutura, menu lateral e modais
 styles.css               tema claro e escuro alinhado à marca
-assets/                  logo, ícone, favicon e vendor/forge-1.4.0.min.js
+assets/                  logo, ícone, favicon; vendor/ com forge e Quicksand, e as licenças
 js/app.js                menu, título de cada tela e montagem das telas
 js/definicoes.js         leitura das definições, com carregamento sob demanda
 js/info.js               ícone de informação e popup fixável
@@ -157,10 +178,14 @@ js/fluxo-resolve.js      regras e orquestração do Resolve, sem DOM
 js/componentes.js        cartão e interruptor usados por todas as telas
 js/telas/                telas de rota, resolve, Nacional, de-para, IBS e CBS e validador
 js/telas/lote/           entrada, execução e Retorno do motor das telas de rota
-api/proxy.js             repasse das consultas públicas do Nacional
+api/proxy.js             repasse das consultas do Nacional
+api/saude.js             verificação de saúde (situação e versão)
 definicoes/              catálogos, regras, de-para e tabelas do IBS e da CBS
 fontes/nacional/         anexos VI, VII e VIII
-ferramentas/             gerador das definições e relatório da última geração
+ferramentas/             gerador das definições, manual e relatório da última geração
+testes/                  suítes Node, conferência das planilhas e verificação no navegador
+docs/governanca/         ficha, checklist, dados e LGPD, operação e exceções
+CHANGELOG.md             histórico de versões
 ```
 
 ## Limitações conhecidas
