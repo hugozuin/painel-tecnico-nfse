@@ -34,11 +34,12 @@ export function montarTelaNacional(container, rota) {
     },
     prepararPedido: (alvo) => {
       const certificado = certificadoAtual();
-      if (!certificado) return { url: `api/proxy?url=${encodeURIComponent(alvo.url)}`, metodo: "GET" };
       return {
         url: "api/proxy",
         metodo: "POST",
-        corpo: { url: alvo.url, certificado: { chave: certificado.chave, certificado: certificado.certificado } }
+        corpo: certificado
+          ? { url: alvo.url, certificado: { chave: certificado.chave, certificado: certificado.certificado } }
+          : { url: alvo.url }
       };
     }
   });

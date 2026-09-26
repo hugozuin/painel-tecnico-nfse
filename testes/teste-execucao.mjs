@@ -51,7 +51,7 @@ global.fetch = async (url, opcoes = {}) => {
   if (endereco.includes("/nfse/sincronizar")) return resposta(200, { aceitos: 2 });
   if (endereco.includes("/nfse/email/")) return resposta(200, { message: "E-mail enviado" });
   if (endereco.includes("api/proxy")) {
-    if ((opcoes.method || "GET") === "POST") return resposta(200, { contribuinte: { situacao: "Ativo", inscricaoFederal: "12345678000195" } });
+    if (JSON.parse(opcoes.body || "{}").url?.includes("/cnc/")) return resposta(200, { contribuinte: { situacao: "Ativo", inscricaoFederal: "12345678000195" } });
     return resposta(200, { convenio: { aderente: true } });
   }
   return resposta(404, { message: "nao mapeado" });
@@ -209,9 +209,9 @@ clicar("Consultar");
 await esperar(400);
 const chamadaProxy = chamadas.find((c) => c.url.startsWith("api/proxy"));
 conferir("passou pelo repasse", Boolean(chamadaProxy), chamadaProxy?.url);
-conferir("repasse aponta para o ADN",
-  decodeURIComponent(chamadaProxy?.url || "").includes("https://adn.nfse.gov.br/parametrizacao/4115200/convenio"),
-  decodeURIComponent(chamadaProxy?.url || ""));
+conferir("repasse aponta para o ADN", chamadaProxy?.corpo?.url === "https://adn.nfse.gov.br/parametrizacao/4115200/convenio", JSON.stringify(chamadaProxy?.corpo));
+conferir("sem certificado vai por POST, com a URL só no corpo",
+  chamadaProxy?.url === "api/proxy" && chamadaProxy.metodo === "POST" && !("certificado" in (chamadaProxy.corpo || {})), JSON.stringify(chamadaProxy));
 const chamadasAoRepasse = chamadas.filter((c) => c.url.startsWith("api/proxy"));
 conferir("não mandou API Key ao Nacional", chamadasAoRepasse.length > 0 && chamadasAoRepasse.every((c) => c.chave === null));
 const retorno = document.querySelector(".retorno");
@@ -248,7 +248,9 @@ conferir("retorno do contribuinte exibido e visível", retornoCnc?.querySelector
 [...cartaoCertificado.querySelectorAll("button")].find((b) => b.textContent === "Remover").click();
 clicar("Consultar");
 await esperar(400);
-conferir("sem certificado volta para GET", chamadas[chamadas.length - 1].url.startsWith("api/proxy?url="));
+const semCertificado = chamadas[chamadas.length - 1];
+conferir("removido o certificado, o corpo segue sem ele",
+  semCertificado.url === "api/proxy" && semCertificado.metodo === "POST" && semCertificado.corpo?.url?.includes("/cnc/consulta/cad") && !("certificado" in semCertificado.corpo), JSON.stringify(semCertificado));
 
 console.log("\n== itens . e .. não desviam o caminho da rota ==");
 const avisos = () => [...document.querySelectorAll(".toast")].map((aviso) => aviso.textContent);
