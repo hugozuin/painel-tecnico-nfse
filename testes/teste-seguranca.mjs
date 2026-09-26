@@ -260,6 +260,8 @@ const pedidosPemValido = simularNacional({ tipo: "application/json", partes: [Bu
 const pemValido = await chamarRepasse({ method: "POST", body: { url: destinoLiberado, certificado: { chave: legado.chave, certificado: legado.certificado } } });
 conferir("PEM válido segue para o Nacional na conexão TLS",
   pemValido.status === 200 && pedidosPemValido.length === 1 && pedidosPemValido[0].opcoes.key === legado.chave && pedidosPemValido[0].opcoes.cert === legado.certificado);
+conferir("conexão com certificado não entra no pool de conexões reaproveitadas", pedidosPemValido[0]?.opcoes.agent === false);
+conferir("consulta sem certificado usa o agente padrão, com keepAlive", pedidosPorta443[0]?.opcoes.agent === undefined && https.globalAgent.keepAlive === true);
 
 console.log("\n== saída do repasse: tamanho e prazo ==");
 const megabyte = Buffer.alloc(1024 * 1024, 65);

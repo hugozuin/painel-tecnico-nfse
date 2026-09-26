@@ -64,6 +64,7 @@ export function consultarNacional(endereco, certificado) {
     if (certificado) {
       opcoes.key = certificado.chave;
       opcoes.cert = certificado.certificado;
+      opcoes.agent = false;
     }
     pedido = https.request(endereco, opcoes, (resposta) => {
       const partes = [];
