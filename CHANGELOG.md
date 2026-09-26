@@ -10,7 +10,8 @@
 - O cartão da credencial explica como a chave é guardada e traz o botão
   "Apagar todos os perfis".
 - Cancelar o Resolve fecha como "Cancelado" todas as notas ainda abertas,
-  inclusive na espera do Nacional e durante a conferência.
+  inclusive na espera do Nacional e durante a conferência, e interrompe na
+  hora as pausas em andamento.
 - A fonte Quicksand é servida pelo próprio site.
 
 ### Segurança e conformidade

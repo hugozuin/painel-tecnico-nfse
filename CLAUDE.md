@@ -287,8 +287,9 @@ orquestração sem DOM (`executarLoteResolve`, que avisa a tela por callbacks) e
    (`concluirAbertasComoCanceladas`), inclusive as que nem começaram e as que
    estavam na espera do Nacional. Cancelar durante a conferência fecha a nota
    como Cancelado com o que já foi lido, sem nova consulta depois da pausa. As
-   pausas em andamento (espera do Nacional, intervalo da conferência) não são
-   interrompidas: as linhas fecham quando a pausa termina.
+   pausas do Resolve e da consulta de eventos (espera do Nacional, intervalo da
+   conferência, resolve em andamento, novas tentativas) usam
+   `pausarAteCancelar` (`js/plugnotas.js`), que termina na hora do cancelamento.
 
 Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 

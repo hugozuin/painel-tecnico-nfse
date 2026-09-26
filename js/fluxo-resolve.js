@@ -1,5 +1,5 @@
-import { pausar, registrarLog, criarPoolExecucao } from "./shared.js";
-import { consultarNota, consultarEventos, executarResolve } from "./plugnotas.js";
+import { registrarLog, criarPoolExecucao } from "./shared.js";
+import { consultarNota, consultarEventos, executarResolve, pausarAteCancelar } from "./plugnotas.js";
 
 const CONCORRENCIA_RESOLVE = 5;
 
@@ -187,7 +187,7 @@ async function processarNacional(lote, itens) {
 
   registrarLog(`Aguardando ${configuracao.esperaNacional / 1000}s para o Nacional processar os eventos.`, "warn");
   pendentes.forEach((entrada) => lote.aoMudarEstagio(entrada.posicao, "aguardando"));
-  await pausar(configuracao.esperaNacional);
+  await pausarAteCancelar(configuracao.esperaNacional, sessao);
   if (sessao.cancelada) return;
 
   await pool.executar(pendentes,
@@ -254,7 +254,7 @@ async function conferirSituacao(lote, id, limite, situacaoAntes) {
   let mensagem = "";
 
   for (let tentativa = 1; tentativa <= limite; tentativa++) {
-    if (tentativa > 1) await pausar(lote.configuracao.intervaloVerificacao);
+    if (tentativa > 1) await pausarAteCancelar(lote.configuracao.intervaloVerificacao, lote.sessao);
     if (lote.sessao.cancelada) return { situacao, mensagem, interrompida: true };
 
     const leitura = await consultarNota({ identificador: id, apiKey: lote.apiKey, sessao: lote.sessao });

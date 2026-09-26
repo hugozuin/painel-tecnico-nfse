@@ -1,4 +1,4 @@
-import { pausar, registrarLog } from "./shared.js";
+import { registrarLog } from "./shared.js";
 
 export const ORIGEM_PLUGNOTAS = "https://api.plugnotas.com.br";
 
@@ -29,6 +29,21 @@ export function criarSessaoRequisicoes() {
       controladores.clear();
     }
   };
+}
+
+export function pausarAteCancelar(ms, sessao) {
+  if (sessao.cancelada) return Promise.resolve();
+  const controlador = new AbortController();
+  sessao.controladores.add(controlador);
+  return new Promise((pronto) => {
+    const encerrar = () => {
+      clearTimeout(temporizador);
+      sessao.controladores.delete(controlador);
+      pronto();
+    };
+    const temporizador = setTimeout(encerrar, ms);
+    controlador.signal.addEventListener("abort", encerrar, { once: true });
+  });
 }
 
 function podeLevarApiKey(url) {
@@ -199,7 +214,7 @@ export async function consultarEventos({ id, apiKey, sessao, tentativas, interva
     if (falhaTemporaria(resposta) && tentativa < tentativas) {
       const espera = resposta.esperaSugerida ?? intervalo;
       registrarLog(`ID ${id}: falha temporária na consulta de eventos. Nova tentativa em ${espera}ms.`, "warn");
-      await pausar(espera);
+      await pausarAteCancelar(espera, sessao);
       continue;
     }
 
@@ -235,7 +250,7 @@ export async function executarResolve({ id, identificacao, apiKey, sessao, tenta
         verificacoes++;
         tentativa--;
         registrarLog(`ID ${id}: resolve em andamento na API. Nova verificação em ${ESPERA_RESOLVE_MS / 1000}s (${verificacoes}/${MAXIMO_VERIFICACOES_RESOLVE}).`, "warn");
-        await pausar(ESPERA_RESOLVE_MS);
+        await pausarAteCancelar(ESPERA_RESOLVE_MS, sessao);
         continue;
       }
       return {
@@ -251,7 +266,7 @@ export async function executarResolve({ id, identificacao, apiKey, sessao, tenta
     if (falhaTemporaria(resposta) && tentativa < tentativas) {
       const espera = resposta.esperaSugerida ?? intervalo;
       registrarLog(`ID ${id}: ${resposta.mensagem}. Nova tentativa em ${espera}ms.`, "warn");
-      await pausar(espera);
+      await pausarAteCancelar(espera, sessao);
       continue;
     }
 

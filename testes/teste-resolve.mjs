@@ -149,11 +149,13 @@ const umaVezPorNota = (concluidos, quantidade) => new Set(concluidos.map((result
 
 chamadas = simularApi({ situacoes: { N1: "REJEITADO", N2: "REJEITADO", N3: "REJEITADO" } });
 let sessaoDoTeste = criarSessaoRequisicoes();
-saida = await executarComRegistro(lote("N", 3), { ...rapida, nacional: true, esperaNacional: 20 }, sessaoDoTeste,
-  (estagio) => { if (estagio === "aguardando") sessaoDoTeste.cancelar(); });
+let inicioDoCancelamento = performance.now();
+saida = await executarComRegistro(lote("N", 3), { ...rapida, nacional: true, esperaNacional: 60000 }, sessaoDoTeste,
+  (estagio) => { if (estagio === "aguardando") setTimeout(() => sessaoDoTeste.cancelar(), 10); });
 conferir("cancelar na espera do Nacional fecha todas as notas como Cancelado, sem resolve",
   umaVezPorNota(saida.concluidos, 3) && saida.concluidos.every((resultado) => resultado.chave === "cancelado" && resultado.mensagem.startsWith("Não processada"))
   && !chamadas.some((chamada) => chamada.startsWith("resolve")), JSON.stringify(saida.concluidos.map((resultado) => [resultado.id, resultado.chave])));
+conferir("cancelar interrompe a espera de 60 s do Nacional na hora", performance.now() - inicioDoCancelamento < 2000, `${Math.round(performance.now() - inicioDoCancelamento)} ms`);
 
 sessaoDoTeste = criarSessaoRequisicoes();
 chamadas = simularApi({
@@ -173,7 +175,9 @@ chamadas = simularApi({
     if (tipo === "consultar" && registradas.filter((chamada) => chamada === "consultar V1").length === 2) setTimeout(() => sessaoDoTeste.cancelar(), 5);
   }
 });
-saida = await executarComRegistro(lote("V", 1), { ...rapida, verificacoes: 5, intervaloVerificacao: 60 }, sessaoDoTeste);
+inicioDoCancelamento = performance.now();
+saida = await executarComRegistro(lote("V", 1), { ...rapida, verificacoes: 5, intervaloVerificacao: 60000 }, sessaoDoTeste);
+conferir("cancelar interrompe o intervalo de 60 s da conferência na hora", performance.now() - inicioDoCancelamento < 2000, `${Math.round(performance.now() - inicioDoCancelamento)} ms`);
 const interrompida = saida.concluidos[0];
 conferir("cancelar durante a conferência marca Cancelado e guarda o que já foi lido",
   interrompida?.chave === "cancelado" && interrompida.situacaoDepois === "PROCESSANDO" && interrompida.status === 200 && interrompida.mensagem.includes("conferência interrompida"),

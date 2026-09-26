@@ -72,6 +72,30 @@ global.fetch = async () => { sessao.cancelar(); return resposta(500, { message: 
 saida = await executarResolve({ id: "A5", apiKey: "k", sessao, tentativas: 3, intervalo: 1 });
 conferir("desfecho cancelado", saida.desfecho === "cancelado", JSON.stringify(saida));
 
+console.log("\n== pausas que o cancelamento interrompe ==");
+const { pausarAteCancelar } = await import("../js/plugnotas.js");
+const sessaoDaPausa = criarSessaoRequisicoes();
+let inicioDaPausa = performance.now();
+await pausarAteCancelar(20, sessaoDaPausa);
+conferir("sem cancelamento a pausa dura o tempo pedido e não deixa controlador para trás",
+  performance.now() - inicioDaPausa >= 15 && sessaoDaPausa.controladores.size === 0, `${Math.round(performance.now() - inicioDaPausa)} ms`);
+inicioDaPausa = performance.now();
+setTimeout(() => sessaoDaPausa.cancelar(), 10);
+await pausarAteCancelar(60000, sessaoDaPausa);
+conferir("cancelar encerra uma pausa de 60 s na hora", performance.now() - inicioDaPausa < 1000, `${Math.round(performance.now() - inicioDaPausa)} ms`);
+inicioDaPausa = performance.now();
+await pausarAteCancelar(60000, sessaoDaPausa);
+conferir("sessão já cancelada não pausa", performance.now() - inicioDaPausa < 50);
+const sessaoDoResolveEmAndamento = criarSessaoRequisicoes();
+global.fetch = async () => {
+  setTimeout(() => sessaoDoResolveEmAndamento.cancelar(), 10);
+  return resposta(400, { message: "O processo de resolve ja esta sendo executado para esse documento" });
+};
+inicioDaPausa = performance.now();
+saida = await executarResolve({ id: "A6", apiKey: "k", sessao: sessaoDoResolveEmAndamento, tentativas: 3, intervalo: 1 });
+conferir("cancelar durante a espera do resolve em andamento devolve cancelado na hora",
+  saida.desfecho === "cancelado" && performance.now() - inicioDaPausa < 1000, `${saida.desfecho}, ${Math.round(performance.now() - inicioDaPausa)} ms`);
+
 console.log("\n== normalização da consulta ==");
 const notaLista = normalizarNota([{ id: "abc", situacao: "concluido", numeroNfse: "123", codigoVerificacao: "XYZ" }]);
 conferir("aceita lista e normaliza situação", notaLista.situacao === "CONCLUIDO" && notaLista.numero === "123");
