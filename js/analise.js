@@ -1,5 +1,5 @@
 import { criarContexto } from "./analise/contexto.js";
-import { aplicarRegra } from "./analise/regras-declarativas.js";
+import { aplicarRegrasDeclarativas } from "./analise/regras-declarativas.js";
 import { analisarTextos, analisarDescricao } from "./analise/texto.js";
 import { analisarNomesDeCampo, analisarTiposTrocados } from "./analise/campos.js";
 import { analisarDocumentosFiscais } from "./analise/documentos.js";
@@ -15,40 +15,34 @@ export { documentoValido } from "./analise/documentos.js";
 export { arredondar, truncar } from "./analise/valores.js";
 export { derivarTipoRetencao } from "./analise/retencoes.js";
 
+const CONFERENCIAS_DA_NOTA = [
+  aplicarRegrasDeclarativas, analisarTextos, analisarNomesDeCampo, analisarTiposTrocados, analisarDocumentosFiscais, analisarLeiaute
+];
+const CONFERENCIAS_DO_SERVICO = [analisarValores, analisarRetencoes, analisarIss, analisarDescricao];
+const ORDEM_DA_SEVERIDADE = { erro: 0, alerta: 1, informacao: 2 };
+
 export function analisarEmissao(documento, dados = {}) {
   const contexto = criarContexto(dados);
   const achados = [];
   const notas = Array.isArray(documento) ? documento : [documento];
-
   notas.forEach((nota, posicaoNota) => {
     const prefixo = notas.length > 1 ? `nota[${posicaoNota}].` : "";
     const registrar = (item) => achados.push({ ...item, campo: `${prefixo}${item.campo}` });
-
-    (dados.regras?.regras || []).forEach((regra) => aplicarRegra(nota, regra).forEach(registrar));
-    analisarTextos(nota, registrar);
-    analisarNomesDeCampo(nota, dados.regras?.apelidos || {}, contexto, registrar);
-    analisarTiposTrocados(nota, registrar);
-    analisarDocumentosFiscais(nota, contexto, registrar);
-    analisarLeiaute(nota, contexto, registrar);
-
-    const servicos = Array.isArray(nota?.servico) ? nota.servico : nota?.servico ? [nota.servico] : [];
-    servicos.forEach((servico, posicao) => {
-      const caminho = Array.isArray(nota?.servico) ? `servico[${posicao}]` : "servico";
-      analisarValores(servico, caminho, registrar);
-      analisarRetencoes(servico, caminho, contexto, registrar);
-      analisarIss(servico, caminho, contexto, registrar);
-      analisarDescricao(servico, caminho, registrar);
+    CONFERENCIAS_DA_NOTA.forEach((conferir) => conferir(nota, contexto, registrar));
+    servicosDaNota(nota).forEach(({ servico, caminho }) => {
+      CONFERENCIAS_DO_SERVICO.forEach((conferir) => conferir(servico, caminho, contexto, registrar));
     });
-
     analisarIbsCbs(nota, contexto, registrar);
   });
-
-  return ordenar(achados);
+  return ordenarSemRepetir(achados);
 }
 
-const ordemSeveridade = { erro: 0, alerta: 1, informacao: 2 };
+function servicosDaNota(nota) {
+  if (Array.isArray(nota?.servico)) return nota.servico.map((servico, posicao) => ({ servico, caminho: `servico[${posicao}]` }));
+  return nota?.servico ? [{ servico: nota.servico, caminho: "servico" }] : [];
+}
 
-function ordenar(achados) {
+function ordenarSemRepetir(achados) {
   const vistos = new Set();
   return achados
     .filter((item) => {
@@ -57,6 +51,6 @@ function ordenar(achados) {
       vistos.add(chave);
       return true;
     })
-    .sort((primeiro, segundo) => ordemSeveridade[primeiro.severidade] - ordemSeveridade[segundo.severidade]
+    .sort((primeiro, segundo) => ORDEM_DA_SEVERIDADE[primeiro.severidade] - ORDEM_DA_SEVERIDADE[segundo.severidade]
       || primeiro.campo.localeCompare(segundo.campo));
 }

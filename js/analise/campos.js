@@ -1,8 +1,8 @@
 import { achado, FONTES } from "./achado.js";
 import { percorrerValores } from "./caminhos.js";
 
-export function analisarNomesDeCampo(nota, apelidos, contexto, registrar) {
-  const entradas = Object.entries(apelidos);
+export function analisarNomesDeCampo(nota, contexto, registrar) {
+  const entradas = Object.entries(contexto.apelidos);
   if (entradas.length === 0) return;
   const visitar = (valor, caminho) => {
     if (!valor || typeof valor !== "object") return;
@@ -26,7 +26,7 @@ export function analisarNomesDeCampo(nota, apelidos, contexto, registrar) {
   visitar(nota, "");
 }
 
-export function analisarTiposTrocados(nota, registrar) {
+export function analisarTiposTrocados(nota, contexto, registrar) {
   percorrerValores(nota, "", (valor, caminho) => {
     if (typeof valor !== "string") return;
     if (/valor|aliquota|base|desconto|deducoes/i.test(caminho)) {

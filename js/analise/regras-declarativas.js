@@ -1,7 +1,11 @@
 import { achado } from "./achado.js";
 import { resolverCaminho, preenchido } from "./caminhos.js";
 
-export function aplicarRegra(documento, regra) {
+export function aplicarRegrasDeclarativas(nota, contexto, registrar) {
+  contexto.regrasDeclarativas.forEach((regra) => aplicarRegra(nota, regra).forEach(registrar));
+}
+
+function aplicarRegra(documento, regra) {
   const resultados = [];
   const tags = regra.tags || [];
   const fonte = regra.fonte || "definicoes/regras-validacao.json";

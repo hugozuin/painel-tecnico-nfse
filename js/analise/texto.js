@@ -13,7 +13,7 @@ const INVISIVEIS = {
   "\u2029": "separador de parágrafo (U+2029)"
 };
 
-export function analisarTextos(nota, registrar) {
+export function analisarTextos(nota, contexto, registrar) {
   percorrerValores(nota, "", (valor, caminho) => {
     if (typeof valor !== "string") return;
     Object.entries(INVISIVEIS).forEach(([caractere, descricao]) => {
@@ -31,7 +31,7 @@ export function analisarTextos(nota, registrar) {
   });
 }
 
-export function analisarDescricao(servico, caminhoServico, registrar) {
+export function analisarDescricao(servico, caminhoServico, contexto, registrar) {
   const descricao = servico?.discriminacao;
   if (typeof descricao === "string" && /[\r\n]/.test(descricao)) {
     registrar(achado("informacao", "Descrição com quebra de linha", `${caminhoServico}.discriminacao`, "A descrição contém quebra de linha.", FONTES.texto));

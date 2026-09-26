@@ -30,7 +30,10 @@ export function criarContexto(dados) {
     });
     (entrada.plugnotas?.jsonCopiaDireta || []).forEach((caminho) => acrescentar(porJsonDireto, caminho, entrada));
   });
-  return { porChave, porJson, porJsonDireto, nomesDaLib, ibscbs: dados.ibscbs || null };
+  return {
+    porChave, porJson, porJsonDireto, nomesDaLib, ibscbs: dados.ibscbs || null,
+    regrasDeclarativas: dados.regras?.regras || [], apelidos: dados.regras?.apelidos || {}
+  };
 }
 
 export function chavesDoJson(contexto, caminhoJson) {

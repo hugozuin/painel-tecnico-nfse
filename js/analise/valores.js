@@ -9,7 +9,7 @@ export function truncar(valor) {
   return Math.floor((Number(valor) + 1e-9) * 100) / 100;
 }
 
-export function analisarValores(servico, caminhoServico, registrar) {
+export function analisarValores(servico, caminhoServico, contexto, registrar) {
   const valores = servico?.valor || {};
   const bruto = Number(valores.servico || 0);
   const deducoes = Number(valores.deducoes || 0);
