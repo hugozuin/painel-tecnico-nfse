@@ -1,46 +1,15 @@
-/* Resolve em lote com conferência da situação na rota de consulta. O status
-   HTTP do resolve indica só que a solicitação foi recebida, por isso a
-   situação exibida vem da consulta feita antes e depois. */
-
 import {
-  criar, CHAVES_ARMAZENAMENTO, pausar, mostrarAviso, pedirConfirmacao, registrarLog,
-  separarIdentificadores, aguardarDigitacao, criarPoolExecucao, baixarArquivo,
+  criar, CHAVES_ARMAZENAMENTO, mostrarAviso, pedirConfirmacao, registrarLog,
+  separarIdentificadores, aguardarDigitacao, baixarArquivo,
   carimboDeTempo, montarCsv, copiarTexto, lerArquivoTexto, identificacao,
   temSegmentoDePonto, AVISO_SEGMENTO_DE_PONTO
 } from "../shared.js";
-import { criarSessaoRequisicoes, consultarNota, consultarEventos, executarResolve } from "../plugnotas.js";
+import { criarSessaoRequisicoes } from "../plugnotas.js";
 import { exigirApiKey } from "../credencial.js";
-
-const situacaoConcluida = /CONCLU|AUTORIZ/;
-const situacaoRejeitada = /REJEIT|ERRO|NEGAD|INVALID/;
-const situacaoCancelada = /CANCEL/;
-const situacaoEmAndamento = /PROCESS|PENDEN|ANDAMENT|AGUARD|ENVIAD/;
-
-export function classificarSituacao(situacao) {
-  const texto = String(situacao || "").toUpperCase();
-  if (!texto) return "desconhecida";
-  if (situacaoCancelada.test(texto)) return "cancelada";
-  if (situacaoRejeitada.test(texto)) return "rejeitada";
-  if (situacaoConcluida.test(texto)) return "concluida";
-  if (situacaoEmAndamento.test(texto)) return "andamento";
-  return "desconhecida";
-}
-
-export function definirDesfecho({ situacaoAntes, situacaoDepois, resolveOk }) {
-  const depois = classificarSituacao(situacaoDepois);
-  const antes = classificarSituacao(situacaoAntes);
-
-  if (depois === "concluida") {
-    return antes === "concluida"
-      ? { chave: "ja-concluida", rotulo: "Já estava concluída", sucesso: true }
-      : { chave: "resolvido", rotulo: "Resolvido", sucesso: true };
-  }
-  if (!resolveOk) return { chave: "erro", rotulo: "Resolve recusado pela API", sucesso: false };
-  if (depois === "cancelada") return { chave: "cancelada", rotulo: "Cancelada na prefeitura", sucesso: false };
-  if (depois === "rejeitada") return { chave: "rejeitada", rotulo: "Continua rejeitada", sucesso: false };
-  if (depois === "andamento") return { chave: "andamento", rotulo: "Ainda em processamento", sucesso: false };
-  return { chave: "sem-leitura", rotulo: "Resolve aceito, situação não lida", sucesso: true };
-}
+import {
+  executarLoteResolve, montarItensResolve, normalizarConfiguracaoResolve, mensagemDeConfirmacaoResolve,
+  idsComFalha, CABECALHO_CSV_RESOLVE, linhasCsvResolve, resumoParaTicket
+} from "../fluxo-resolve.js";
 
 const classePorChave = {
   resolvido: "badge-success",
@@ -68,7 +37,6 @@ export function montarTelaResolve(container) {
     identificacoes: new Map(),
     executando: false,
     sessao: criarSessaoRequisicoes(),
-    pool: criarPoolExecucao(5),
     resultados: [],
     linhas: [],
     contadores: { total: 0, feitas: 0, sucessos: 0, falhas: 0 },
@@ -263,7 +231,7 @@ export function montarTelaResolve(container) {
     registrarLog("Cancelamento solicitado pelo consultor.", "warn");
   });
   botaoReprocessar.addEventListener("click", () => {
-    const falhas = painel.resultados.filter((linha) => !linha.sucesso).map((linha) => linha.id);
+    const falhas = idsComFalha(painel.resultados);
     if (falhas.length === 0) {
       mostrarAviso("Não há falhas para reprocessar.", "info");
       return;
@@ -364,23 +332,23 @@ export function montarTelaResolve(container) {
   }
 
   function lerConfiguracao() {
-    return {
-      tentativas: parseInt(tentativas.value, 10) || 3,
-      intervalo: Math.max(parseInt(intervalo.value, 10) || 1000, 0),
+    return normalizarConfiguracaoResolve({
+      tentativas: tentativas.value,
+      intervalo: intervalo.value,
       nacional: nacional.checked,
-      esperaNacional: parseInt(esperaNacional.value, 10) || 15000,
+      esperaNacional: esperaNacional.value,
       verificar: verificar.checked,
-      verificacoes: parseInt(verificacoes.value, 10) || 3,
-      intervaloVerificacao: Math.max(parseInt(intervaloVerificacao.value, 10) || 10000, 1000)
-    };
+      verificacoes: verificacoes.value,
+      intervaloVerificacao: intervaloVerificacao.value
+    });
   }
 
   function montarItens(ids) {
-    if (painel.modo === "unica") {
-      const valor = identificacaoUnica.value.trim();
-      return ids.map((id) => ({ id, identificacao: valor }));
-    }
-    return ids.map((id) => ({ id, identificacao: (painel.identificacoes.get(id) || "").trim() }));
+    return montarItensResolve(ids, {
+      modo: painel.modo,
+      identificacaoUnica: identificacaoUnica.value,
+      identificacoes: painel.identificacoes
+    });
   }
 
   async function executarLote(ids) {
@@ -402,25 +370,10 @@ export function montarTelaResolve(container) {
 
     const configuracao = lerConfiguracao();
     const itens = montarItens(ids);
-    const semIdentificacao = itens.filter((item) => !item.identificacao).length;
-    const detalheIdentificacao = semIdentificacao === 0 ? ""
-      : semIdentificacao === itens.length ? " Todas serão enviadas sem identificacaoNota."
-      : ` ${semIdentificacao} dela(s) será(ão) enviada(s) sem identificacaoNota.`;
-    const detalheNacional = configuracao.nacional
-      ? ` Modo Nacional ativo: consulta de eventos e espera de ${configuracao.esperaNacional / 1000}s antes do resolve.`
-      : "";
-    const detalheVerificacao = configuracao.verificar
-      ? ` A situação será conferida na rota de consulta em até ${configuracao.verificacoes} verificação(ões).`
-      : " A conferência pós resolve está desligada: o resultado refletirá apenas a resposta HTTP.";
-
-    const confirmou = await pedirConfirmacao(
-      "Executar resolve",
-      `Serão processadas ${itens.length} nota(s).${detalheIdentificacao}${detalheNacional}${detalheVerificacao} Deseja continuar?`
-    );
+    const confirmou = await pedirConfirmacao("Executar resolve", mensagemDeConfirmacaoResolve(itens, configuracao));
     if (!confirmou) return;
 
     painel.sessao.reiniciar();
-    painel.pool = criarPoolExecucao(5);
     painel.resultados = [];
     painel.contadores = { total: itens.length, feitas: 0, sucessos: 0, falhas: 0 };
     painel.inicio = performance.now();
@@ -428,130 +381,15 @@ export function montarTelaResolve(container) {
     montarTabela(itens);
     atualizarContadores();
     alternar(true);
-    registrarLog(`Resolve iniciado: ${itens.length} nota(s), até ${configuracao.tentativas} tentativa(s), intervalo de ${configuracao.intervalo}ms.`);
 
-    if (configuracao.nacional) await processarNacional(itens, apiKey, configuracao);
-    else {
-      await painel.pool.executar(itens,
-        (item, posicao) => tratarNota(item, posicao, apiKey, configuracao),
-        () => painel.sessao.cancelada);
-    }
+    await executarLoteResolve({
+      itens, apiKey, configuracao, sessao: painel.sessao,
+      aoMudarEstagio: marcar,
+      aoLerSituacaoAntes: (posicao, situacao) => atualizarCelula(posicao, 2, situacao),
+      aoConcluir: concluir
+    });
 
     encerrar();
-  }
-
-  async function processarNacional(itens, apiKey, configuracao) {
-    registrarLog(`Nacional ativo: consultando eventos de ${itens.length} nota(s).`);
-    const comFalha = new Set();
-
-    await painel.pool.executar(itens, async (item, posicao) => {
-      marcar(posicao, "evento");
-      const evento = await consultarEventos({
-        id: item.id, apiKey, sessao: painel.sessao,
-        tentativas: configuracao.tentativas, intervalo: configuracao.intervalo
-      });
-      if (!evento.ok && evento.mensagem !== "Cancelado") {
-        comFalha.add(posicao);
-        concluir(posicao, {
-          id: item.id, identificacao: item.identificacao, situacaoAntes: "", situacaoDepois: "",
-          status: evento.status ?? null, rotulo: "Erro na consulta de eventos", chave: "erro",
-          sucesso: false, mensagem: evento.mensagem, duracaoMs: 0
-        });
-      }
-    }, () => painel.sessao.cancelada);
-
-    if (painel.sessao.cancelada) return;
-
-    const pendentes = itens
-      .map((item, posicao) => ({ item, posicao }))
-      .filter((entrada) => !comFalha.has(entrada.posicao));
-
-    registrarLog(`Aguardando ${configuracao.esperaNacional / 1000}s para o Nacional processar os eventos.`, "warn");
-    pendentes.forEach((entrada) => marcar(entrada.posicao, "aguardando"));
-    await pausar(configuracao.esperaNacional);
-    if (painel.sessao.cancelada) return;
-
-    await painel.pool.executar(pendentes,
-      (entrada) => tratarNota(entrada.item, entrada.posicao, apiKey, configuracao),
-      () => painel.sessao.cancelada);
-  }
-
-  async function tratarNota(item, posicao, apiKey, configuracao) {
-    const inicio = performance.now();
-    let situacaoAntes = "";
-
-    if (configuracao.verificar) {
-      marcar(posicao, "consultando");
-      const leitura = await consultarNota({ identificador: item.id, apiKey, sessao: painel.sessao });
-      situacaoAntes = leitura.nota?.situacao || "";
-      if (situacaoAntes) {
-        registrarLog(`ID ${item.id}: situação antes do resolve: ${situacaoAntes}.`);
-        atualizarCelula(posicao, 2, situacaoAntes);
-      }
-    }
-
-    marcar(posicao, "processando");
-    const resolve = await executarResolve({
-      id: item.id, identificacao: item.identificacao, apiKey, sessao: painel.sessao,
-      tentativas: configuracao.tentativas, intervalo: configuracao.intervalo,
-      aoReduzirRitmo: () => painel.pool.reduzir()
-    });
-
-    if (resolve.desfecho === "cancelado") {
-      concluir(posicao, {
-        id: item.id, identificacao: item.identificacao, situacaoAntes, situacaoDepois: "",
-        status: null, rotulo: "Cancelado", chave: "cancelado", sucesso: false,
-        mensagem: resolve.mensagem, duracaoMs: Math.round(performance.now() - inicio)
-      });
-      return;
-    }
-
-    const resolveOk = resolve.desfecho === "solicitado";
-
-    if (!configuracao.verificar) {
-      const rotulo = resolveOk ? "Resolve aceito" : resolve.desfecho === "processando-api" ? "Em processamento na API" : "Erro";
-      concluir(posicao, {
-        id: item.id, identificacao: item.identificacao, situacaoAntes, situacaoDepois: "",
-        status: resolve.status, rotulo,
-        chave: resolveOk ? "sem-leitura" : resolve.desfecho === "processando-api" ? "andamento" : "erro",
-        sucesso: resolveOk, mensagem: resolve.mensagem,
-        duracaoMs: Math.round(performance.now() - inicio)
-      });
-      return;
-    }
-
-    marcar(posicao, "verificando");
-    const conferencia = await conferir(item.id, apiKey, resolveOk ? configuracao : { ...configuracao, verificacoes: 1 }, situacaoAntes);
-    const desfecho = definirDesfecho({ situacaoAntes, situacaoDepois: conferencia.situacao, resolveOk });
-
-    concluir(posicao, {
-      id: item.id, identificacao: item.identificacao, situacaoAntes,
-      situacaoDepois: conferencia.situacao, status: resolve.status,
-      rotulo: desfecho.rotulo, chave: desfecho.chave, sucesso: desfecho.sucesso,
-      mensagem: conferencia.mensagem || resolve.mensagem,
-      duracaoMs: Math.round(performance.now() - inicio)
-    });
-  }
-
-  async function conferir(id, apiKey, configuracao, situacaoAntes) {
-    let situacao = "";
-    let mensagem = "";
-
-    for (let tentativa = 1; tentativa <= configuracao.verificacoes; tentativa++) {
-      if (painel.sessao.cancelada) break;
-      if (tentativa > 1) await pausar(configuracao.intervaloVerificacao);
-
-      const leitura = await consultarNota({ identificador: id, apiKey, sessao: painel.sessao });
-      situacao = leitura.nota?.situacao || situacao;
-      mensagem = leitura.nota?.mensagem || leitura.mensagem || mensagem;
-      registrarLog(`ID ${id}: verificação ${tentativa}/${configuracao.verificacoes} retornou ${situacao || "situação vazia"}.`);
-
-      const categoria = classificarSituacao(situacao);
-      const mudou = situacao && situacao !== situacaoAntes;
-      if (categoria === "concluida" || categoria === "cancelada" || (categoria === "rejeitada" && mudou)) break;
-    }
-
-    return { situacao, mensagem };
   }
 
   function montarTabela(itens) {
@@ -598,7 +436,6 @@ export function montarTelaResolve(container) {
     painel.contadores.feitas++;
     if (resultado.sucesso) painel.contadores.sucessos++;
     else painel.contadores.falhas++;
-    painel.pool.restaurar();
 
     const registro = painel.linhas[posicao];
     if (registro) {
@@ -661,42 +498,17 @@ export function montarTelaResolve(container) {
 
   function exportarCsv() {
     if (painel.resultados.length === 0) return;
-    const conteudo = montarCsv(
-      ["ID", "Identificacao enviada", "Situacao antes", "Situacao depois", "Status HTTP", "Resultado", "Mensagem", "Tempo (ms)", "Data e hora"],
-      painel.resultados.map((linha) => [
-        linha.id, linha.identificacao, linha.situacaoAntes, linha.situacaoDepois,
-        linha.status ?? "", linha.rotulo, linha.mensagem, linha.duracaoMs, linha.quando
-      ])
-    );
+    const conteudo = montarCsv(CABECALHO_CSV_RESOLVE, linhasCsvResolve(painel.resultados));
     baixarArquivo(conteudo, `resolve-notas-${carimboDeTempo()}.csv`, "text/csv;charset=utf-8");
     mostrarAviso("CSV exportado.", "success");
   }
 
   function montarResumo() {
-    const { feitas, sucessos, falhas } = painel.contadores;
-    const autor = identificacao.ler();
-    const linhas = [
-      `Resolve em lote executado em ${new Date().toLocaleString("pt-BR")}${autor ? ` por ${autor}` : ""}`,
-      `Notas processadas: ${feitas} | Sucesso: ${sucessos} | Falha: ${falhas}`,
-      ""
-    ];
-
-    const agrupado = new Map();
-    painel.resultados.forEach((linha) => {
-      if (!agrupado.has(linha.rotulo)) agrupado.set(linha.rotulo, []);
-      agrupado.get(linha.rotulo).push(linha);
+    return resumoParaTicket({
+      resultados: painel.resultados,
+      contadores: painel.contadores,
+      autor: identificacao.ler(),
+      quando: new Date().toLocaleString("pt-BR")
     });
-
-    agrupado.forEach((lista, rotulo) => {
-      linhas.push(`${rotulo} (${lista.length}):`);
-      lista.forEach((linha) => {
-        const situacao = linha.situacaoDepois ? ` situacao ${linha.situacaoDepois}` : "";
-        const mensagem = linha.mensagem ? ` - ${linha.mensagem}` : "";
-        linhas.push(`  ${linha.id}${situacao}${mensagem}`);
-      });
-      linhas.push("");
-    });
-
-    return linhas.join("\n").trim();
   }
 }

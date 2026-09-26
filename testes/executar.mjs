@@ -8,6 +8,7 @@ const detalhado = process.argv.includes("--detalhes");
 const suites = [
   "teste.mjs",
   "teste-fluxo.mjs",
+  "teste-resolve.mjs",
   "teste-proxy.mjs",
   "teste-interface.mjs",
   "teste-execucao.mjs",
