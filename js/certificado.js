@@ -12,7 +12,7 @@ export function certificadoAtual() {
   return carregado;
 }
 
-export function descartarCertificado() {
+function descartarCertificado() {
   carregado = null;
 }
 

@@ -13,7 +13,7 @@ import { montarTelaIbsCbs } from "./telas/ibscbs.js";
 import { montarTelaValidador } from "./telas/validador.js";
 import { montarTelaVariantes } from "./telas/variantes.js";
 
-export const NOME_APLICACAO = "Painel Técnico NFS-e";
+const NOME_APLICACAO = "Painel Técnico NFS-e";
 
 const telasFixas = [
   {

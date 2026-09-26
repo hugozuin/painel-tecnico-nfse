@@ -4,7 +4,7 @@ import { definicoes } from "./definicoes.js";
 
 let indice = null;
 
-export function chaveDaTag(entrada) {
+function chaveDaTag(entrada) {
   return `${entrada.caminho}${entrada.tag}`;
 }
 
@@ -18,7 +18,7 @@ export function entradaPorChave(chave) {
   return indice.get(chave) || null;
 }
 
-export function conteudoDaTag(entrada) {
+function conteudoDaTag(entrada) {
   const regras = entrada.regras || [];
   const blocos = [
     criar("p", { class: "popup-titulo" }, [criar("code", { texto: entrada.tag }), ` ${entrada.titulo}`]),

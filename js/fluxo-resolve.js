@@ -1,7 +1,7 @@
 import { pausar, registrarLog, criarPoolExecucao } from "./shared.js";
 import { consultarNota, consultarEventos, executarResolve } from "./plugnotas.js";
 
-export const CONCORRENCIA_RESOLVE = 5;
+const CONCORRENCIA_RESOLVE = 5;
 
 const situacaoConcluida = /CONCLU|AUTORIZ/;
 const situacaoRejeitada = /REJEIT|ERRO|NEGAD|INVALID/;
@@ -40,7 +40,7 @@ export function definirDesfechoSemConferencia(desfechoDoResolve) {
   return { chave: "erro", rotulo: "Erro", sucesso: false };
 }
 
-export const DESFECHO_CANCELADO = { chave: "cancelado", rotulo: "Cancelado", sucesso: false };
+const DESFECHO_CANCELADO = { chave: "cancelado", rotulo: "Cancelado", sucesso: false };
 export const DESFECHO_FALHA_NOS_EVENTOS = { chave: "erro", rotulo: "Erro na consulta de eventos", sucesso: false };
 
 export function conferenciaEncerrada(situacao, situacaoAntes) {

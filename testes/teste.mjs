@@ -3,6 +3,7 @@ import { analisarEmissao, derivarTipoRetencao, documentoValido, arredondar, trun
 import { normalizarItem, normalizarIndOp, buscarItens, buscarIndOp, agruparRelacoes } from "../js/telas/ibscbs.js";
 import { filtrarDePara, prepararItensDePara, grupoDoCaminho } from "../js/telas/depara.js";
 import { ORIGEM_PLUGNOTAS } from "../js/plugnotas.js";
+import { varianteEscolhida } from "../js/telas/variantes.js";
 
 const ler = (nome) => JSON.parse(readFileSync(`./definicoes/${nome}.json`, "utf8"));
 const dePara = ler("de-para-nacional");
@@ -185,6 +186,12 @@ conferir("só o ID tem versão completa", agrupada.variantes.filter((v) => v.alt
 conferir("completa por ID usa /nfse/{item}", porIdCatalogo.get("consulta-id-completa").caminho === "/nfse/{item}");
 conferir("simplificada por ID usa /nfse/consultar/{item}", porIdCatalogo.get("consulta-id").caminho === "/nfse/consultar/{item}");
 conferir("rotas antigas soltas removidas", !porIdCatalogo.has("consulta-completa"));
+const escolhaCompletaPorId = varianteEscolhida(agrupada, "id", true);
+conferir("toggle ligado no ID escolhe a consulta completa", escolhaCompletaPorId.idRota === "consulta-id-completa" && escolhaCompletaPorId.usaAlternativa);
+conferir("toggle desligado no ID fica na simplificada", varianteEscolhida(agrupada, "id", false).idRota === "consulta-id");
+const escolhaSemAlternativa = varianteEscolhida(agrupada, "integracao", true);
+conferir("variante sem alternativa ignora o toggle", escolhaSemAlternativa.idRota === "consulta-integracao" && !escolhaSemAlternativa.usaAlternativa);
+conferir("modo desconhecido volta para a primeira variante", varianteEscolhida(agrupada, "inexistente", false).variante.id === agrupada.variantes[0].id);
 
 console.log("\n== contrato com a documentação do PlugNotas ==");
 const contrato = {

@@ -5,7 +5,7 @@ let seletorPerfil;
 let campoApelido;
 let distintivoPerfil;
 
-export function lerApiKey() {
+function lerApiKey() {
   return campoChave ? campoChave.value.trim() : "";
 }
 

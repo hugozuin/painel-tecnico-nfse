@@ -2,18 +2,18 @@ import { pausar, registrarLog } from "./shared.js";
 
 export const ORIGEM_PLUGNOTAS = "https://api.plugnotas.com.br";
 
-export const API = {
+const API = {
   resolve: `${ORIGEM_PLUGNOTAS}/nfse/resolve`,
   eventos: `${ORIGEM_PLUGNOTAS}/nfse/eventos`,
   consultaResumida: `${ORIGEM_PLUGNOTAS}/nfse/consultar`,
   consultaCompleta: `${ORIGEM_PLUGNOTAS}/nfse`
 };
 
-export const TEMPO_LIMITE_MS = 120000;
-export const STATUS_TEMPORARIOS = [429, 500, 502, 503];
-export const ESPERA_RESOLVE_MS = 10000;
-export const MAXIMO_VERIFICACOES_RESOLVE = 12;
-export const RESOLVE_EM_ANDAMENTO = /sendo executad/i;
+const TEMPO_LIMITE_MS = 120000;
+const STATUS_TEMPORARIOS = [429, 500, 502, 503];
+const ESPERA_RESOLVE_MS = 10000;
+const MAXIMO_VERIFICACOES_RESOLVE = 12;
+const RESOLVE_EM_ANDAMENTO = /sendo executad/i;
 
 export function criarSessaoRequisicoes() {
   const controladores = new Set();
@@ -31,7 +31,7 @@ export function criarSessaoRequisicoes() {
   };
 }
 
-export function podeLevarApiKey(url) {
+function podeLevarApiKey(url) {
   try {
     return new URL(url, globalThis.location?.href).origin === ORIGEM_PLUGNOTAS;
   } catch {
@@ -129,7 +129,7 @@ function falhaTemporaria(resposta) {
   return (resposta.falhaLocal && !resposta.recusada) || STATUS_TEMPORARIOS.includes(resposta.status);
 }
 
-export function extrairMensagem(dados) {
+function extrairMensagem(dados) {
   if (!dados) return "";
   if (typeof dados === "string") return dados;
   if (dados.message) return String(dados.message);
