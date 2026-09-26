@@ -24,11 +24,11 @@ const classePorChave = {
 };
 
 const estagios = {
-  evento: ["Consultando eventos", "badge-info pulsing"],
-  aguardando: ["Aguardando Nacional", "badge-info pulsing"],
-  consultando: ["Lendo situação", "badge-info pulsing"],
+  evento: ["Consultando eventos", "badge-info"],
+  aguardando: ["Aguardando Nacional", "badge-info"],
+  consultando: ["Lendo situação", "badge-info"],
   processando: ["Processando", "badge-warning pulsing"],
-  verificando: ["Conferindo situação", "badge-info pulsing"]
+  verificando: ["Conferindo situação", "badge-info"]
 };
 
 export function montarTelaResolve(container) {
