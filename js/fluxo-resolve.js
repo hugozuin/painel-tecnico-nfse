@@ -41,6 +41,8 @@ export function definirDesfechoSemConferencia(desfechoDoResolve) {
 }
 
 const DESFECHO_CANCELADO = { chave: "cancelado", rotulo: "Cancelado", sucesso: false };
+const MENSAGEM_NAO_PROCESSADA = "Não processada: execução cancelada pelo consultor";
+const MENSAGEM_CONFERENCIA_INTERROMPIDA = "Resolve aceito pela API; conferência interrompida pelo cancelamento";
 export const DESFECHO_FALHA_NOS_EVENTOS = { chave: "erro", rotulo: "Erro na consulta de eventos", sucesso: false };
 
 export function conferenciaEncerrada(situacao, situacaoAntes) {
@@ -130,17 +132,30 @@ export function resumoParaTicket({ resultados, contadores, autor, quando }) {
 export async function executarLoteResolve({ itens, apiKey, configuracao, sessao, aoMudarEstagio, aoLerSituacaoAntes, aoConcluir }) {
   const lote = {
     apiKey, configuracao, sessao, aoMudarEstagio, aoLerSituacaoAntes, aoConcluir,
-    pool: criarPoolExecucao(CONCORRENCIA_RESOLVE)
+    pool: criarPoolExecucao(CONCORRENCIA_RESOLVE),
+    concluidas: new Set()
   };
   registrarLog(`Resolve iniciado: ${itens.length} nota(s), até ${configuracao.tentativas} tentativa(s), intervalo de ${configuracao.intervalo}ms.`);
 
   if (configuracao.nacional) await processarNacional(lote, itens);
   else await lote.pool.executar(itens, (item, posicao) => tratarNota(lote, item, posicao), () => sessao.cancelada);
+  if (sessao.cancelada) concluirAbertasComoCanceladas(lote, itens);
 }
 
 function concluirItem(lote, posicao, resultado) {
+  lote.concluidas.add(posicao);
   lote.pool.restaurar();
   lote.aoConcluir(posicao, resultado);
+}
+
+function concluirAbertasComoCanceladas(lote, itens) {
+  itens.forEach((item, posicao) => {
+    if (lote.concluidas.has(posicao)) return;
+    concluirItem(lote, posicao, {
+      id: item.id, identificacao: item.identificacao, situacaoAntes: "", situacaoDepois: "",
+      status: null, ...DESFECHO_CANCELADO, mensagem: MENSAGEM_NAO_PROCESSADA, duracaoMs: 0
+    });
+  });
 }
 
 async function processarNacional(lote, itens) {
@@ -220,6 +235,13 @@ async function tratarNota(lote, item, posicao) {
 
   lote.aoMudarEstagio(posicao, "verificando");
   const conferencia = await conferirSituacao(lote, item.id, limiteDeVerificacoes(configuracao, resolveOk), situacaoAntes);
+  if (conferencia.interrompida) {
+    concluirItem(lote, posicao, {
+      ...base, situacaoDepois: conferencia.situacao, status: resolve.status, ...DESFECHO_CANCELADO,
+      mensagem: resolveOk ? MENSAGEM_CONFERENCIA_INTERROMPIDA : resolve.mensagem, duracaoMs: duracao()
+    });
+    return;
+  }
   concluirItem(lote, posicao, {
     ...base, situacaoDepois: conferencia.situacao, status: resolve.status,
     ...definirDesfecho({ situacaoAntes, situacaoDepois: conferencia.situacao, resolveOk }),
@@ -232,10 +254,11 @@ async function conferirSituacao(lote, id, limite, situacaoAntes) {
   let mensagem = "";
 
   for (let tentativa = 1; tentativa <= limite; tentativa++) {
-    if (lote.sessao.cancelada) break;
     if (tentativa > 1) await pausar(lote.configuracao.intervaloVerificacao);
+    if (lote.sessao.cancelada) return { situacao, mensagem, interrompida: true };
 
     const leitura = await consultarNota({ identificador: id, apiKey: lote.apiKey, sessao: lote.sessao });
+    if (lote.sessao.cancelada) return { situacao, mensagem, interrompida: true };
     situacao = leitura.nota?.situacao || situacao;
     mensagem = leitura.nota?.mensagem || leitura.mensagem || mensagem;
     registrarLog(`ID ${id}: verificação ${tentativa}/${limite} retornou ${situacao || "situação vazia"}.`);
@@ -243,5 +266,5 @@ async function conferirSituacao(lote, id, limite, situacaoAntes) {
     if (conferenciaEncerrada(situacao, situacaoAntes)) break;
   }
 
-  return { situacao, mensagem };
+  return { situacao, mensagem, interrompida: false };
 }

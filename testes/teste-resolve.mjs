@@ -85,12 +85,13 @@ conferir("resumo agrupado por resultado",
 
 console.log("\n== orquestração com a API simulada ==");
 const resposta = (status, corpo) => ({ ok: status >= 200 && status < 300, status, headers: { get: () => null }, text: async () => JSON.stringify(corpo) });
-function simularApi({ situacoes, depois = {}, resolveRecusado = [], eventoComFalha = [] }) {
+function simularApi({ situacoes, depois = {}, resolveRecusado = [], eventoComFalha = [], aoChamar = () => {} }) {
   const chamadas = [];
   global.fetch = async (url, opcoes = {}) => {
     const id = String(url).split("/").pop();
     const tipo = String(url).includes("/nfse/resolve/") ? "resolve" : String(url).includes("/nfse/eventos/") ? "eventos" : "consultar";
     chamadas.push(`${tipo} ${id}`);
+    aoChamar(tipo, id, chamadas);
     if (tipo === "eventos") return eventoComFalha.includes(id) ? resposta(400, { message: "Falha no evento" }) : resposta(200, { message: "ok" });
     if (tipo === "resolve") {
       if (resolveRecusado.includes(id)) return resposta(400, { message: "ID invalido" });
@@ -101,13 +102,16 @@ function simularApi({ situacoes, depois = {}, resolveRecusado = [], eventoComFal
   };
   return chamadas;
 }
-async function executarComRegistro(itens, configuracao, sessao = criarSessaoRequisicoes()) {
+async function executarComRegistro(itens, configuracao, sessao = criarSessaoRequisicoes(), aoEstagio = () => {}) {
   const estagios = {};
   const antes = {};
   const concluidos = [];
   await executarLoteResolve({
     itens, apiKey: "k", configuracao, sessao,
-    aoMudarEstagio: (posicao, estagio) => (estagios[posicao] ||= []).push(estagio),
+    aoMudarEstagio: (posicao, estagio) => {
+      (estagios[posicao] ||= []).push(estagio);
+      aoEstagio(estagio);
+    },
     aoLerSituacaoAntes: (posicao, situacao) => { antes[posicao] = situacao; },
     aoConcluir: (posicao, resultado) => concluidos.push({ posicao, ...resultado })
   });
@@ -136,7 +140,45 @@ chamadas = simularApi({ situacoes: { S1: "REJEITADO" } });
 const sessaoCancelada = criarSessaoRequisicoes();
 sessaoCancelada.cancelar();
 saida = await executarComRegistro([{ id: "S1", identificacao: "" }], rapida, sessaoCancelada);
-conferir("sessão já cancelada não chama a API nem conclui nota", chamadas.length === 0 && saida.concluidos.length === 0);
+conferir("sessão já cancelada não chama a API e fecha a nota como Cancelado",
+  chamadas.length === 0 && saida.concluidos.length === 1 && saida.concluidos[0].chave === "cancelado");
+
+console.log("\n== cancelamento ==");
+const lote = (prefixo, quantidade) => Array.from({ length: quantidade }, (_, indice) => ({ id: `${prefixo}${indice + 1}`, identificacao: "" }));
+const umaVezPorNota = (concluidos, quantidade) => new Set(concluidos.map((resultado) => resultado.posicao)).size === quantidade && concluidos.length === quantidade;
+
+chamadas = simularApi({ situacoes: { N1: "REJEITADO", N2: "REJEITADO", N3: "REJEITADO" } });
+let sessaoDoTeste = criarSessaoRequisicoes();
+saida = await executarComRegistro(lote("N", 3), { ...rapida, nacional: true, esperaNacional: 20 }, sessaoDoTeste,
+  (estagio) => { if (estagio === "aguardando") sessaoDoTeste.cancelar(); });
+conferir("cancelar na espera do Nacional fecha todas as notas como Cancelado, sem resolve",
+  umaVezPorNota(saida.concluidos, 3) && saida.concluidos.every((resultado) => resultado.chave === "cancelado" && resultado.mensagem.startsWith("Não processada"))
+  && !chamadas.some((chamada) => chamada.startsWith("resolve")), JSON.stringify(saida.concluidos.map((resultado) => [resultado.id, resultado.chave])));
+
+sessaoDoTeste = criarSessaoRequisicoes();
+chamadas = simularApi({
+  situacoes: Object.fromEntries(lote("P", 7).map((item) => [item.id, "REJEITADO"])),
+  aoChamar: (tipo) => { if (tipo === "resolve") sessaoDoTeste.cancelar(); }
+});
+saida = await executarComRegistro(lote("P", 7), rapida, sessaoDoTeste);
+const naoIniciadas = saida.concluidos.filter((resultado) => resultado.mensagem.startsWith("Não processada"));
+conferir("notas que nem começaram também terminam como Cancelado, uma vez cada",
+  umaVezPorNota(saida.concluidos, 7) && saida.concluidos.every((resultado) => resultado.chave === "cancelado") && naoIniciadas.length === 2,
+  JSON.stringify(saida.concluidos.map((resultado) => [resultado.id, resultado.chave, resultado.mensagem])));
+
+sessaoDoTeste = criarSessaoRequisicoes();
+chamadas = simularApi({
+  situacoes: { V1: "REJEITADO" }, depois: { V1: "PROCESSANDO" },
+  aoChamar: (tipo, id, registradas) => {
+    if (tipo === "consultar" && registradas.filter((chamada) => chamada === "consultar V1").length === 2) setTimeout(() => sessaoDoTeste.cancelar(), 5);
+  }
+});
+saida = await executarComRegistro(lote("V", 1), { ...rapida, verificacoes: 5, intervaloVerificacao: 60 }, sessaoDoTeste);
+const interrompida = saida.concluidos[0];
+conferir("cancelar durante a conferência marca Cancelado e guarda o que já foi lido",
+  interrompida?.chave === "cancelado" && interrompida.situacaoDepois === "PROCESSANDO" && interrompida.status === 200 && interrompida.mensagem.includes("conferência interrompida"),
+  JSON.stringify(interrompida));
+conferir("nenhuma consulta depois do cancelamento", chamadas.filter((chamada) => chamada === "consultar V1").length === 2, JSON.stringify(chamadas));
 
 console.log(falhas === 0 ? "\nTodos os testes do Resolve passaram." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);

@@ -467,7 +467,8 @@ export function montarTelaResolve(container) {
     botaoReprocessar.hidden = falhas === 0;
 
     if (painel.sessao.cancelada) {
-      registrarLog(`Execução cancelada. ${feitas} de ${total} processadas.`, "warn");
+      const canceladas = painel.resultados.filter((resultado) => resultado.chave === "cancelado").length;
+      registrarLog(`Execução cancelada: ${feitas - canceladas} de ${total} nota(s) concluídas e ${canceladas} marcada(s) como Cancelado.`, "warn");
       mostrarAviso("Processamento cancelado.", "error");
       return;
     }
