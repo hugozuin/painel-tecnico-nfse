@@ -3,7 +3,11 @@ import tls from "node:tls";
 import { EventEmitter } from "node:events";
 import { readFileSync } from "node:fs";
 
-const { default: handler, dicaDoErro } = await import("../api/proxy.js");
+const { default: handler, dicaDoErro, rotaSemIdentificadores } = await import("../api/proxy.js");
+const registrosDoRepasse = [];
+const escreverNoConsole = console.log;
+console.log = (...partes) => (String(partes[0]).startsWith('{"evento":"repasse-nacional"') ? registrosDoRepasse.push(JSON.parse(partes[0])) : escreverNoConsole(...partes));
+let chamadasAoRepasse = 0;
 
 const pedidosAoNacional = [];
 https.request = (endereco) => {
@@ -27,6 +31,7 @@ const executar = async (requisicao) => {
     send(corpo) { registro.corpo = corpo; return this; },
     setHeader(nome, valor) { registro.cabecalhos[nome] = valor; return this; }
   };
+  chamadasAoRepasse++;
   await handler({ headers: {}, query: {}, ...requisicao }, resposta);
   return registro;
 };
@@ -54,6 +59,12 @@ conferir("POST com corpo null em texto", (await executar({ method: "POST", body:
 conferir("POST com corpo em lista", (await executar({ method: "POST", body: [] })).status === 400);
 conferir("POST com url que não é texto", (await executar({ method: "POST", body: { url: ["https://adn.nfse.gov.br/x"] } })).status === 400);
 conferir("nenhuma recusa chegou a chamar o Nacional", pedidosAoNacional.length === 0, pedidosAoNacional.join(", "));
+
+console.log("\n== log do repasse ==");
+conferir("cada chamada ao repasse gera uma linha de log", registrosDoRepasse.length === chamadasAoRepasse, `${registrosDoRepasse.length} de ${chamadasAoRepasse}`);
+conferir("recusa antes do destino registra método e status, sem domínio", registrosDoRepasse[0]?.metodo === "PUT" && registrosDoRepasse[0].status === 405 && !("dominio" in registrosDoRepasse[0]));
+conferir("rota perde os trechos com número", rotaSemIdentificadores("/parametros_municipais/3504107/convenio") === "/parametros_municipais/{id}/convenio"
+  && rotaSemIdentificadores("/danfse/NFS35503081234") === "/danfse/{id}" && rotaSemIdentificadores("/") === "/");
 
 console.log("\n== dicas de erro ==");
 conferir("tempo esgotado", dicaDoErro({ code: "ETIMEDOUT" }, false).includes("tempo limite"));

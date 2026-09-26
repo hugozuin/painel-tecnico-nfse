@@ -180,11 +180,18 @@ function conferirDestino(destino) {
 function recusar(resposta, { status, erro }) {
   if (status === 405) resposta.setHeader("Allow", "GET, POST");
   resposta.status(status).json({ erro });
+  return { status };
 }
 
-export default async function handler(requisicao, resposta) {
-  aplicarCabecalhos(resposta);
+export function rotaSemIdentificadores(caminho) {
+  return caminho.split("/").map((trecho) => (/\d/.test(trecho) ? "{id}" : trecho)).join("/").slice(0, 200);
+}
 
+function registrarConsulta(resumo) {
+  console.log(JSON.stringify({ evento: "repasse-nacional", horario: new Date().toISOString(), ...resumo }));
+}
+
+async function atender(requisicao, resposta) {
   const consulta = lerConsulta(requisicao);
   if (consulta.erro) return recusar(resposta, consulta);
 
@@ -192,8 +199,9 @@ export default async function handler(requisicao, resposta) {
   if (alvo.erro) return recusar(resposta, alvo);
 
   const { certificado } = consulta;
+  const destino = { dominio: alvo.endereco.hostname, rota: rotaSemIdentificadores(alvo.endereco.pathname), certificado: Boolean(certificado) };
   const problema = certificado ? problemaNoCertificado(certificado) : "";
-  if (problema) return recusar(resposta, { status: 400, erro: problema });
+  if (problema) return { ...destino, ...recusar(resposta, { status: 400, erro: problema }) };
 
   try {
     const retorno = await consultarNacional(alvo.endereco.toString(), certificado);
@@ -201,6 +209,7 @@ export default async function handler(requisicao, resposta) {
     resposta.setHeader("Content-Type", retorno.tipo);
     aplicarCabecalhos(resposta, retorno.tipo);
     resposta.send(retorno.corpo);
+    return { ...destino, status: retorno.status };
   } catch (erro) {
     resposta.status(502).json({
       erro: `Falha ao consultar o Nacional: ${erro.message}`,
@@ -208,5 +217,13 @@ export default async function handler(requisicao, resposta) {
       dica: dicaDoErro(erro, Boolean(certificado)),
       certificadoEnviado: Boolean(certificado)
     });
+    return { ...destino, status: 502, codigo: erro.code || "" };
   }
+}
+
+export default async function handler(requisicao, resposta) {
+  const inicio = Date.now();
+  aplicarCabecalhos(resposta);
+  const resumo = await atender(requisicao, resposta);
+  registrarConsulta({ metodo: requisicao.method, ...resumo, duracaoMs: Date.now() - inicio });
 }

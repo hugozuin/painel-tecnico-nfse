@@ -133,6 +133,9 @@ delete global.location;
 
 console.log("\n== cabeçalhos das respostas do repasse ==");
 const { default: repasse, cabecalhosDaResposta } = await import("../api/proxy.js");
+const registrosDoRepasse = [];
+const escreverNoConsole = console.log;
+console.log = (...partes) => (String(partes[0]).startsWith('{"evento":"repasse-nacional"') ? registrosDoRepasse.push(partes[0]) : escreverNoConsole(...partes));
 const chamarRepasse = async (requisicao) => {
   const registro = { cabecalhos: {} };
   const resposta = {
@@ -294,10 +297,35 @@ const respostaLenta = await Promise.race([consultaLenta, new Promise((pronto) =>
 mock.timers.reset();
 conferir("prazo total de 30 s conta desde o início, mesmo com dados chegando aos poucos",
   aindaAberta && pedidoLento?.destruido && respostaLenta?.status === 502 && respostaLenta?.corpo?.codigo === "ETIMEDOUT", JSON.stringify(respostaLenta?.corpo ?? "sem resposta no prazo"));
-https.request = requestOriginal;
 
+console.log("\n== log estruturado do repasse ==");
+const CAMPOS_DO_LOG = ["evento", "horario", "metodo", "status", "dominio", "rota", "certificado", "codigo", "duracaoMs"];
+const chaveDeAcessoFicticia = "3".repeat(50);
+const enderecoComIdentificadores = `https://adn.nfse.gov.br/contribuintes/nfse/${chaveDeAcessoFicticia}?inscricaoFederal=12345678000195`;
+registrosDoRepasse.length = 0;
+simularNacional({ tipo: "application/json", partes: [Buffer.from("{}")] });
+await chamarRepasse({ method: "GET", query: { url: enderecoComIdentificadores } });
+simularNacional({ tipo: "application/json", partes: [Buffer.from("{}")] });
+await chamarRepasse({ method: "POST", body: { url: enderecoComIdentificadores, certificado: { chave: legado.chave, certificado: legado.certificado } } });
+await chamarRepasse({ method: "POST", body: { url: enderecoComIdentificadores, certificado: { chave: "x", certificado: "y" } } });
+await chamarRepasse({ method: "PUT" });
+https.request = requestOriginal;
+const registrosLidos = registrosDoRepasse.map((linha) => JSON.parse(linha));
+conferir("uma linha JSON por consulta, só com os campos previstos",
+  registrosLidos.length === 4 && registrosLidos.every((registro) => Object.keys(registro).every((campo) => CAMPOS_DO_LOG.includes(campo))), registrosDoRepasse.join(" | "));
+const textoDosRegistros = registrosDoRepasse.join("\n");
+const vestigiosNoLog = [chaveDeAcessoFicticia, "12345678000195", "inscricaoFederal", "BEGIN", legado.chave.slice(40, 80), legado.certificado.slice(40, 80)]
+  .filter((vestigio) => textoDosRegistros.includes(vestigio));
+conferir("log sem chave de acesso, CNPJ, consulta da URL, chave ou certificado", vestigiosNoLog.length === 0, vestigiosNoLog.join(", "));
+const [registroGet, registroPost, registroPemInvalido, registroRecusa] = registrosLidos;
+conferir("log traz domínio, rota sem identificadores, status, método e se levou certificado",
+  registroGet?.dominio === "adn.nfse.gov.br" && registroGet.rota === "/contribuintes/nfse/{id}" && registroGet.status === 200
+  && registroGet.certificado === false && registroPost?.certificado === true && registroPost.metodo === "POST" && Number.isInteger(registroGet.duracaoMs),
+  JSON.stringify(registrosLidos));
+conferir("recusas também ficam no log", registroPemInvalido?.status === 400 && registroRecusa?.status === 405 && registroRecusa.metodo === "PUT");
 const registrosNoRepasse = procurar(["api/proxy.js"], /\bconsole\.|process\.std(?:out|err)/);
-conferir("repasse não registra nada em log", registrosNoRepasse.length === 0, registrosNoRepasse.join(", "));
+conferir("repasse só escreve o log estruturado",
+  registrosNoRepasse.length === 1 && readFileSync("api/proxy.js", "utf8").includes('console.log(JSON.stringify({ evento: "repasse-nacional"'), registrosNoRepasse.join(", "));
 
 console.log("\n== certificado A1 sem vestígio no navegador ==");
 const domApp = new JSDOM(readFileSync("index.html", "utf8"), { url: "https://painel.local/" });
