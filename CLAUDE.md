@@ -441,8 +441,17 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   `addEventListener` ou `aoClicar`/`aoMudar` do `criar`.
 - Sem framework e sem build. Módulos ES nativos.
 - Comportamento novo de tela entra de preferência pelo catálogo em `definicoes/`.
-- CSS com os tokens existentes (`--indigo-*`, `--bg-*`, `--text-*`, `--border*`),
-  funcionando nos temas claro e escuro.
+- CSS com os tokens existentes (`--indigo-*`, `--bg-*`, `--text-*`, `--border*`,
+  `--font-mono`), funcionando nos temas claro e escuro. O `styles.css` é um
+  arquivo só, sem comentários, na ordem: tokens e temas, base, componentes
+  (botões, campos, interruptor, badges, abas, cartões), estrutura (casca,
+  cabeçalho, menu lateral, rodapé), tabelas e progresso, telas de rota e
+  Retorno, popup de informação, painel de logs, modal, avisos e as telas
+  específicas (validador, de-para, IBS e CBS, certificado). Regra nova entra no
+  bloco do seu componente. `[hidden] { display: none !important }` faz o
+  atributo `hidden` vencer o `display` das classes: esconda sempre pelo
+  atributo. `testes/teste-padroes.mjs` cobra a ausência de comentários em `js/`,
+  `api/` e no CSS.
 - Textos da interface: português, concisos, sem jargão desnecessário, **sem
   travessões**.
 - **Rigor de fonte:** nenhum limite, regra ou comportamento pode ser afirmado

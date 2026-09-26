@@ -74,6 +74,10 @@ for (const pasta of ["js", "api"]) {
     acharComentarios(readFileSync(arquivo, "utf8").replace(/\r\n/g, "\n")).map((linha) => `${arquivo}:${linha}`));
   conferir(`sem comentários em ${pasta}/`, comComentario.length === 0, comComentario.join(", "));
 }
+const estilos = readFileSync("styles.css", "utf8");
+const comentariosNoCss = [...estilos.matchAll(/\/\*/g)].map((achado) => estilos.slice(0, achado.index).split("\n").length);
+conferir("sem comentários em styles.css", comentariosNoCss.length === 0, comentariosNoCss.join(", "));
+conferir("atributo hidden vence o display das classes", /\[hidden\]\s*\{\s*display:\s*none\s*!important;?\s*\}/.test(estilos));
 
 console.log(falhas === 0 ? "\nTeste de padrões passou." : `\n${falhas} teste(s) falharam.`);
 process.exit(falhas === 0 ? 0 : 1);
