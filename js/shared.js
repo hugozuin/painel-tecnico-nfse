@@ -43,6 +43,18 @@ export const CHAVES_ARMAZENAMENTO = {
 
 export const chaveDaVariante = (idTela) => `${CHAVES_ARMAZENAMENTO.variantes}:${idTela}`;
 
+const GUARDADOS_SO_NA_ABA = ["apiKey", "perfis", "perfilAtivo", "idsResolve"].map((nome) => CHAVES_ARMAZENAMENTO[nome]);
+
+export function levarDadosSensiveisParaAba() {
+  const gravados = GUARDADOS_SO_NA_ABA.filter((chave) => localStorage.getItem(chave) !== null);
+  gravados.forEach((chave) => {
+    if (sessionStorage.getItem(chave) === null) sessionStorage.setItem(chave, localStorage.getItem(chave));
+    localStorage.removeItem(chave);
+  });
+  localStorage.removeItem(CHAVES_ARMAZENAMENTO.lembrarApiKey);
+  return gravados.length;
+}
+
 export const pausar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function aguardarDigitacao(acao, espera = 300) {

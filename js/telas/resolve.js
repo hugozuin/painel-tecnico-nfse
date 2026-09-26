@@ -47,7 +47,7 @@ export function montarTelaResolve(container) {
   const areaIds = criar("textarea", {
     class: "text-area", rows: 7, spellcheck: false,
     placeholder: "ID da nota, um por linha",
-    value: localStorage.getItem(CHAVES_ARMAZENAMENTO.idsResolve) || ""
+    value: sessionStorage.getItem(CHAVES_ARMAZENAMENTO.idsResolve) || ""
   });
   const contadorIds = criar("span", { class: "badge badge-neutral", texto: "0 IDs válidos" });
 
@@ -177,7 +177,7 @@ export function montarTelaResolve(container) {
 
   areaIds.addEventListener("input", aguardarDigitacao(() => {
     atualizarIds();
-    localStorage.setItem(CHAVES_ARMAZENAMENTO.idsResolve, areaIds.value);
+    sessionStorage.setItem(CHAVES_ARMAZENAMENTO.idsResolve, areaIds.value);
   }, 300));
 
   corpoIndividual.addEventListener("input", (evento) => {
@@ -286,7 +286,7 @@ export function montarTelaResolve(container) {
     }
     areaIds.value = lista.join("\n");
     atualizarIds();
-    localStorage.setItem(CHAVES_ARMAZENAMENTO.idsResolve, areaIds.value);
+    sessionStorage.setItem(CHAVES_ARMAZENAMENTO.idsResolve, areaIds.value);
     mostrarAviso(`${lista.length} ID(s) organizados.`, "success");
   }
 
@@ -295,7 +295,7 @@ export function montarTelaResolve(container) {
     if (!arquivo) return;
     areaIds.value = separarIdentificadores(await lerArquivoTexto(arquivo)).join("\n");
     atualizarIds();
-    localStorage.setItem(CHAVES_ARMAZENAMENTO.idsResolve, areaIds.value);
+    sessionStorage.setItem(CHAVES_ARMAZENAMENTO.idsResolve, areaIds.value);
     mostrarAviso("Lista importada.", "success");
     evento.target.value = "";
   }
@@ -307,7 +307,7 @@ export function montarTelaResolve(container) {
     areaIds.value = "";
     painel.identificacoes.clear();
     atualizarIds();
-    localStorage.removeItem(CHAVES_ARMAZENAMENTO.idsResolve);
+    sessionStorage.removeItem(CHAVES_ARMAZENAMENTO.idsResolve);
   }
 
   function lerConfiguracao() {

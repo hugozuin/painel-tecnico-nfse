@@ -1,6 +1,6 @@
 import {
   elemento, criar, iniciarTema, identificacao, atualizarRotuloUsuario,
-  mostrarAviso, baixarArquivo, carimboDeTempo, limparLogs, textoDosLogs, registrarLog
+  mostrarAviso, baixarArquivo, carimboDeTempo, limparLogs, textoDosLogs, registrarLog, levarDadosSensiveisParaAba
 } from "./shared.js";
 import { carregarDefinicoes, definicoes, enderecoRepositorio } from "./definicoes.js";
 import { iniciarCredencial } from "./credencial.js";
@@ -182,6 +182,10 @@ async function iniciar() {
   iniciarInfo();
   ligarLogs();
   atualizarRotuloUsuario();
+  if (levarDadosSensiveisParaAba() > 0) {
+    registrarLog("API Key, perfis ou lista do Resolve gravados no navegador por versão anterior foram movidos para esta aba e apagados do navegador.", "warn");
+    mostrarAviso("A API Key e os perfis agora ficam só nesta aba.", "info");
+  }
   ligarNavegacao();
   await carregarDefinicoes();
   montarCatalogo();

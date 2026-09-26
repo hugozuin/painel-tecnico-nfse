@@ -115,7 +115,7 @@
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><line x1="10.85" y1="12.15" x2="19" y2="4"/><line x1="18" y1="5" x2="20" y2="7"/><line x1="15" y1="8" x2="17" y2="10"/></svg>
         </span>
         <h2>Credencial da conta</h2>
-        <span class="badge badge-neutral" id="perfilAtivoBadge">Nenhum perfil salvo</span>
+        <span class="badge badge-neutral" id="perfilAtivoBadge">Nenhum perfil nesta aba</span>
       </div>
       <div class="card-body">
         <label class="field-label" for="apiKeyInput">API Key (header x-api-key)</label>
@@ -127,7 +127,7 @@
         </div>
         <div class="config-row">
           <div class="config-field">
-            <label class="field-label" for="perfilSelect">Perfis salvos neste navegador</label>
+            <label class="field-label" for="perfilSelect">Perfis desta aba</label>
             <select id="perfilSelect" class="text-input select-input">
               <option value="">Chave digitada agora</option>
             </select>
@@ -141,16 +141,11 @@
             </div>
           </div>
         </div>
-        <label class="checkbox-row">
-          <input type="checkbox" id="rememberApiKey" />
-          <span>Manter a chave digitada após fechar o navegador</span>
-        </label>
         <div class="aviso-caixa" id="avisoGuardaChave">
-          <strong>Como a API Key fica guardada neste navegador</strong>
+          <strong>Como a API Key fica guardada</strong>
           <ul class="aviso-lista">
-            <li><strong>Chave digitada:</strong> fica só nesta aba (sessionStorage) e some quando a aba é fechada.</li>
-            <li><strong>Com "Manter a chave digitada" marcado:</strong> fica gravada no navegador (localStorage), mesmo depois de fechá-lo, até a opção ser desmarcada.</li>
-            <li><strong>Perfis salvos:</strong> ficam gravados no navegador (localStorage), sem criptografia, até serem removidos. Quem usar este navegador, ou uma extensão instalada nele, consegue lê-los. Não salve perfis em computador compartilhado.</li>
+            <li><strong>Chave digitada e perfis:</strong> ficam só nesta aba (sessionStorage) e somem quando ela é fechada. Nada fica gravado no navegador.</li>
+            <li><strong>Perfis:</strong> servem para alternar entre contas enquanto a aba estiver aberta. Depois de fechá-la, informe a chave de novo.</li>
             <li>A chave nunca passa pelo servidor desta ferramenta: vai direto do seu navegador para a API PlugNotas.</li>
           </ul>
         </div>

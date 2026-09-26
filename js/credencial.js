@@ -21,7 +21,7 @@ export function exigirApiKey() {
 
 function lerPerfis() {
   try {
-    const bruto = localStorage.getItem(CHAVES_ARMAZENAMENTO.perfis);
+    const bruto = sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfis);
     const lista = bruto ? JSON.parse(bruto) : [];
     return Array.isArray(lista) ? lista : [];
   } catch {
@@ -30,7 +30,7 @@ function lerPerfis() {
 }
 
 function gravarPerfis(lista) {
-  localStorage.setItem(CHAVES_ARMAZENAMENTO.perfis, JSON.stringify(lista));
+  sessionStorage.setItem(CHAVES_ARMAZENAMENTO.perfis, JSON.stringify(lista));
 }
 
 function desenharPerfis(selecionado = "") {
@@ -51,32 +51,21 @@ function desenharPerfis(selecionado = "") {
   seletorPerfil.value = selecionado;
   elemento("apagarPerfisBtn").disabled = perfis.length === 0;
   distintivoPerfil.textContent = perfis.length === 0
-    ? "Nenhum perfil salvo"
+    ? "Nenhum perfil nesta aba"
     : selecionado
       ? `Perfil ativo: ${selecionado}`
-      : `${perfis.length} perfil(is) salvo(s)`;
+      : `${perfis.length} perfil(is) nesta aba`;
 }
 
 function apagarChavesDosPerfis(perfisApagados, perfisRestantes) {
   const aindaEmUso = new Set(perfisRestantes.map((perfil) => perfil.chave));
   const chavesApagadas = new Set(perfisApagados.map((perfil) => perfil.chave).filter((chave) => !aindaEmUso.has(chave)));
   if (chavesApagadas.has(lerApiKey())) campoChave.value = "";
-  [localStorage, sessionStorage].forEach((armazenamento) => {
-    if (chavesApagadas.has(armazenamento.getItem(CHAVES_ARMAZENAMENTO.apiKey))) armazenamento.removeItem(CHAVES_ARMAZENAMENTO.apiKey);
-  });
+  if (chavesApagadas.has(sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey))) sessionStorage.removeItem(CHAVES_ARMAZENAMENTO.apiKey);
 }
 
 function guardarChaveDigitada() {
-  const manter = elemento("rememberApiKey").checked;
-  const chave = lerApiKey();
-  if (manter) {
-    localStorage.setItem(CHAVES_ARMAZENAMENTO.apiKey, chave);
-    sessionStorage.removeItem(CHAVES_ARMAZENAMENTO.apiKey);
-  } else {
-    localStorage.removeItem(CHAVES_ARMAZENAMENTO.apiKey);
-    sessionStorage.setItem(CHAVES_ARMAZENAMENTO.apiKey, chave);
-  }
-  localStorage.setItem(CHAVES_ARMAZENAMENTO.lembrarApiKey, String(manter));
+  sessionStorage.setItem(CHAVES_ARMAZENAMENTO.apiKey, lerApiKey());
 }
 
 export function iniciarCredencial() {
@@ -85,24 +74,18 @@ export function iniciarCredencial() {
   campoApelido = elemento("perfilNomeInput");
   distintivoPerfil = elemento("perfilAtivoBadge");
 
-  const manter = localStorage.getItem(CHAVES_ARMAZENAMENTO.lembrarApiKey) === "true";
-  elemento("rememberApiKey").checked = manter;
-  campoChave.value = (manter
-    ? localStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey)
-    : sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey)) || "";
-
-  desenharPerfis(localStorage.getItem(CHAVES_ARMAZENAMENTO.perfilAtivo) || "");
+  campoChave.value = sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey) || "";
+  desenharPerfis(sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfilAtivo) || "");
 
   elemento("toggleApiKey").addEventListener("click", () => {
     campoChave.type = campoChave.type === "password" ? "text" : "password";
   });
 
   campoChave.addEventListener("input", guardarChaveDigitada);
-  elemento("rememberApiKey").addEventListener("change", guardarChaveDigitada);
 
   seletorPerfil.addEventListener("change", () => {
     const escolhido = seletorPerfil.value;
-    localStorage.setItem(CHAVES_ARMAZENAMENTO.perfilAtivo, escolhido);
+    sessionStorage.setItem(CHAVES_ARMAZENAMENTO.perfilAtivo, escolhido);
     if (!escolhido) {
       desenharPerfis("");
       return;
@@ -131,11 +114,11 @@ export function iniciarCredencial() {
     const perfis = lerPerfis().filter((item) => item.nome !== nome);
     perfis.push({ nome, chave });
     gravarPerfis(perfis);
-    localStorage.setItem(CHAVES_ARMAZENAMENTO.perfilAtivo, nome);
+    sessionStorage.setItem(CHAVES_ARMAZENAMENTO.perfilAtivo, nome);
     campoApelido.value = "";
     desenharPerfis(nome);
-    registrarLog(`Perfil de credencial "${nome}" salvo neste navegador.`);
-    mostrarAviso("Perfil salvo neste navegador.", "success");
+    registrarLog(`Perfil de credencial "${nome}" salvo nesta aba.`);
+    mostrarAviso("Perfil salvo nesta aba.", "success");
   });
 
   elemento("removerPerfilBtn").addEventListener("click", async () => {
@@ -145,12 +128,12 @@ export function iniciarCredencial() {
       return;
     }
     const confirmou = await pedirConfirmacao("Remover perfil",
-      `O perfil ${escolhido} será apagado deste navegador. Se a chave dele estiver no campo, ela também será apagada. Deseja continuar?`);
+      `O perfil ${escolhido} será apagado desta aba. Se a chave dele estiver no campo, ela também será apagada. Deseja continuar?`);
     if (!confirmou) return;
     const perfis = lerPerfis();
     const restantes = perfis.filter((item) => item.nome !== escolhido);
     gravarPerfis(restantes);
-    localStorage.removeItem(CHAVES_ARMAZENAMENTO.perfilAtivo);
+    sessionStorage.removeItem(CHAVES_ARMAZENAMENTO.perfilAtivo);
     apagarChavesDosPerfis(perfis.filter((item) => item.nome === escolhido), restantes);
     desenharPerfis("");
     registrarLog(`Perfil de credencial "${escolhido}" removido.`, "warn");
@@ -160,20 +143,20 @@ export function iniciarCredencial() {
   elemento("apagarPerfisBtn").addEventListener("click", async () => {
     const perfis = lerPerfis();
     if (perfis.length === 0) {
-      mostrarAviso("Não há perfis salvos neste navegador.", "info");
+      mostrarAviso("Não há perfis nesta aba.", "info");
       return;
     }
     const descricao = perfis.length === 1
-      ? "O perfil salvo neste navegador será apagado, com a API Key dele."
-      : `Os ${perfis.length} perfis salvos neste navegador serão apagados, com as API Keys deles.`;
+      ? "O perfil desta aba será apagado, com a API Key dele."
+      : `Os ${perfis.length} perfis desta aba serão apagados, com as API Keys deles.`;
     const confirmou = await pedirConfirmacao("Apagar todos os perfis",
       `${descricao} Se a chave no campo for de um perfil, ela também será apagada. Deseja continuar?`);
     if (!confirmou) return;
-    localStorage.removeItem(CHAVES_ARMAZENAMENTO.perfis);
-    localStorage.removeItem(CHAVES_ARMAZENAMENTO.perfilAtivo);
+    sessionStorage.removeItem(CHAVES_ARMAZENAMENTO.perfis);
+    sessionStorage.removeItem(CHAVES_ARMAZENAMENTO.perfilAtivo);
     apagarChavesDosPerfis(perfis, []);
     desenharPerfis("");
-    registrarLog(`Todos os perfis de credencial apagados deste navegador (${perfis.length}).`, "warn");
-    mostrarAviso("Perfis apagados deste navegador.", "success");
+    registrarLog(`Todos os perfis de credencial apagados desta aba (${perfis.length}).`, "warn");
+    mostrarAviso("Perfis apagados desta aba.", "success");
   });
 }

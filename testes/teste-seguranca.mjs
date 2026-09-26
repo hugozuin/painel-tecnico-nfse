@@ -438,7 +438,7 @@ const armazenamentosSemTeste = procurar(codigoDoSite, /\bindexedDB\b|\bcaches\.|
 conferir("código não usa IndexedDB, CacheStorage, cookie nem sendBeacon, que o jsdom não cobre", armazenamentosSemTeste.length === 0, armazenamentosSemTeste.join(", "));
 
 console.log("\n== perfis e guarda da API Key ==");
-const { CHAVES_ARMAZENAMENTO, chaveDaVariante } = await import("../js/shared.js");
+const { CHAVES_ARMAZENAMENTO, chaveDaVariante, levarDadosSensiveisParaAba } = await import("../js/shared.js");
 const CHAVES_GRAVADAS_NOS_NAVEGADORES = [
   "apiKey", "lembrarApiKey", "perfis", "perfilAtivo", "ids", "modo", "tentativas", "intervalo", "nacional", "esperaEvento",
   "verificar", "verificacoes", "intervaloVerificacao", "ambienteNacional", "variantes", "usuario", "tema"
@@ -452,9 +452,10 @@ const campoApiKey = document.getElementById("apiKeyInput");
 const seletorDePerfis = document.getElementById("perfilSelect");
 const botaoApagarPerfis = document.getElementById("apagarPerfisBtn");
 const avisoDeGuarda = document.getElementById("avisoGuardaChave")?.textContent.replace(/\s+/g, " ") || "";
-conferir("aviso explica onde a chave digitada, a mantida e a dos perfis ficam guardadas",
-  ["só nesta aba (sessionStorage)", "Manter a chave digitada", "(localStorage), mesmo depois de fechá-lo", "sem criptografia", "computador compartilhado", "nunca passa pelo servidor desta ferramenta"]
-    .every((trecho) => avisoDeGuarda.includes(trecho)), avisoDeGuarda);
+conferir("aviso explica que chave e perfis ficam só na aba e não passam pelo servidor",
+  ["só nesta aba (sessionStorage)", "somem quando ela é fechada", "Nada fica gravado no navegador", "nunca passa pelo servidor desta ferramenta"]
+    .every((trecho) => avisoDeGuarda.includes(trecho)) && !/localStorage|Manter a chave/.test(avisoDeGuarda), avisoDeGuarda);
+conferir("sem opção de manter a chave gravada no navegador", !document.getElementById("rememberApiKey") && !document.body.textContent.includes("Manter a chave"));
 conferir("aviso sem travessão", !/[–—]/.test(avisoDeGuarda));
 conferir("botão de apagar perfis desabilitado sem perfis", botaoApagarPerfis.disabled);
 const digitarChave = (chave) => {
@@ -475,24 +476,25 @@ const confirmarModal = async () => {
   document.getElementById("confirmOk").click();
   await esperar(40);
 };
-const perfisGravados = () => JSON.parse(localStorage.getItem(CHAVES_ARMAZENAMENTO.perfis) || "[]");
-const chaveGuardada = () => [localStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey), sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey)];
+const perfisGravados = () => JSON.parse(sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfis) || "[]");
+const chaveGuardada = () => [sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey)];
+const CREDENCIAIS_NO_NAVEGADOR = ["apiKey", "lembrarApiKey", "perfis", "perfilAtivo", "idsResolve"].map((nome) => CHAVES_ARMAZENAMENTO[nome]);
+const credenciaisGravadasNoNavegador = () => CREDENCIAIS_NO_NAVEGADOR.filter((chave) => localStorage.getItem(chave) !== null)
+  .concat(Object.keys(localStorage).filter((chave) => /chave-do-perfil|chave-digitada/.test(localStorage.getItem(chave))));
 
 salvarPerfil("Perfil A", "chave-do-perfil-a");
 salvarPerfil("Perfil B", "chave-do-perfil-b");
 conferir("botão de apagar perfis habilitado com perfis salvos", !botaoApagarPerfis.disabled && perfisGravados().length === 2);
 escolherPerfil("Perfil A");
-conferir("perfil escolhido leva a chave ao campo e à aba", campoApiKey.value === "chave-do-perfil-a" && chaveGuardada()[1] === "chave-do-perfil-a");
+conferir("perfil escolhido leva a chave ao campo e à aba", campoApiKey.value === "chave-do-perfil-a" && chaveGuardada()[0] === "chave-do-perfil-a");
+conferir("perfis, perfil ativo e chave ficam só na aba", credenciaisGravadasNoNavegador().length === 0 && sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfilAtivo) === "Perfil A",
+  credenciaisGravadasNoNavegador().join(", "));
 document.getElementById("removerPerfilBtn").click();
 await confirmarModal();
 conferir("Remover apaga o perfil e a chave dele do campo e do armazenamento",
   perfisGravados().map((perfil) => perfil.nome).join() === "Perfil B" && campoApiKey.value === "" && !chaveGuardada().includes("chave-do-perfil-a"));
 
 escolherPerfil("Perfil B");
-const opcaoManter = document.getElementById("rememberApiKey");
-opcaoManter.checked = true;
-opcaoManter.dispatchEvent(new domApp.window.Event("change"));
-conferir("com Manter marcado a chave do perfil fica no localStorage", chaveGuardada()[0] === "chave-do-perfil-b");
 botaoApagarPerfis.click();
 await esperar(40);
 const mensagemDeConfirmacao = document.getElementById("confirmMessage").textContent;
@@ -500,11 +502,11 @@ document.getElementById("confirmCancel").click();
 await esperar(40);
 conferir("cancelar a confirmação não apaga nada", perfisGravados().length === 1 && campoApiKey.value === "chave-do-perfil-b");
 conferir("confirmação diz quantos perfis e o que acontece com a chave do campo",
-  mensagemDeConfirmacao.includes("O perfil salvo neste navegador será apagado") && mensagemDeConfirmacao.includes("chave no campo"), mensagemDeConfirmacao);
+  mensagemDeConfirmacao.includes("O perfil desta aba será apagado") && mensagemDeConfirmacao.includes("chave no campo"), mensagemDeConfirmacao);
 botaoApagarPerfis.click();
 await confirmarModal();
 conferir("Apagar todos os perfis limpa perfis, perfil ativo, campo e chave guardada",
-  localStorage.getItem(CHAVES_ARMAZENAMENTO.perfis) === null && localStorage.getItem(CHAVES_ARMAZENAMENTO.perfilAtivo) === null
+  sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfis) === null && sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfilAtivo) === null
   && campoApiKey.value === "" && !chaveGuardada().includes("chave-do-perfil-b") && botaoApagarPerfis.disabled);
 
 salvarPerfil("Perfil C", "chave-do-perfil-c");
@@ -514,9 +516,24 @@ await confirmarModal();
 conferir("chave digitada que não é de perfil continua no campo e guardada",
   perfisGravados().length === 0 && campoApiKey.value === "chave-digitada-sem-perfil" && chaveGuardada().includes("chave-digitada-sem-perfil"));
 conferir("nenhuma chave de perfil foi para o log", !/chave-do-perfil|chave-digitada-sem-perfil/.test(textoDosLogs()));
-opcaoManter.checked = false;
-opcaoManter.dispatchEvent(new domApp.window.Event("change"));
 digitarChave("");
+conferir("nada da credencial foi gravado no navegador durante o uso", credenciaisGravadasNoNavegador().length === 0, credenciaisGravadasNoNavegador().join(", "));
+const gravacoesDeCredencial = procurar(codigoDoSite, /localStorage\.setItem\(CHAVES_ARMAZENAMENTO\.(?:apiKey|lembrarApiKey|perfis|perfilAtivo|idsResolve)\b/);
+conferir("nenhum código grava API Key, perfis ou lista do Resolve no localStorage", gravacoesDeCredencial.length === 0, gravacoesDeCredencial.join(", "));
+const sessaoAntes = Object.fromEntries(CREDENCIAIS_NO_NAVEGADOR.map((chave) => [chave, sessionStorage.getItem(chave)]));
+CREDENCIAIS_NO_NAVEGADOR.forEach((chave) => sessionStorage.removeItem(chave));
+localStorage.setItem(CHAVES_ARMAZENAMENTO.apiKey, "chave-antiga-mantida");
+localStorage.setItem(CHAVES_ARMAZENAMENTO.lembrarApiKey, "true");
+localStorage.setItem(CHAVES_ARMAZENAMENTO.perfis, JSON.stringify([{ nome: "Antigo", chave: "chave-antiga-do-perfil" }]));
+localStorage.setItem(CHAVES_ARMAZENAMENTO.idsResolve, "id-antigo");
+const levados = levarDadosSensiveisParaAba();
+conferir("dados gravados por versão anterior vão para a aba e saem do navegador",
+  levados === 3 && CREDENCIAIS_NO_NAVEGADOR.every((chave) => localStorage.getItem(chave) === null)
+  && sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey) === "chave-antiga-mantida" && sessionStorage.getItem(CHAVES_ARMAZENAMENTO.idsResolve) === "id-antigo"
+  && JSON.parse(sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfis))[0].chave === "chave-antiga-do-perfil");
+conferir("sem nada gravado, a migração não faz nada", levarDadosSensiveisParaAba() === 0);
+conferir("a abertura do app faz a migração", /levarDadosSensiveisParaAba\(\)/.test(readFileSync("js/app.js", "utf8")));
+Object.entries(sessaoAntes).forEach(([chave, valor]) => (valor === null ? sessionStorage.removeItem(chave) : sessionStorage.setItem(chave, valor)));
 
 console.log("\n== dados sensíveis no que é publicado e versionado ==");
 const { varrerSigilo, acharDadosSensiveis, cnpjValido, cpfValido, textosDoConteudo, arquivosDeChave } = await import("./sigilo.mjs");
