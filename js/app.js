@@ -5,13 +5,6 @@ import {
 import { carregarDefinicoes, definicoes, enderecoRepositorio } from "./definicoes.js";
 import { iniciarCredencial } from "./credencial.js";
 import { iniciarInfo, fecharPopup } from "./info.js";
-import { montarTelaRota } from "./telas/lote.js";
-import { montarTelaResolve } from "./telas/resolve.js";
-import { montarTelaNacional } from "./telas/nacional.js";
-import { montarTelaDePara } from "./telas/depara.js";
-import { montarTelaIbsCbs } from "./telas/ibscbs.js";
-import { montarTelaValidador } from "./telas/validador.js";
-import { montarTelaVariantes } from "./telas/variantes.js";
 
 const NOME_APLICACAO = "Painel Técnico NFS-e";
 
@@ -74,6 +67,22 @@ function contextoPlugNotas() {
   };
 }
 
+function carregarTela(rota) {
+  if (rota.tela === "resolve") return import("./telas/resolve.js").then((modulo) => (tela) => modulo.montarTelaResolve(tela));
+  if (rota.tela === "depara") return import("./telas/depara.js").then((modulo) => (tela) => modulo.montarTelaDePara(tela));
+  if (rota.tela === "ibscbs") return import("./telas/ibscbs.js").then((modulo) => (tela) => modulo.montarTelaIbsCbs(tela));
+  if (rota.tela === "validador") return import("./telas/validador.js").then((modulo) => (tela) => modulo.montarTelaValidador(tela));
+  if (rota.origem === "nacional") return import("./telas/nacional.js").then((modulo) => (tela) => modulo.montarTelaNacional(tela, rota));
+  if (rota.tela === "variantes") {
+    return Promise.all([import("./telas/variantes.js"), import("./telas/lote.js")]).then(([variantes, lote]) => (tela) =>
+      variantes.montarTelaVariantes(tela, rota, {
+        rotaPorId: (id) => catalogo.find((item) => item.id === id),
+        montarSubtela: (area, subrota, controles) => lote.montarTelaRota(area, subrota, { ...contextoPlugNotas(), controles })
+      }));
+  }
+  return import("./telas/lote.js").then((modulo) => (tela) => modulo.montarTelaRota(tela, rota, contextoPlugNotas()));
+}
+
 function cabecalhoDaPagina(rota) {
   return criar("header", { class: "cabecalho-pagina" }, [
     criar("span", { class: "cabecalho-grupo", texto: rota.grupo }),
@@ -102,24 +111,11 @@ function abrirRota(id) {
   const tela = criar("div", { class: "tela", dados: { rota: rota.id } });
   conteudo.appendChild(tela);
 
-  let montagem;
-  if (rota.tela === "resolve") montagem = montarTelaResolve(tela);
-  else if (rota.tela === "depara") montagem = montarTelaDePara(tela);
-  else if (rota.tela === "ibscbs") montagem = montarTelaIbsCbs(tela);
-  else if (rota.tela === "validador") montagem = montarTelaValidador(tela);
-  else if (rota.tela === "variantes") {
-    montagem = montarTelaVariantes(tela, rota, {
-      rotaPorId: (id) => catalogo.find((item) => item.id === id),
-      montarSubtela: (area, subrota, controles) => montarTelaRota(area, subrota, { ...contextoPlugNotas(), controles })
+  carregarTela(rota)
+    .then((montar) => (marca === navegacao ? montar(tela) : null))
+    .catch((erro) => {
+      if (marca === navegacao) registrarLog(`Falha ao montar a tela ${rota.titulo}: ${erro.message}`, "error");
     });
-  }
-  else if (rota.origem === "nacional") montagem = montarTelaNacional(tela, rota);
-  else {
-    montagem = montarTelaRota(tela, rota, contextoPlugNotas());
-  }
-  Promise.resolve(montagem).catch((erro) => {
-    if (marca === navegacao) registrarLog(`Falha ao montar a tela ${rota.titulo}: ${erro.message}`, "error");
-  });
 
   if (location.hash !== `#${rota.id}`) history.replaceState(null, "", `#${rota.id}`);
   document.querySelector(".app-shell")?.classList.remove("menu-aberto");
