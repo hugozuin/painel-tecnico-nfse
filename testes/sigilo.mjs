@@ -192,11 +192,9 @@ export function extrairTextoPdf(caminho) {
   return { texto: linhas.join("\n"), fluxos };
 }
 
-const PASTA_DOS_CERTIFICADOS_DE_TESTE = /^testes\/certificados\//;
 const ARQUIVOS_DE_CHAVE = /\.(?:pfx|p12|key|pem)$/i;
 const FORA_DO_ESCOPO = [
   /^assets\/vendor\/forge-[\d.]+\.min\.js$/,
-  PASTA_DOS_CERTIFICADOS_DE_TESTE,
   /(?:^|\/)package-lock\.json$/,
   /\.(?:pdf|pfx|p12|xlsx|png|jpg|jpeg|gif|ico|woff2?|pyc)$/i
 ];
@@ -210,8 +208,8 @@ export function arquivosDoEscopo(arquivos = arquivosDoRepositorio()) {
   return arquivos.filter((arquivo) => !FORA_DO_ESCOPO.some((expressao) => expressao.test(arquivo)));
 }
 
-export function arquivosDeChaveForaDosTestes(arquivos = arquivosDoRepositorio()) {
-  return arquivos.filter((arquivo) => ARQUIVOS_DE_CHAVE.test(arquivo) && !PASTA_DOS_CERTIFICADOS_DE_TESTE.test(arquivo));
+export function arquivosDeChave(arquivos = arquivosDoRepositorio()) {
+  return arquivos.filter((arquivo) => ARQUIVOS_DE_CHAVE.test(arquivo));
 }
 
 export function varrerSigilo(permitidosExtras = new Map()) {

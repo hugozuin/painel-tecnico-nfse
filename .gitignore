@@ -2,3 +2,4 @@ iniciar.bat
 node_modules/
 __pycache__/
 CLAUDE.local.md
+testes/certificados/

@@ -27,7 +27,11 @@ simulado, mas a fonte vem do Google Fonts e a consulta de teste vai à API
 PlugNotas com uma chave fictícia e volta 401. Para usar outro navegador:
 `node verificar-csp.mjs <caminho do executável>`.
 
-`certificados/` guarda certificados de teste autoassinados, gerados só para
-estes testes, válidos por 10 anos. Não são ICP-Brasil e não servem para
-nenhuma consulta real. O `cliente-legado.pfx` usa RC2-40, o mesmo formato de
-muitos A1, para garantir que a leitura no navegador funciona onde o Node recusa.
+`certificados/` recebe certificados de teste autoassinados, válidos por 10
+anos, que `gerar-certificados.mjs` cria quando faltam. O `npm test` e o
+`verificar:csp` chamam o gerador; para rodar uma suíte sozinha pela primeira
+vez, use `node gerar-certificados.mjs`. A pasta fica fora do Git, porque o
+padrão técnico proíbe chave privada e certificado versionados. Não são
+ICP-Brasil e não servem para nenhuma consulta real. O `cliente-legado.pfx` usa
+RC2-40 nos certificados e 3DES na chave, o mesmo formato de muitos A1, para
+garantir que a leitura no navegador funciona onde o Node recusa.

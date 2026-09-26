@@ -1,8 +1,10 @@
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { garantirCertificadosDeTeste } from "./gerar-certificados.mjs";
 
 const pastaTestes = path.dirname(fileURLToPath(import.meta.url));
+const pastaCertificados = garantirCertificadosDeTeste();
 const raizRepositorio = path.resolve(pastaTestes, "..");
 const detalhado = process.argv.includes("--detalhes");
 const suites = [
@@ -28,7 +30,7 @@ for (const suite of suites) {
     cwd: raizRepositorio,
     encoding: "utf8",
     timeout: LIMITE_POR_SUITE_MS,
-    env: { ...process.env, NODE_EXTRA_CA_CERTS: path.join(pastaTestes, "certificados", "ca.pem") }
+    env: { ...process.env, NODE_EXTRA_CA_CERTS: path.join(pastaCertificados, "ca.pem") }
   });
   const estourouPrazo = resultado.error?.code === "ETIMEDOUT" ? `\nFALHA suíte interrompida após ${LIMITE_POR_SUITE_MS / 1000} s sem terminar` : "";
   const saida = `${resultado.stdout || ""}${resultado.stderr || ""}${estourouPrazo}`;

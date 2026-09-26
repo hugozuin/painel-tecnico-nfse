@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
 import { EventEmitter } from "node:events";
 import https from "node:https";
 import path from "node:path";
@@ -490,7 +491,7 @@ opcaoManter.dispatchEvent(new domApp.window.Event("change"));
 digitarChave("");
 
 console.log("\n== dados sensíveis no que é publicado e versionado ==");
-const { varrerSigilo, acharDadosSensiveis, cnpjValido, cpfValido, textosDoConteudo, arquivosDeChaveForaDosTestes } = await import("./sigilo.mjs");
+const { varrerSigilo, acharDadosSensiveis, cnpjValido, cpfValido, textosDoConteudo, arquivosDeChave } = await import("./sigilo.mjs");
 const permitidosDoForge = new Map([
   [SHA256_FORGE, "SHA-256 do forge vendorizado"],
   [BIBLIOTECA_FORGE.integridade, "SRI do forge vendorizado"]
@@ -563,11 +564,14 @@ const essenciais = [
   "CLAUDE.md", "README.md", "vercel.json", ".vercelignore", "ferramentas/gerar_manual.py", "testes/teste.mjs", "testes/sigilo.mjs"
 ];
 conferir("varredura cobre tudo o que o Git versiona ou vai versionar, inclusive a raiz", essenciais.every((arquivo) => varredura.arquivos.includes(arquivo)), essenciais.filter((arquivo) => !varredura.arquivos.includes(arquivo)).join(", "));
-conferir("varredura fica fora só do forge, dos certificados de teste e das dependências",
-  !varredura.arquivos.some((arquivo) => arquivo === BIBLIOTECA_FORGE.endereco || /^testes\/(?:node_modules|certificados)\/|package-lock/.test(arquivo))
+conferir("varredura fica fora só do forge e das dependências",
+  !varredura.arquivos.some((arquivo) => arquivo === BIBLIOTECA_FORGE.endereco || /^testes\/node_modules\/|package-lock/.test(arquivo))
   && varredura.arquivos.includes("assets/vendor/forge-LICENSE.txt"));
-const chavesForaDosTestes = arquivosDeChaveForaDosTestes();
-conferir("nenhum .pfx, .p12, .key ou .pem fora de testes/certificados", chavesForaDosTestes.length === 0, chavesForaDosTestes.join(", "));
+const chavesNoRepositorio = arquivosDeChave();
+conferir("nenhum .pfx, .p12, .key ou .pem no repositório", chavesNoRepositorio.length === 0, chavesNoRepositorio.join(", "));
+const certificadosIgnorados = ["ca.pem", "servidor.key", "cliente-legado.pfx"]
+  .every((arquivo) => spawnSync("git", ["check-ignore", "-q", `testes/certificados/${arquivo}`]).status === 0);
+conferir("certificados de teste gerados na execução ficam fora do Git", certificadosIgnorados);
 conferir("texto do manual em PDF extraído para a varredura", varredura.manual.fluxos > 0 && varredura.manual.texto.includes("Painel T"));
 conferir("nenhum ID, chave, token, CNPJ, CPF ou e-mail fora da lista de permitidos",
   varredura.achados.length === 0,

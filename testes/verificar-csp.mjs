@@ -4,6 +4,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { garantirCertificadosDeTeste, SENHA_DOS_PFX } from "./gerar-certificados.mjs";
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const NAVEGADORES = [
@@ -14,8 +15,7 @@ const NAVEGADORES = [
   "/usr/bin/chromium",
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ].filter(Boolean);
-const PFX_DE_TESTE = path.join(RAIZ, "testes", "certificados", "cliente-legado.pfx");
-const SENHA_DO_PFX_DE_TESTE = "senha123";
+const PFX_DE_TESTE = path.join(garantirCertificadosDeTeste(), "cliente-legado.pfx");
 const TIPOS = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
   ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".pdf": "application/pdf", ".txt": "text/plain; charset=utf-8"
@@ -170,7 +170,7 @@ async function verificar(executavel) {
   const campoArquivo = await naPagina("Runtime.evaluate", { expression: `document.querySelector('.tela input[type="file"], .card input[type="file"]')` });
   await naPagina("DOM.enable");
   await naPagina("DOM.setFileInputFiles", { files: [PFX_DE_TESTE], objectId: campoArquivo.result.objectId });
-  await preencher('input[type="password"]', SENHA_DO_PFX_DE_TESTE);
+  await preencher('input[type="password"]', SENHA_DOS_PFX);
   await clicarBotao("Carregar certificado");
   conferencias.push(["forge carregado com SRI e certificado lido", await aguardar(`document.querySelector(".certificado-situacao")?.textContent.includes("EMPRESA TESTE")`)]);
   conferencias.push(["script do forge com integridade", await avaliar(`[...document.scripts].some((script) => script.src.includes("forge-") && script.integrity.startsWith("sha384-"))`)]);
