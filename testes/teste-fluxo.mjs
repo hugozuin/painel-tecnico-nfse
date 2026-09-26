@@ -29,8 +29,6 @@ global.fetch = async () => {
     ? resposta(400, { message: "O processo de resolve ja esta sendo executado para esse documento" })
     : resposta(200, { message: "ok" });
 };
-const moduloPlug = await import("../js/plugnotas.js");
-const original = moduloPlug.ESPERA_RESOLVE_MS;
 saida = await Promise.race([
   executarResolve({ id: "A2", apiKey: "k", sessao: criarSessaoRequisicoes(), tentativas: 3, intervalo: 1 }),
   new Promise((r) => setTimeout(() => r({ desfecho: "tempo-do-teste" }), 11000))
