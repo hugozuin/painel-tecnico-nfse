@@ -18,7 +18,8 @@ const suites = [
   "teste-atualizacao.mjs",
   "teste-certificado.mjs",
   "teste-seguranca.mjs",
-  "teste-padroes.mjs"
+  "teste-padroes.mjs",
+  "teste-desempenho.mjs"
 ];
 const LIMITE_POR_SUITE_MS = 180000;
 
