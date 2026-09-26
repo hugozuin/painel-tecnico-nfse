@@ -1,4 +1,4 @@
-import { criar, CHAVES_ARMAZENAMENTO } from "../shared.js";
+import { criar, chaveDaVariante } from "../shared.js";
 
 export function varianteEscolhida(rota, modo, alternada) {
   const variante = rota.variantes.find((item) => item.id === modo) || rota.variantes[0];
@@ -7,7 +7,7 @@ export function varianteEscolhida(rota, modo, alternada) {
 }
 
 export function montarTelaVariantes(container, rota, { rotaPorId, montarSubtela }) {
-  const chave = `${CHAVES_ARMAZENAMENTO.variantes}:${rota.id}`;
+  const chave = chaveDaVariante(rota.id);
   let salvo = {};
   try {
     salvo = JSON.parse(localStorage.getItem(chave) || "{}");

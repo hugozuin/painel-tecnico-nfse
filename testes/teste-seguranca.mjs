@@ -409,7 +409,14 @@ const armazenamentosSemTeste = procurar(codigoDoSite, /\bindexedDB\b|\bcaches\.|
 conferir("código não usa IndexedDB, CacheStorage, cookie nem sendBeacon, que o jsdom não cobre", armazenamentosSemTeste.length === 0, armazenamentosSemTeste.join(", "));
 
 console.log("\n== perfis e guarda da API Key ==");
-const { CHAVES_ARMAZENAMENTO } = await import("../js/shared.js");
+const { CHAVES_ARMAZENAMENTO, chaveDaVariante } = await import("../js/shared.js");
+const CHAVES_GRAVADAS_NOS_NAVEGADORES = [
+  "apiKey", "lembrarApiKey", "perfis", "perfilAtivo", "ids", "modo", "tentativas", "intervalo", "nacional", "esperaEvento",
+  "verificar", "verificacoes", "intervaloVerificacao", "ambienteNacional", "variantes", "usuario", "tema"
+].map((sufixo) => `resolve-tools:${sufixo}`);
+conferir("chaves do navegador continuam as mesmas, porque trocar exige migração",
+  JSON.stringify(Object.values(CHAVES_ARMAZENAMENTO)) === JSON.stringify(CHAVES_GRAVADAS_NOS_NAVEGADORES) && chaveDaVariante("consulta") === "resolve-tools:variantes:consulta",
+  JSON.stringify(Object.values(CHAVES_ARMAZENAMENTO)));
 document.querySelector('.menu-item[data-rota="consulta"]').click();
 await esperar(120);
 const campoApiKey = document.getElementById("apiKeyInput");

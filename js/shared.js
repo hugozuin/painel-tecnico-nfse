@@ -19,25 +19,29 @@ export function criar(tag, atributos = {}, filhos = []) {
   return alvo;
 }
 
+const PREFIXO_ARMAZENAMENTO = "resolve-tools:";
+
 export const CHAVES_ARMAZENAMENTO = {
-  apiKey: "resolve-tools:apiKey",
-  lembrarApiKey: "resolve-tools:lembrarApiKey",
-  perfis: "resolve-tools:perfis",
-  perfilAtivo: "resolve-tools:perfilAtivo",
-  idsResolve: "resolve-tools:ids",
-  modoIdentificacao: "resolve-tools:modo",
-  tentativas: "resolve-tools:tentativas",
-  intervalo: "resolve-tools:intervalo",
-  nacional: "resolve-tools:nacional",
-  esperaEvento: "resolve-tools:esperaEvento",
-  verificarAposResolve: "resolve-tools:verificar",
-  verificacoes: "resolve-tools:verificacoes",
-  intervaloVerificacao: "resolve-tools:intervaloVerificacao",
-  ambienteNacional: "resolve-tools:ambienteNacional",
-  variantes: "resolve-tools:variantes",
-  usuario: "resolve-tools:usuario",
-  tema: "resolve-tools:tema"
+  apiKey: `${PREFIXO_ARMAZENAMENTO}apiKey`,
+  lembrarApiKey: `${PREFIXO_ARMAZENAMENTO}lembrarApiKey`,
+  perfis: `${PREFIXO_ARMAZENAMENTO}perfis`,
+  perfilAtivo: `${PREFIXO_ARMAZENAMENTO}perfilAtivo`,
+  idsResolve: `${PREFIXO_ARMAZENAMENTO}ids`,
+  modoIdentificacao: `${PREFIXO_ARMAZENAMENTO}modo`,
+  tentativas: `${PREFIXO_ARMAZENAMENTO}tentativas`,
+  intervalo: `${PREFIXO_ARMAZENAMENTO}intervalo`,
+  nacional: `${PREFIXO_ARMAZENAMENTO}nacional`,
+  esperaEvento: `${PREFIXO_ARMAZENAMENTO}esperaEvento`,
+  verificarAposResolve: `${PREFIXO_ARMAZENAMENTO}verificar`,
+  verificacoes: `${PREFIXO_ARMAZENAMENTO}verificacoes`,
+  intervaloVerificacao: `${PREFIXO_ARMAZENAMENTO}intervaloVerificacao`,
+  ambienteNacional: `${PREFIXO_ARMAZENAMENTO}ambienteNacional`,
+  variantes: `${PREFIXO_ARMAZENAMENTO}variantes`,
+  usuario: `${PREFIXO_ARMAZENAMENTO}usuario`,
+  tema: `${PREFIXO_ARMAZENAMENTO}tema`
 };
+
+export const chaveDaVariante = (idTela) => `${CHAVES_ARMAZENAMENTO.variantes}:${idTela}`;
 
 export const pausar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
