@@ -129,6 +129,7 @@ js/shared.js            criar(), avisos, confirmação, logs da sessão, pool de
 js/plugnotas.js         cliente HTTP: tempo limite, Retry-After, sessão cancelável, resolve, eventos, consulta
 js/credencial.js        API Key e perfis salvos
 js/certificado.js       leitura do A1 no navegador (forge) e cartão do certificado
+js/mascaras.js          máscaras dos campos do catálogo (campos[].mascara): formatação, tamanho e preenchimento completo
 js/info.js              ícone de informação com popup (passar o mouse, Shift ou clique fixa, Esc fecha)
 js/tags.js              conteúdo do popup de cada tag do anexo VI
 js/analise.js           agregador do validador: analisarEmissao e a API pública (reexports)
@@ -203,6 +204,12 @@ servem às telas agrupadas.
 - `resultado.tipo`: `tabela` (com `colunas`), `json`, `arquivo` (extensão fixa
   ou deduzida do Content-Type) ou `mensagem`.
 - `campos[].destino`: `corpo.x`, `caminho.x` ou `consulta.x`.
+- `campos[].mascara` (`js/mascaras.js`): formata o campo enquanto o consultor
+  digita, limita o tamanho e recusa o valor incompleto antes de chamar a API.
+  Aceita um padrão em que `9` é dígito e `.`, `/` e `-` são separadores (ex.:
+  `99.99.99.999` no código de tributação) ou os nomes `cpf`, `cnpj` e
+  `cpfCnpj` (escolhe pelo tamanho). Com `somenteNumeros`, os separadores saem
+  antes do envio; sem ele, o valor segue formatado.
 - Rotas que alteram dado levam `sensivel` e `confirmar`; aparecem marcadas no
   menu e pedem confirmação.
 - No Nacional, `servidor` escolhe `adn` ou `sefin`, e o ambiente (produção ou
