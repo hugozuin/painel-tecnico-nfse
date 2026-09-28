@@ -84,6 +84,9 @@ conferir("tempo esgotado", dicaDoErro({ code: "ETIMEDOUT" }, false).includes("te
 conferir("endereço não encontrado", dicaDoErro({ code: "ENOTFOUND" }, false).includes("não foi encontrado"));
 conferir("cadeia do servidor", dicaDoErro({ code: "UNABLE_TO_GET_ISSUER_CERT_LOCALLY" }, false).includes("certificado do servidor"));
 conferir("par de chave inválido", dicaDoErro({ code: "ERR_OSSL_X509_KEY_VALUES_MISMATCH" }, true).includes("par válido"));
+const erroSemCertificadoNoNacional = { code: "ERR_SSL_DECRYPTION_FAILED_OR_BAD_RECORD_MAC", message: "error:0A000119:SSL routines:tls_get_more_records:decryption failed or bad record mac" };
+conferir("conexão encerrada pelo Nacional sem certificado pede o A1", dicaDoErro(erroSemCertificadoNoNacional, false).includes("carregue um certificado A1"));
+conferir("mesma queda com certificado enviado aponta o certificado", dicaDoErro(erroSemCertificadoNoNacional, true).includes("mesmo com o certificado enviado"));
 const erroAoMontarTls = (opcoes) => {
   try {
     tls.createSecureContext(opcoes);
