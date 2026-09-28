@@ -91,7 +91,7 @@ crítica.
 | Requisitos de segurança e LGPD avaliados | OK, a validar por SI | CLAUDE.md, seção 6; dados-e-lgpd.md; relatório de conformidade |
 | Aprovação formal de Segurança da Informação | Pendente | |
 | Autenticação corporativa homologada | Pendente | Site sem login, em exceção; o SSO entra com a hospedagem corporativa |
-| Revisão técnica independente | Pendente | Falta revisor; o merge da rodada 1 no main precisa dessa revisão ou da exceção |
+| Revisão técnica independente | Pendente | Falta revisor; a rodada 1 (versão 4.1.0) já entrou no main sem essa revisão, amparada na exceção E3, que ainda aguarda aceite formal (excecoes.md) |
 | Testes funcionais | OK | mais de 600 verificações em 13 suítes (`npm test`) e conferência das planilhas (`teste_fontes.py`) |
 | Testes de segurança e desempenho | OK | `teste-seguranca.mjs`, `teste-desempenho.mjs` e `verificar-csp.mjs` no navegador real |
 | Banco homologado ou justificativa | N/A | Não há banco nem persistência no servidor |
