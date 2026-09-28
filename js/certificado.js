@@ -93,7 +93,7 @@ export function montarCartaoCertificado(container) {
     botaoRemover.hidden = !carregado;
     if (!carregado) {
       situacao.className = "certificado-situacao";
-      situacao.textContent = "Nenhum certificado carregado. As consultas seguem sem certificado.";
+      situacao.textContent = "Nenhum certificado carregado. O Nacional recusa as consultas sem certificado.";
       return;
     }
     situacao.className = `certificado-situacao ${carregado.vencido ? "vencido" : "ativo"}`;
@@ -134,7 +134,7 @@ export function montarCartaoCertificado(container) {
   });
 
   container.appendChild(montarCartao({ titulo: "Certificado digital" }, [
-      criar("p", { class: "field-hint", texto: "Algumas consultas do Nacional exigem certificado digital na conexão. Pode ser qualquer certificado A1 ICP-Brasil válido, não precisa ser do CNPJ consultado." }),
+      criar("p", { class: "field-hint", texto: "As consultas do Nacional exigem certificado digital na conexão. Pode ser qualquer certificado A1 ICP-Brasil válido, não precisa ser do CNPJ consultado." }),
       criar("div", { class: "config-row" }, [
         criar("div", { class: "config-field" }, [criar("label", { class: "field-label", texto: "Arquivo do certificado (.pfx ou .p12)" }), arquivo]),
         criar("div", { class: "config-field" }, [criar("label", { class: "field-label", texto: "Senha" }), senha])

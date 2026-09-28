@@ -7,7 +7,7 @@ Navegador do consultor
  ├─ site estático (HTML, CSS, JS em módulos ES, sem build)
  ├─ API PlugNotas (https://api.plugnotas.com.br), direto, com a API Key da tela
  └─ /api/proxy (função Node 24 na Vercel, região gru1)
-      └─ ADN e Sefin do Nacional (gov.br), com o A1 do consultor quando a rota exige
+      └─ ADN e Sefin do Nacional (gov.br), com o A1 do consultor, exigido na conexão
 /api/saude (função Node 24): verificação de saúde
 ```
 
