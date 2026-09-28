@@ -126,7 +126,7 @@ def construir():
                        "apelido enquanto a aba estiver aberta, o que ajuda a alternar entre contas sem rodar um lote na "
                        "conta errada. Depois de fechar a aba, informe a chave de novo. O botão Apagar todos os perfis "
                        "limpa todos de uma vez, com confirmação. A chave só segue para a API PlugNotas. As telas do "
-                       "Nacional não usam a API Key: passam pelo repasse da aplicação, e algumas exigem certificado "
+                       "Nacional não usam a API Key: passam pelo repasse da aplicação e exigem certificado "
                        "digital.", corpo))
 
     h.append(Paragraph("3. Resolve em lote", secao))
@@ -163,7 +163,7 @@ def construir():
     h.append(Paragraph("Cada consulta mostra o retorno completo num campo próprio, com o status HTTP, o tipo do conteúdo, "
                        "o tempo e a URL chamada no Nacional. Quando o repasse não consegue falar com o Nacional, o campo "
                        "traz o motivo e uma orientação.", corpo))
-    h.append(Paragraph("Algumas consultas exigem certificado digital na conexão. Carregue um certificado A1 ICP-Brasil "
+    h.append(Paragraph("As consultas do Nacional exigem certificado digital na conexão. Carregue um certificado A1 ICP-Brasil "
                        "(.pfx ou .p12) e a senha no cartão Certificado digital; pode ser de qualquer CNPJ. O arquivo e a "
                        "senha são lidos no navegador, e só a chave e o certificado seguem para o repasse durante a "
                        "consulta, sem serem guardados. A senha é apagada do campo depois de cada leitura do arquivo, "

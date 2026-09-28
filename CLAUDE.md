@@ -22,7 +22,7 @@ Objetivos:
    consultas, XML e PDF, e-mail, cancelamento, eventos, sincronização,
    interrupção, empresa, webhook e certificado.
 2. Consultar o Ambiente Nacional da NFS-e (ADN e Sefin) por um repasse próprio,
-   com o certificado A1 do consultor quando a rota exige.
+   com o certificado A1 do consultor, que o ADN e a Sefin exigem na conexão.
 3. Explicar o XML do Nacional: de-para das tags do anexo VI com regras de
    negócio e o campo do PlugNotas que preenche cada tag.
 4. Relacionar item da LC 116, NBS, indOp e cClassTrib (anexos VII e VIII) para
@@ -129,6 +129,7 @@ js/shared.js            criar(), avisos, confirmação, logs da sessão, pool de
 js/plugnotas.js         cliente HTTP: tempo limite, Retry-After, sessão cancelável, resolve, eventos, consulta
 js/credencial.js        API Key e perfis salvos
 js/certificado.js       leitura do A1 no navegador (forge) e cartão do certificado
+js/mascaras.js          máscaras dos campos do catálogo (campos[].mascara): formatação, tamanho e preenchimento completo
 js/info.js              ícone de informação com popup (passar o mouse, Shift ou clique fixa, Esc fecha)
 js/tags.js              conteúdo do popup de cada tag do anexo VI
 js/analise.js           agregador do validador: analisarEmissao e a API pública (reexports)
@@ -141,11 +142,11 @@ js/telas/lote/          entrada.js (cartão Requisição e leitura dos campos), 
                         pedido, item a item e conjunto), retorno.js (cartão Retorno, tabela, CSV, cópia)
 js/telas/variantes.js   telas agrupadas: seletor e toggle dentro do cartão Requisição
 js/telas/resolve.js     tela do Resolve: cartões, tabela e andamento por callbacks
-js/telas/nacional.js    telas do Nacional pelo repasse, com certificado opcional
+js/telas/nacional.js    telas do Nacional pelo repasse, com o certificado A1
 js/telas/depara.js      de-para por tag, com busca e popup de regras
 js/telas/ibscbs.js      relação item LC 116, NBS, indOp e cClassTrib
 js/telas/validador.js   tela do validador
-api/proxy.js            repasse GET ou POST, com certificado opcional, só para domínios do gov.br da lista
+api/proxy.js            repasse GET ou POST, com certificado, só para domínios do gov.br da lista
 api/saude.js            verificação de saúde: situação e versão
 definicoes/             rotas.json, rotas-nacional.json, regras-validacao.json, config.json (manuais)
                         de-para-nacional.json, ibscbs.json (gerados, não editar à mão)
@@ -203,6 +204,12 @@ servem às telas agrupadas.
 - `resultado.tipo`: `tabela` (com `colunas`), `json`, `arquivo` (extensão fixa
   ou deduzida do Content-Type) ou `mensagem`.
 - `campos[].destino`: `corpo.x`, `caminho.x` ou `consulta.x`.
+- `campos[].mascara` (`js/mascaras.js`): formata o campo enquanto o consultor
+  digita, limita o tamanho e recusa o valor incompleto antes de chamar a API.
+  Aceita um padrão em que `9` é dígito e `.`, `/` e `-` são separadores (ex.:
+  `99.99.99.999` no código de tributação) ou os nomes `cpf`, `cnpj` e
+  `cpfCnpj` (escolhe pelo tamanho). Com `somenteNumeros`, os separadores saem
+  antes do envio; sem ele, o valor segue formatado.
 - Rotas que alteram dado levam `sensivel` e `confirmar`; aparecem marcadas no
   menu e pedem confirmação.
 - No Nacional, `servidor` escolhe `adn` ou `sefin`, e o ambiente (produção ou
@@ -298,10 +305,14 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 ### 5.5 Nacional e certificado
 
 - O navegador não chama o gov.br direto (sem CORS). O repasse `api/proxy` aceita
-  `GET ?url=` ou `POST` com `{ url }` e, quando a rota exige,
-  `certificado: { chave, certificado }` em PEM. A tela usa sempre POST, para a
-  URL com chave de acesso e CNPJ não aparecer nos logs de acesso da
-  hospedagem; o GET continua aceito.
+  `GET ?url=` ou `POST` com `{ url }` e `certificado: { chave, certificado }`
+  em PEM. A tela usa sempre POST, para a URL com chave de acesso e CNPJ não
+  aparecer nos logs de acesso da hospedagem; o GET continua aceito.
+- O Nacional exige certificado em todas as consultas (conferido na produção em
+  setembro de 2026): o ADN pede o certificado de cliente já no handshake TLS e
+  derruba a conexão sem ele (`ERR_SSL_DECRYPTION_FAILED_OR_BAD_RECORD_MAC`); a
+  Sefin conecta e responde 403. O repasse continua aceitando consulta sem
+  certificado, e `dicaDoErro` orienta a carregar o A1.
 - O repasse só aceita `https` e os domínios exatos de `DOMINIOS_LIBERADOS`
   (adn e sefin, produção e produção restrita), na porta padrão e sem usuário ou
   senha na URL (o Node os transformaria em cabeçalho `Authorization`). Prazo
@@ -574,10 +585,6 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
 - O `Mapping.txt` do componente é da v1.01; alguns caminhos não existem no
   leiaute RTC do anexo VI (ex.: `vDedRed`).
 - Raízes do JSON como a do intermediário não estão confirmadas.
-- Teste real do Nacional com certificado ainda pendente. Se falhar por cadeia
-  do servidor, falta a cadeia ICP-Brasil no repasse; se falhar por tempo,
-  avaliar a região da função. Confirmar também que o PEM de um A1 ICP-Brasil
-  real passa na validação do repasse (só foi medido com os PFX de teste).
 - Regra de rate limit do WAF da Vercel para `/api/proxy` ainda não criada no
   painel (seção 5.5). Ao criar, registrar aqui a janela, o limite e a ação.
 - A documentação traz status de sincronização e de interrupção por protocolo e
@@ -595,9 +602,13 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
     com tudo verde), hospedagem corporativa com SSO e WAF, auditoria das ações
     sensíveis com a identidade do SSO, integração do log ao monitoramento
     centralizado e responsável pelo custo.
-- Validar na produção, depois do merge: consultas do Nacional por POST (com e
-  sem certificado), `/api/saude`, região `gru1` e cabeçalhos de cache de
-  `assets/vendor/`.
+- Validado na produção em setembro de 2026, com a 4.1.0: `/api/saude`, função
+  em `gru1`, cabeçalhos das páginas iguais ao `vercel.json`, cache imutável de
+  `assets/vendor/`, arquivos publicados iguais ao `main`, recusas do repasse
+  (domínio, `http`, porta, usuário na URL, PEM, 64 KB, método) e
+  `npm run verificar:csp` sem violações. O Hugo consultou o Nacional com o A1
+  ICP-Brasil real, pela tela, e funcionou; sem certificado o Nacional recusa
+  (seção 5.5).
 
 ## 10. Glossário
 

@@ -1,8 +1,23 @@
 # Governança do Painel Técnico NFS-e
 
-Documentação exigida pela Política de Governança de Aplicações Internas, pelo
-Padrão Técnico para Aplicações Internas e pelo Checklist de Documentação da
-TecnoSpeed. Esta pasta fica fora do deploy (`.vercelignore`).
+Documentação exigida pela **Política de Governança de Aplicações Internas**,
+pelo **Padrão Técnico para Aplicações Internas** e pelo **Checklist de
+Documentação** da TecnoSpeed.
+
+> [!NOTE]
+> Esta pasta fica fora do deploy (`.vercelignore`). O conteúdo é interno e não
+> vai para o site.
+
+## Sumário
+
+- [Documentos](#documentos)
+- [Situação resumida](#situação-resumida)
+- [Ficha da aplicação](#ficha-da-aplicação)
+- [Classificação: Aplicação crítica](#classificação-aplicação-crítica)
+- [Checklist por etapa](#checklist-por-etapa)
+- [Próximas ações](#próximas-ações)
+
+## Documentos
 
 | Documento | Conteúdo |
 |---|---|
@@ -11,6 +26,25 @@ TecnoSpeed. Esta pasta fica fora do deploy (`.vercelignore`).
 | [operacao.md](operacao.md) | Arquitetura, tecnologias, integrações, implantação, recuperação, operação, sustentação e uso de IA |
 | [excecoes.md](excecoes.md) | Exceções em aberto, com risco, controles compensatórios e prazo |
 | [../../CHANGELOG.md](../../CHANGELOG.md) | Histórico de versões |
+
+## Situação resumida
+
+Contagem dos itens do [checklist](#checklist-por-etapa). "A confirmar" reúne os
+itens atendidos que ainda dependem de validação do responsável de negócio ou de
+Segurança da Informação.
+
+| Etapa | OK | A confirmar | Parcial | Pendente | N/A |
+|---|:-:|:-:|:-:|:-:|:-:|
+| 1. Descobrir | 0 | 0 | 0 | 2 | 0 |
+| 2. Experimentar | 2 | 0 | 0 | 2 | 0 |
+| 3. Compartilhar | 3 | 3 | 0 | 2 | 0 |
+| 4. Homologar | 6 | 1 | 1 | 6 | 2 |
+| 5. Operar | 1 | 1 | 1 | 4 | 1 |
+| **Total** | **12** | **5** | **2** | **16** | **3** |
+
+A maior parte das pendências não depende de código: depende do registro no
+TecnoApps, da indicação do responsável de negócio e do revisor, do aceite das
+[exceções](excecoes.md) e dos recursos corporativos (GitLab, hospedagem e SSO).
 
 ## Ficha da aplicação
 
@@ -91,7 +125,7 @@ crítica.
 | Requisitos de segurança e LGPD avaliados | OK, a validar por SI | CLAUDE.md, seção 6; dados-e-lgpd.md; relatório de conformidade |
 | Aprovação formal de Segurança da Informação | Pendente | |
 | Autenticação corporativa homologada | Pendente | Site sem login, em exceção; o SSO entra com a hospedagem corporativa |
-| Revisão técnica independente | Pendente | Falta revisor; o merge da rodada 1 no main precisa dessa revisão ou da exceção |
+| Revisão técnica independente | Pendente | Falta revisor; a rodada 1 (versão 4.1.0) já entrou no main sem essa revisão, amparada na exceção E3, que ainda aguarda aceite formal (excecoes.md) |
 | Testes funcionais | OK | mais de 600 verificações em 13 suítes (`npm test`) e conferência das planilhas (`teste_fontes.py`) |
 | Testes de segurança e desempenho | OK | `teste-seguranca.mjs`, `teste-desempenho.mjs` e `verificar-csp.mjs` no navegador real |
 | Banco homologado ou justificativa | N/A | Não há banco nem persistência no servidor |
@@ -120,3 +154,25 @@ Na descontinuação: comunicar a equipe, arquivar o repositório, remover o
 projeto da Vercel (ou da hospedagem corporativa), revogar tokens de deploy e
 de CI, e atualizar o TecnoApps. O Painel não guarda credenciais de clientes no
 servidor; API Keys e certificados ficam com cada consultor.
+
+## Próximas ações
+
+Plano de conformidade aprovado na rodada 1 (detalhes na seção 9 do
+`CLAUDE.md`).
+
+**Onda 0, com o responsável técnico e o gestor**
+
+- [ ] Registrar no TecnoApps como Aplicação crítica.
+- [ ] Formalizar o responsável de negócio e o revisor independente.
+- [ ] Obter o aceite das exceções E1, E2 e E3.
+- [ ] Pedir à Tecnologia GitLab, hospedagem corporativa com SSO e a
+      confirmação de que o Claude Code é homologado, com conta corporativa.
+- [ ] Confirmar a classificação da informação.
+
+**Onda 3, depois da Tecnologia**
+
+- [ ] Repositório no GitLab com Merge Request e revisão independente.
+- [ ] Pipeline com testes, dependências, segredos e deploy só com tudo verde.
+- [ ] Hospedagem corporativa com SSO e WAF.
+- [ ] Auditoria das ações sensíveis com a identidade do SSO.
+- [ ] Log integrado ao monitoramento centralizado e responsável pelo custo.

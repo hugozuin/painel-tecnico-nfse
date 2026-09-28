@@ -1,207 +1,418 @@
+<div align="center">
+
+<img src="assets/favicon.svg" alt="" width="72" height="72" />
+
 # Painel Técnico NFS-e
 
-Ferramenta interna da Consultoria Técnica NFS-e. Reúne as operações da API
-PlugNotas e do Ambiente Nacional, o de-para do XML do Nacional, a relação de
-dados do IBS e da CBS e um validador do JSON de emissão.
+**A ferramenta de trabalho da Consultoria Técnica NFS-e da TecnoSpeed (PlugNotas).**
 
-A aplicação roda no navegador do consultor. As chamadas ao PlugNotas saem
-direto do navegador com a API Key informada na tela, que nunca passa pelo
-servidor desta ferramenta.
+Operações em lote na API PlugNotas, consultas ao Ambiente Nacional da NFS-e,
+de-para do XML do Nacional, relação IBS e CBS e validação do JSON de emissão,
+num único painel que roda no navegador.
 
-## Telas
+![Versão](https://img.shields.io/badge/vers%C3%A3o-4.1.0-4f46e5)
+![Node](https://img.shields.io/badge/node-24.x-339933?logo=node.js&logoColor=white)
+![Hospedagem](https://img.shields.io/badge/hospedagem-Vercel%20gru1-000000?logo=vercel&logoColor=white)
+![Build](https://img.shields.io/badge/build-nenhum-6b7280)
+![Uso](https://img.shields.io/badge/uso-interno-b91c1c)
 
-**Notas, Arquivos e Ciclo de vida.** Uma tela por rota da API PlugNotas:
-resolve em lote com conferência da situação antes e depois, a consulta de notas numa tela só (por ID, idIntegracao ou período, com opção de consulta completa pelo ID),
-download de XML e PDF, regeração de PDF, e-mail, cancelamento e status,
-eventos, sincronização e interrupção. As que alteram dado pedem confirmação
-e aparecem marcadas no menu.
+[Visão geral](#visão-geral) ·
+[Funcionalidades](#funcionalidades) ·
+[Arquitetura](#arquitetura) ·
+[Primeiros passos](#primeiros-passos) ·
+[Testes](#testes) ·
+[Publicação](#publicação) ·
+[Segurança](#segurança) ·
+[Governança](#governança)
 
-**Empresa.** Cadastro da empresa (por CNPJ, todas da conta e logotipo),
-Webhook (da empresa ou da organização, com envio de teste) e Certificado (por ID
-ou CPF/CNPJ, ou todos da conta). São telas de leitura; a única ação é o envio de
-teste do webhook, que pede confirmação. Os caminhos foram conferidos na
-documentação do PlugNotas.
+</div>
 
-**Nacional.** Consultas públicas do ADN e da Sefin (convênio, alíquota,
-benefício, CNC, NFSe por chave, DPS e DANFSe), com escolha entre produção e
-produção restrita. Cada consulta mostra o retorno completo num campo
-próprio, com status HTTP, tipo do conteúdo, tempo e a URL chamada. Algumas
-consultas exigem certificado digital na conexão: o consultor carrega um A1
-ICP-Brasil (.pfx ou .p12) e a senha na tela. O arquivo e a senha são lidos no
-navegador, e só a chave e o certificado seguem para o repasse durante a
-consulta, sem serem guardados. A senha é apagada do campo depois de cada
-leitura do arquivo, com ou sem sucesso.
+---
 
-**De-para do Nacional.** Cada tag do XML aparece pelo nome do leiaute e pela
-descrição do anexo VI, por exemplo tpRetISSQN, Tipo de retencao do ISSQN. A
-busca cobre tag, descrição, caminho, código de rejeição (E0580) e campo do
-JSON. O ícone de informação abre as regras de negócio, a descrição completa e
-as notas explicativas; Shift ou clique fixam o popup para ler e copiar, e Esc
-fecha. Quando a cadeia fecha nos arquivos analisados, a tag mostra o campo do
-JSON e o campo do TX2 que a preenchem.
+## Sumário
 
-**Relação IBS e CBS.** Pesquisa por item da LC 116 ou por código de operação
-(indOp) e mostra NBS, indOp, local de incidência e cClassTrib, cada código com
-a descrição dos anexos VII e VIII no ícone de informação.
+- [Visão geral](#visão-geral)
+- [Funcionalidades](#funcionalidades)
+- [Arquitetura](#arquitetura)
+- [Primeiros passos](#primeiros-passos)
+- [Testes](#testes)
+- [Definições e catálogos](#definições-e-catálogos)
+- [Regenerar o de-para e as tabelas do IBS e da CBS](#regenerar-o-de-para-e-as-tabelas-do-ibs-e-da-cbs)
+- [Publicação](#publicação)
+- [Segurança](#segurança)
+- [Governança](#governança)
+- [Estrutura do repositório](#estrutura-do-repositório)
+- [Limitações conhecidas](#limitações-conhecidas)
+- [Contribuição](#contribuição)
+- [Documentação relacionada](#documentação-relacionada)
 
-**Validador de JSON.** Confere o corpo do POST /nfse no próprio navegador.
-Cada achado informa a fonte (anexo VI, VII ou VIII, lib do PlugNotas, script do
-Nacional ou cálculo sobre o JSON) e liga as tags afetadas ao popup de regras.
+## Visão geral
 
-## De onde vem cada informação
+O Painel Técnico NFS-e reúne, numa só ferramenta, o que o consultor usa no
+suporte técnico de NFS-e:
 
-Nada do de-para, da relação IBS e CBS ou das mensagens do validador é escrito
-à mão. O gerador lê:
+| Objetivo | Como o painel resolve |
+|---|---|
+| Executar rotas do PlugNotas em lote | Uma tela por rota, com lista de IDs, execução em paralelo e retorno completo |
+| Consultar o Ambiente Nacional (ADN e Sefin) | Repasse próprio para o gov.br, com o certificado A1 do consultor |
+| Entender o XML do Nacional | De-para de cada tag do anexo VI, com regras de negócio e o campo do PlugNotas que a preenche |
+| Classificar IBS e CBS | Relação entre item da LC 116, NBS, indOp e cClassTrib (anexos VII e VIII) |
+| Evitar rejeições | Validador do JSON de emissão, com a fonte de cada achado |
 
-- anexo VI (leiaute e regras de negócio), anexo VII (indOp) e anexo VIII
-  (correlação), que são públicos e ficam em `fontes/nacional`;
-- o `Mapping.txt` e o `LoadEnvio.txt` do padrão Nacional e as props da lib do
-  PlugNotas, que são internos e entram no gerador só por parâmetro.
+**Público:** consultores internos da TecnoSpeed. Não é um produto para o
+cliente final.
 
-A ligação do JSON até a tag segue quatro elos: lib (JSON para TX2), script
-(TX2 para dataset), mapeamento (dataset para caminho XML) e anexo VI (caminho
-para tag). Quando algum elo não fecha nos arquivos, a tela diz isso em vez de
-supor. O relatório `ferramentas/relatorio-geracao.json` lista as lacunas.
+**Princípios do projeto**
 
-O JSON publicado guarda nomes de campo e números de linha, nunca trechos de
-código.
+- **A API Key não passa pelo servidor.** O navegador chama a API PlugNotas
+  direto, e a chave fica só na aba aberta.
+- **Nada é afirmado sem fonte.** Toda regra, limite ou mensagem vem de um
+  documento: anexos do Nacional, documentação do PlugNotas, lib, script ou
+  cálculo sobre o JSON.
+- **Simplicidade.** HTML, CSS e JavaScript em módulos ES, sem framework, sem
+  build e sem banco de dados. O único backend é o repasse do Nacional.
 
-## Como regenerar as definições
+## Funcionalidades
 
-Requer Python 3.10 ou mais novo e openpyxl (`pip install openpyxl`).
+### Rotas do PlugNotas
 
+| Grupo | Telas |
+|---|---|
+| **Notas** | Resolve em lote (situação conferida antes e depois); consulta por ID, idIntegracao ou período, com consulta completa pelo ID |
+| **Arquivos** | Download de XML e PDF, regeração de PDF, reenvio por e-mail |
+| **Ciclo de vida** | Cancelamento e status do cancelamento, eventos, sincronização e interrupção |
+| **Empresa** | Cadastro (por CNPJ, todas da conta e logotipo), webhook da empresa ou da organização (com envio de teste) e certificados |
+
+- Listas de IDs coladas, digitadas ou importadas de CSV ou TXT, com os
+  repetidos removidos.
+- Execução em paralelo, com barra de progresso, cancelamento e exportação em
+  CSV.
+- O cartão **Retorno** mostra a resposta crua: corpo, status HTTP, tipo do
+  conteúdo, tempo e URL chamada.
+- Rotas que alteram dados aparecem marcadas no menu e pedem confirmação.
+- O **Resolve** faz novas tentativas em falhas temporárias, respeita
+  `Retry-After`, espera os eventos do emissor Nacional e fecha cada nota com
+  um desfecho claro (Resolvido, Continua rejeitada, Cancelado e outros).
+- Campos com formato definido são preenchidos com a máscara enquanto o
+  consultor digita: código de tributação (`00.00.00.000`), CPF, CNPJ e código
+  IBGE. Valor incompleto é recusado antes de chamar a API.
+
+### Ambiente Nacional
+
+- Consultas ao ADN e à Sefin: convênio, alíquota, benefício, CNC, NFS-e por
+  chave, DPS e DANFSe, em produção ou produção restrita.
+- **As consultas exigem certificado digital.** O consultor carrega um A1
+  ICP-Brasil (`.pfx` ou `.p12`), de qualquer CNPJ, e a senha na tela. O arquivo
+  e a senha são lidos no navegador; só a chave e a cadeia seguem para o
+  repasse, a cada consulta, sem serem guardadas.
+
+### Conhecimento do XML e da reforma tributária
+
+- **De-para do Nacional:** 430 tags e 579 regras do anexo VI, com busca por
+  tag, descrição, caminho, código de rejeição (ex.: `E0580`) ou campo do JSON.
+  O popup de cada tag traz as regras de negócio, a descrição completa e o
+  campo do JSON e do TX2 que a preenchem.
+- **Relação IBS e CBS:** pesquisa por item da LC 116 ou por indOp, com NBS,
+  local de incidência e cClassTrib, cada código com a descrição dos anexos VII
+  e VIII.
+- **Validador de JSON:** confere o corpo do `POST /nfse` no próprio navegador.
+  Cada achado cita a fonte e liga as tags afetadas ao popup de regras.
+
+### Recursos da interface
+
+- Tema claro e escuro, com a identidade da marca.
+- Painel de **Logs** da sessão, com identificação do consultor e exportação em
+  TXT.
+- Perfis de API Key por apelido, para alternar entre contas sem trocar de aba.
+- Manual de uso em PDF no botão **Documentação**.
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+    subgraph Navegador["Navegador do consultor"]
+        UI["Site estático<br/>HTML, CSS e JS em módulos ES"]
+        A1["Leitura do A1<br/>(node-forge)"]
+    end
+
+    subgraph Vercel["Vercel (região gru1)"]
+        Proxy["/api/proxy<br/>repasse do Nacional"]
+        Saude["/api/saude<br/>verificação de saúde"]
+    end
+
+    PlugNotas["API PlugNotas<br/>api.plugnotas.com.br"]
+    Nacional["Ambiente Nacional<br/>ADN e Sefin (gov.br)"]
+
+    UI -- "API Key, direto do navegador" --> PlugNotas
+    UI -- "POST com URL e certificado em PEM" --> Proxy
+    A1 --> UI
+    Proxy -- "mTLS com o A1" --> Nacional
 ```
+
+| Camada | Tecnologia |
+|---|---|
+| Front-end | HTML, CSS e JavaScript em módulos ES nativos, sem framework e sem build |
+| Funções | Node.js 24 na Vercel, região `gru1` (São Paulo) |
+| Biblioteca no navegador | node-forge 1.4.0, vendorizado e carregado com SRI só para ler o A1 |
+| Fonte | Quicksand, servida pelo próprio site |
+| Dados | JSON versionados em `definicoes/` |
+| Ferramentas | Python 3.10+ (openpyxl, reportlab e svglib), fora do site |
+| Testes | Node com jsdom e node-forge; Python com openpyxl |
+
+**Telas guiadas por catálogo.** Cada rota de `definicoes/rotas.json` e
+`definicoes/rotas-nacional.json` vira item de menu e tela, sem código novo. O
+código de cada tela é carregado só quando ela é aberta.
+
+**Por que um repasse?** O navegador não consegue chamar o gov.br direto (não
+há CORS), e o Nacional exige certificado de cliente na conexão. O repasse
+aceita só os domínios do Nacional e não guarda nada.
+
+## Primeiros passos
+
+### Requisitos
+
+- [Node.js 24](https://nodejs.org/) para os testes e o servidor local.
+- Python 3.10 ou mais novo, só para regenerar as definições e o manual.
+- Chrome ou Edge, para a verificação de CSP no navegador.
+
+### Executar localmente
+
+```bash
+git clone https://github.com/hugozuin/painel-tecnico-nfse.git
+cd painel-tecnico-nfse
+
+# servidor estático na porta 3500
+npm run dev
+```
+
+Abra `http://localhost:3500`. No servidor estático, as telas do Nacional não
+funcionam, porque dependem da função `api/proxy`. Para testá-las localmente,
+use a CLI da Vercel (exige login e vínculo com o projeto):
+
+```bash
+npx vercel dev
+```
+
+No Windows, o `iniciar.bat` (fora do Git) confere o Node.js, sobe o servidor e
+abre o navegador.
+
+### Preparar o ambiente de desenvolvimento
+
+```bash
+cd testes && npm install        # dependências dos testes, uma vez
+git config core.hooksPath .githooks   # roda o npm test antes de cada push
+```
+
+## Testes
+
+```bash
+cd testes
+npm test                  # todas as suítes
+npm run test:detalhes     # cada verificação, uma por linha
+npm run verificar:csp     # CSP e SRI num Chrome ou Edge real
+```
+
+```bash
+python testes/teste_fontes.py   # de-para conferido contra as planilhas dos anexos
+```
+
+São 13 suítes Node, com cerca de 650 verificações, entre elas:
+
+| Área | O que é garantido |
+|---|---|
+| Segurança | Destino da API Key, cabeçalhos, entrada e saída do repasse, A1 sem vestígio no navegador, varredura de dados sensíveis |
+| Contrato | Rotas conferidas na documentação do PlugNotas |
+| Interface | A aplicação montada no jsdom, tela a tela |
+| Padrões | Sem comentários no código, sem `innerHTML` e afins |
+| Desempenho | JS da abertura até 49 KB com gzip; buscas e validação dentro do orçamento |
+
+O guia completo das suítes está em [`testes/README.md`](testes/README.md).
+
+## Definições e catálogos
+
+O comportamento das telas vem dos arquivos de `definicoes/`:
+
+| Arquivo | Conteúdo | Origem |
+|---|---|---|
+| `rotas.json` | Catálogo das rotas do PlugNotas | Escrito à mão |
+| `rotas-nacional.json` | Catálogo das consultas do Nacional | Escrito à mão |
+| `regras-validacao.json` | Regras declarativas do validador, cada uma com fonte | Escrito à mão |
+| `config.json` | Leitura remota e botão Repositório | Escrito à mão |
+| `de-para-nacional.json` | De-para do anexo VI | Gerado |
+| `ibscbs.json` | Anexos VII e VIII | Gerado |
+
+Uma rota nova entra no catálogo, sem código novo:
+
+```json
+{
+  "id": "email",
+  "grupo": "Arquivos",
+  "titulo": "Envio de e-mail",
+  "metodo": "POST",
+  "caminho": "/nfse/email/{item}",
+  "entrada": { "tipo": "lote", "rotulo": "IDs das notas" },
+  "campos": [
+    { "id": "destinatarios", "rotulo": "Destinatários", "tipo": "lista", "obrigatorio": true, "destino": "corpo.destinatarios" }
+  ],
+  "resultado": { "tipo": "mensagem" },
+  "sensivel": true,
+  "confirmar": "Um e-mail será enviado para os destinatários informados."
+}
+```
+
+A referência de todos os atributos está em
+[`definicoes/README.md`](definicoes/README.md).
+
+## Regenerar o de-para e as tabelas do IBS e da CBS
+
+```bash
+pip install openpyxl
+
 python ferramentas/gerar_definicoes.py --anexos fontes/nacional \
-  --script <caminho>/Scripts/Nacional/LoadEnvio.txt \
-  --mapeamento <caminho>/Arquivos/Esquemas/Nacional/v1.01/Mapping.txt \
-  --lib <caminho>/buildTx2/padrao-NACIONAL/props
+  --script <caminho>/LoadEnvio.txt \
+  --mapeamento <caminho>/Mapping.txt \
+  --lib <caminho>/buildTx2/padrao-NACIONAL/props \
+  --saida definicoes
 ```
 
-Sem script, mapeamento e lib, o de-para sai só com o lado do Nacional. Ao
-trocar um anexo por versão nova, substitua o arquivo em `fontes/nacional` e
-ajuste o nome no topo do gerador.
+O gerador liga quatro elos: lib do PlugNotas (JSON para TX2), script do
+Nacional (TX2 para dataset), `Mapping.txt` (dataset para caminho XML) e anexo
+VI (caminho para tag). Quando um elo não fecha, a tela diz que o campo não foi
+identificado, em vez de supor. As lacunas da última geração ficam em
+`ferramentas/relatorio-geracao.json`.
 
-## Como a ferramenta se atualiza
+> [!IMPORTANT]
+> Os insumos internos do PlugNotas (`LoadEnvio.txt`, `Mapping.txt` e a lib)
+> entram no gerador só por parâmetro e **nunca** vão para o repositório. O JSON
+> publicado guarda nomes de campo e números de linha, nunca trechos de código.
 
-O repositório é privado, então o código do painel e o gerador ficam acessíveis
-só a quem for adicionado como colaborador. O site é aberto, sem login.
-
-Cada commit no branch main gera um deploy automático, em geral em cerca de um
-minuto. Isso vale para código, catálogos de rotas, regras do validador e para o
-de-para e as tabelas do IBS e da CBS depois de regenerados. Se um deploy falhar,
-o anterior continua no ar.
-
-A leitura direta das definições pelo GitHub fica desligada em
-`definicoes/config.json` (`atualizacaoRemota: false`), porque só funciona com
-repositório público. O guia de cada arquivo está em `definicoes/README.md`.
-
-## Execução local
-
-Duplo clique em `iniciar.bat` no Windows. Ele confere o Node.js, sobe um
-servidor na porta 3500 e abre o navegador. As telas do Nacional dependem do
-repasse em `api/proxy`, que só existe no ambiente publicado.
-
-Testes: `cd testes && npm install` uma vez e depois `npm test`. Para o push
-rodar os testes antes de enviar, ative o gancho uma vez por clone:
-`git config core.hooksPath .githooks`. O guia das
-suítes está em `testes/README.md`.
+Detalhes e heurísticas do gerador em
+[`ferramentas/README.md`](ferramentas/README.md). Para o manual em PDF:
+`python ferramentas/gerar_manual.py`.
 
 ## Publicação
 
-Deploy na Vercel a partir do repositório privado, com Framework Preset Other e
-sem variável de ambiente. Em Deployment Protection, a Vercel Authentication fica
-em Standard Protection: o domínio de produção abre sem login e as prévias de
-outros branches continuam protegidas. A pasta `api/` vira função serverless, na
-região `gru1` (São Paulo). O repasse do Nacional aceita GET com `?url=` ou POST
-com `{ url, certificado }`, e apenas os domínios do gov.br listados em
-`api/proxy.js`; a tela usa sempre POST. `GET /api/saude` responde a situação e a
-versão, para monitoramento. O `.vercelignore` deixa o gerador, os anexos, os
-testes, a documentação e os READMEs fora do site.
+| Item | Configuração |
+|---|---|
+| Plataforma | Vercel, Framework Preset **Other**, sem comando de build e sem variáveis de ambiente |
+| Deploy | Automático a cada commit no `main`, em cerca de um minuto; se falhar, o anterior continua no ar |
+| Proteção | Deployment Protection em **Standard Protection**: produção aberta, prévias de outros branches protegidas |
+| Funções | `api/proxy.js` e `api/saude.js`, Node 24, região `gru1` |
+| Fora do site | Gerador, anexos, testes, documentação e READMEs (`.vercelignore`) |
 
-Depois de cada deploy, confira `/api/saude` e os cabeçalhos com `curl -sI`. O
-procedimento de recuperação está em `docs/governanca/operacao.md`.
+Depois de cada deploy, confira a saúde e os cabeçalhos:
+
+```bash
+curl -s https://painel-tecnico-nfse.vercel.app/api/saude
+curl -sI https://painel-tecnico-nfse.vercel.app/
+```
+
+A resposta esperada da saúde é `{"situacao":"ok","versao":"<versão do package.json>"}`.
+O procedimento de recuperação está em
+[`docs/governanca/operacao.md`](docs/governanca/operacao.md).
 
 ## Segurança
 
-- **Cabeçalhos do site** (`vercel.json`): `nosniff`, `Referrer-Policy` e
-  `X-Robots-Tag` em tudo. Nas páginas, fora de `/api/`, também valem a
-  Content-Security-Policy (scripts, estilos e fontes só do próprio site, conexões
-  só com o próprio site e a API PlugNotas, sem objetos, sem moldura e sem
-  formulário), a
-  Permissions-Policy (câmera, microfone e localização desligados) e
-  `Cross-Origin-Opener-Policy: same-origin`. Se a
-  leitura remota das definições for religada, `https://raw.githubusercontent.com`
-  precisa entrar no `connect-src`; o teste de segurança cobra isso.
-- **API Key**: só segue para `https://api.plugnotas.com.br`. Qualquer outro
-  destino com chave é recusado antes de sair do navegador. A chave digitada, os
-  perfis e a lista do Resolve ficam só na aba (sessionStorage) e somem ao
-  fechá-la; nada fica gravado no navegador. O cartão da credencial explica isso
-  e traz o botão "Apagar todos os perfis".
-- **Repasse**: toda resposta sai com CSP `sandbox`, `nosniff` e `no-store`, e
-  HTML ou SVG do Nacional vira download. A entrada aceita só `https`, os
-  domínios da lista na porta padrão, sem usuário e senha na URL, corpo até
-  64 KB e certificado com o formato PEM conferido. Cada consulta tem prazo
-  total de 30 s, e respostas acima de 4 MB viram erro explicado. A conexão com
-  certificado é fechada ao fim da consulta. Cada consulta gera uma linha de log
-  em JSON com método, status, domínio, rota sem identificadores, se levou
-  certificado, erro e duração; corpo, URL com identificadores, chave e
-  certificado nunca entram no log. Não há limitador por IP no código; a
-  recomendação é uma regra de rate limit no WAF da Vercel (detalhes na seção
-  5.5 do CLAUDE.md).
-- **Listas de identificadores**: os itens `.` e `..` são recusados com aviso,
-  porque mudariam o caminho da rota chamada.
-- **Forge e fonte**: vendorizados com a versão no nome
-  (`assets/vendor/forge-1.4.0.min.js`, `assets/vendor/quicksand-v37-*.woff2`),
-  com as licenças ao lado e cache imutável de um ano. O forge é carregado com
-  SRI, e o `.gitattributes` impede que o Git troque o fim de linha e altere o
-  hash.
+| Tema | Controle |
+|---|---|
+| **API Key** | Vai só para `https://api.plugnotas.com.br`; outro destino é recusado antes do `fetch`. Fica só no `sessionStorage` da aba e some ao fechá-la |
+| **Certificado A1** | Lido no navegador; a senha nunca sai dele e é apagada do campo depois de cada leitura. Nada é persistido |
+| **Repasse** | Só `https`, só os domínios do ADN e da Sefin na porta padrão, corpo até 64 KB, PEM conferido, prazo de 30 s, resposta até 4 MB. Toda resposta sai com CSP `sandbox`, `nosniff` e `no-store` |
+| **Log** | Uma linha JSON por consulta ao repasse, sem corpo, identificadores, chave ou certificado |
+| **Cabeçalhos** | CSP estrita (tudo do próprio site, conexões só com o site e a API PlugNotas), Permissions-Policy, COOP e `X-Robots-Tag: noindex, nofollow` |
+| **DOM** | Sem `innerHTML`, `eval` e afins; tudo por `textContent` |
+| **Dependências** | Nada de CDN; bibliotecas vendorizadas com versão fixa, licença e SRI |
+| **Sigilo** | Varredura automática de IDs, CNPJs, CPFs, chaves e tokens em todo o repositório |
+
+Os requisitos completos estão na seção 6 do [`CLAUDE.md`](CLAUDE.md).
+
+> [!NOTE]
+> Não há limitador por IP no código do repasse. A proteção recomendada é uma
+> regra de rate limit no firewall (WAF) da Vercel para `/api/proxy`.
 
 ## Governança
 
-Pelas políticas corporativas de aplicações, dados e IA, o Painel é uma
-**Aplicação crítica**: executa ações fiscais na API de produção, fica exposto
-na internet e usa credenciais de clientes. A ficha, o checklist, o inventário
-de dados e LGPD, a operação e as exceções em aberto estão em
-`docs/governanca/`. O histórico de versões está no `CHANGELOG.md`.
+Pelas políticas corporativas, o painel é classificado como **Aplicação
+crítica**: executa ações fiscais na API de produção, fica exposto na internet e
+usa credenciais de clientes.
 
-## Estrutura
+A ficha da aplicação, o checklist por etapa, o inventário de dados e LGPD, a
+operação e as exceções em aberto estão em
+[`docs/governanca/`](docs/governanca/README.md).
+
+## Estrutura do repositório
 
 ```
-index.html               estrutura, menu lateral e modais
-styles.css               tema claro e escuro alinhado à marca
-assets/                  logo, ícone, favicon; vendor/ com forge e Quicksand, e as licenças
-js/app.js                menu, título de cada tela e montagem das telas
-js/definicoes.js         leitura das definições, com carregamento sob demanda
-js/info.js               ícone de informação e popup fixável
-js/tags.js               conteúdo do popup de cada tag do anexo VI
-js/analise.js            agregador do validador (analisarEmissao)
-js/analise/              uma conferência do validador por módulo, com fonte em cada achado
-js/fluxo-resolve.js      regras e orquestração do Resolve, sem DOM
-js/componentes.js        cartão e interruptor usados por todas as telas
-js/telas/                telas de rota, resolve, Nacional, de-para, IBS e CBS e validador
-js/telas/lote/           entrada, execução e Retorno do motor das telas de rota
-api/proxy.js             repasse das consultas do Nacional
-api/saude.js             verificação de saúde (situação e versão)
-definicoes/              catálogos, regras, de-para e tabelas do IBS e da CBS
-fontes/nacional/         anexos VI, VII e VIII
-ferramentas/             gerador das definições, manual e relatório da última geração
-testes/                  suítes Node, conferência das planilhas e verificação no navegador
-docs/governanca/         ficha, checklist, dados e LGPD, operação e exceções
-CHANGELOG.md             histórico de versões
+.
+├── index.html            estrutura da página, cabeçalho, menu e modais
+├── styles.css            tema claro e escuro com os tokens da marca
+├── assets/               logotipos, favicon e vendor/ (forge, Quicksand e licenças)
+├── js/
+│   ├── app.js            catálogo de telas, menu, roteamento e logs
+│   ├── plugnotas.js      cliente HTTP da API PlugNotas
+│   ├── certificado.js    leitura do A1 no navegador
+│   ├── mascaras.js       máscaras dos campos do catálogo
+│   ├── analise/          uma conferência do validador por módulo
+│   └── telas/            telas de rota, Resolve, Nacional, de-para, IBS e CBS e validador
+├── api/
+│   ├── proxy.js          repasse das consultas do Nacional
+│   └── saude.js          verificação de saúde
+├── definicoes/           catálogos, regras, de-para e tabelas do IBS e da CBS
+├── fontes/nacional/      anexos VI, VII e VIII (públicos)
+├── ferramentas/          gerador das definições e do manual
+├── testes/               suítes Node, conferência das planilhas e verificação no navegador
+├── docs/governanca/      ficha, checklist, dados e LGPD, operação e exceções
+├── CHANGELOG.md          histórico de versões
+└── documentacao.pdf      manual de uso
 ```
 
 ## Limitações conhecidas
 
-A lib e o script do Nacional usam nomes de TX2 diferentes em alguns campos
-(por exemplo, a lib gera ValorIRRF e o script lê ValorIR). Nesses casos o
-de-para mostra o campo do TX2 lido pelo script e informa que o campo do JSON
-não foi identificado. O código que grava o TX2 a partir das props não estava
-entre os arquivos analisados.
+- **Nomes de TX2 divergentes.** Em alguns campos, a lib e o script do Nacional
+  usam nomes diferentes (a lib gera `ValorIRRF`, o script lê `ValorIR`). Nesses
+  casos o de-para mostra o campo lido pelo script e informa que o campo do JSON
+  não foi identificado.
+- **Mapeamento da v1.01.** O `Mapping.txt` do componente é da v1.01, e alguns
+  caminhos dele não existem no leiaute RTC do anexo VI (ex.: `vDedRed`). Essas
+  tags aparecem sem o lado do PlugNotas.
+- **Alcance do validador.** Regras que dependem de parametrização municipal ou
+  de cadastro no ADN aparecem no popup, mas não são conferidas.
 
-O `Mapping.txt` do componente é da v1.01 e alguns caminhos dele não existem no
-leiaute RTC do anexo VI, como vDedRed. Essas tags aparecem sem o lado do
-PlugNotas.
+## Contribuição
 
-O validador cobre as regras que dá para conferir com o JSON e os documentos.
-Regras que dependem de parametrização municipal ou de cadastro no ADN ficam
-visíveis no popup, mas não são conferidas.
+1. Leia o [`CLAUDE.md`](CLAUDE.md): arquitetura, requisitos de segurança,
+   padrões de código e decisões registradas.
+2. Código, textos e mensagens de commit em português; nomes descritivos e sem
+   comentários no código.
+3. Commits pequenos, com mensagem no imperativo (ex.: "Adiciona CSP no
+   vercel.json").
+4. `npm test` verde antes de cada commit. Todo defeito corrigido ganha um teste
+   que falha no código antigo.
+5. Rota nova ou alterada é conferida antes na
+   [documentação do PlugNotas](https://docs.plugnotas.com.br) e entra no teste
+   de contrato.
+
+> [!WARNING]
+> Todo commit no `main` vai ao ar. Nunca use IDs, CNPJs, chaves de acesso ou
+> API Keys reais em código, catálogos, exemplos ou testes.
+
+## Documentação relacionada
+
+| Documento | Conteúdo |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | Referência técnica completa: arquitetura, segurança, padrões e decisões |
+| [`CHANGELOG.md`](CHANGELOG.md) | Histórico de versões |
+| [`definicoes/README.md`](definicoes/README.md) | Como alimentar os catálogos e as regras |
+| [`ferramentas/README.md`](ferramentas/README.md) | Gerador das definições e do manual |
+| [`testes/README.md`](testes/README.md) | Guia das suítes de teste |
+| [`docs/governanca/`](docs/governanca/README.md) | Governança, dados e LGPD, operação e exceções |
+| `documentacao.pdf` | Manual de uso para o consultor |
+
+---
+
+<div align="center">
+
+**Painel Técnico NFS-e · Consultoria Técnica NFS-e** · TecnoSpeed<br/>
+<sub>Desenvolvido por Hugo Zuin · Uso interno, código proprietário</sub>
+
+</div>

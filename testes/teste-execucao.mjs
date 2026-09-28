@@ -247,6 +247,30 @@ const semCertificado = chamadas[chamadas.length - 1];
 conferir("removido o certificado, o corpo segue sem ele",
   semCertificado.url === "api/proxy" && semCertificado.metodo === "POST" && semCertificado.corpo?.url?.includes("/cnc/consulta/cad") && !("certificado" in semCertificado.corpo), JSON.stringify(semCertificado));
 
+console.log("\n== máscara do código de tributação na consulta de alíquota ==");
+await abrirTela("aliquota");
+const campoDaTela = (rotulo) => [...document.querySelectorAll(".config-field")].find((bloco) => bloco.textContent.includes(rotulo)).querySelector("input");
+const codigoTributacao = campoDaTela("Código de tributação");
+conferir("campo mostra o formato esperado", codigoTributacao.placeholder === "00.00.00.000" && codigoTributacao.maxLength === 12);
+codigoTributacao.value = "06040100";
+codigoTributacao.dispatchEvent(new dom.window.Event("input"));
+conferir("pontos entram enquanto digita", codigoTributacao.value === "06.04.01.00", codigoTributacao.value);
+document.querySelector(".tela textarea").value = "4115200";
+document.querySelector(".tela textarea").dispatchEvent(new dom.window.Event("input"));
+campoDaTela("Competência").value = "2026-09";
+const chamadasAntesDaAliquota = chamadas.length;
+clicar("Consultar");
+await esperar(300);
+conferir("código incompleto é recusado sem chamar o repasse",
+  chamadas.length === chamadasAntesDaAliquota && [...document.querySelectorAll(".toast")].some((aviso) => aviso.textContent.includes("por completo")));
+codigoTributacao.value += "2";
+codigoTributacao.dispatchEvent(new dom.window.Event("input"));
+clicar("Consultar");
+await aguardarAte(() => chamadas.length > chamadasAntesDaAliquota);
+const chamadaAliquota = chamadas.filter((c) => c.url === "api/proxy").pop();
+conferir("código completo segue no formato do layout Nacional",
+  chamadaAliquota?.corpo?.url === "https://adn.nfse.gov.br/parametrizacao/4115200/06.04.01.002/2026-09/aliquota", chamadaAliquota?.corpo?.url);
+
 console.log("\n== itens . e .. não desviam o caminho da rota ==");
 const avisos = () => [...document.querySelectorAll(".toast")].map((aviso) => aviso.textContent);
 const chamadasAntesDosPontos = chamadas.length;

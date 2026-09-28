@@ -4,6 +4,7 @@ import {
 } from "../../shared.js";
 import { exigirApiKey } from "../../credencial.js";
 import { montarCartao } from "../../componentes.js";
+import { ligarMascara, exemploDaMascara, mascaraCompleta } from "../../mascaras.js";
 
 export function rotuloAcao(rota) {
   if (rota.resultado?.tipo === "arquivo") return "Baixar arquivos";
@@ -126,9 +127,10 @@ function montarCampos(rota, campos) {
       entrada = criar("input", {
         type: { data: "date", competencia: "month" }[definicao.tipo] || "text",
         class: "text-input",
-        placeholder: definicao.exemplo || "",
+        placeholder: definicao.exemplo || (definicao.mascara ? exemploDaMascara(definicao.mascara) : ""),
         spellcheck: false
       });
+      if (definicao.mascara) ligarMascara(entrada, definicao.mascara);
     }
 
     campos[definicao.id] = entrada;
@@ -159,6 +161,9 @@ function lerCampos(rota, campos) {
       return { erro: `Preencha o campo ${definicao.rotulo}.` };
     }
     if (valor === "" && definicao.tipo !== "booleano") continue;
+    if (definicao.mascara && !mascaraCompleta(valor, definicao.mascara)) {
+      return { erro: `Preencha o campo ${definicao.rotulo} por completo, no formato ${exemploDaMascara(definicao.mascara)}.` };
+    }
 
     const [destino, chave] = (definicao.destino || `corpo.${definicao.id}`).split(".");
     dados[destino][chave] = definicao.tipo === "lista"

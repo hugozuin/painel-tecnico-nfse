@@ -101,10 +101,10 @@ export function dicaDoErro(erro, comCertificado) {
   if (/KEY_VALUES_MISMATCH|bad decrypt|no start line|PEM|DECODER|ASN1/i.test(texto)) {
     return "A chave e o certificado enviados não formam um par válido. Carregue o certificado de novo.";
   }
-  if (/ECONNRESET|socket hang up|ALERT|handshake|EPROTO/i.test(texto)) {
+  if (/ECONNRESET|socket hang up|ALERT|handshake|EPROTO|BAD_RECORD_MAC|DECRYPTION_FAILED/i.test(texto)) {
     return comCertificado
       ? "O servidor encerrou a conexão TLS mesmo com o certificado enviado. Confira se ele é ICP-Brasil e está dentro da validade."
-      : "O servidor encerrou a conexão TLS. Se a consulta exige certificado digital, carregue um certificado A1 na tela.";
+      : "O servidor encerrou a conexão TLS sem certificado. As consultas do Nacional exigem certificado digital: carregue um certificado A1 na tela.";
   }
   return "";
 }

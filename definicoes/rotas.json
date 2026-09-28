@@ -126,7 +126,8 @@
           "tipo": "texto",
           "obrigatorio": true,
           "destino": "caminho.cnpj",
-          "somenteNumeros": true
+          "somenteNumeros": true,
+          "mascara": "cnpj"
         }
       ],
       "resultado": {
@@ -170,7 +171,8 @@
           "tipo": "texto",
           "obrigatorio": true,
           "destino": "consulta.cpfCnpj",
-          "somenteNumeros": true
+          "somenteNumeros": true,
+          "mascara": "cpfCnpj"
         },
         {
           "id": "dataInicial",
