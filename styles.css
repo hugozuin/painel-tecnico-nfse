@@ -166,6 +166,7 @@ body {
 }
 
 .field-label { font-size: 0.85rem; font-weight: 600; color: var(--text-strong); }
+.rotulo-com-info { display: flex; align-items: center; gap: 6px; }
 
 .text-input, .text-area {
   width: 100%;
@@ -830,7 +831,6 @@ body {
   border-radius: var(--radius-sm);
   padding: 10px 12px;
 }
-.aviso-lista { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
 
 .nacional-box {
   border: 1px solid var(--border);

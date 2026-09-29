@@ -121,10 +121,12 @@ def construir():
                        "alteram ou apagam dado aparecem marcadas como sensíveis e pedem confirmação antes de executar.", corpo))
 
     h.append(Paragraph("2. Credencial", secao))
-    h.append(Paragraph("A API Key fica no topo das telas do PlugNotas. A chave digitada e os perfis ficam só na aba "
-                       "e somem quando ela é fechada; nada fica gravado no navegador. Os perfis guardam chaves por "
-                       "apelido enquanto a aba estiver aberta, o que ajuda a alternar entre contas sem rodar um lote na "
-                       "conta errada. Depois de fechar a aba, informe a chave de novo. O botão Apagar todos os perfis "
+    h.append(Paragraph("A API Key fica no topo das telas do PlugNotas. Os perfis guardam chaves por apelido e ficam "
+                       "gravados no navegador, mesmo depois de fechar o site, até serem apagados na tela ou até a limpeza "
+                       "dos dados do navegador; isso ajuda a alternar entre contas sem rodar um lote na conta errada. Não "
+                       "salve perfis em computador compartilhado. A chave digitada sem perfil fica só na aba e some quando "
+                       "ela é fechada. Passar o mouse no ícone ? ao lado de Perfis salvos mostra esse resumo. O botão "
+                       "Apagar todos os perfis "
                        "limpa todos de uma vez, com confirmação. A chave só segue para a API PlugNotas. As telas do "
                        "Nacional não usam a API Key: passam pelo repasse da aplicação e exigem certificado "
                        "digital.", corpo))

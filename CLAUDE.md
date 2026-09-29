@@ -478,15 +478,20 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   cabeçalho, com contador. Traz Identificar-se, Exportar (TXT) e Limpar.
 - Identificação: nome declarado, só para rastreabilidade nos logs exportados.
   Não há login.
-- API Key: a chave digitada, os perfis, o perfil ativo e a lista de IDs do
-  Resolve ficam só no `sessionStorage` da aba e somem ao fechá-la; não há opção
-  de manter a chave no navegador. Na abertura, `levarDadosSensiveisParaAba`
-  (`js/shared.js`) move para a aba e apaga do `localStorage` o que versões
-  anteriores gravaram. A chave vai direto do navegador para a API PlugNotas e
-  nunca passa pelo servidor da ferramenta. O cartão da credencial traz o aviso
-  de como a chave é guardada e o botão "Apagar todos os perfis" (com
-  confirmação). Apagar ou remover perfil também tira do campo e da aba a chave
-  que for de um perfil apagado; chave digitada que não é de perfil fica.
+- API Key: os perfis (apelido e chave) ficam no `localStorage` e duram até o
+  consultor apagá-los na tela ou limpar os dados do navegador. A chave digitada
+  sem perfil, o perfil ativo e a lista de IDs do Resolve ficam só no
+  `sessionStorage` da aba e somem ao fechá-la; não há opção de manter a chave
+  digitada no navegador. Na abertura, `levarDadosSensiveisParaAba`
+  (`js/shared.js`) move para a aba e apaga do `localStorage` a chave, o perfil
+  ativo e a lista que versões anteriores gravaram; os perfis ficam. A chave vai
+  direto do navegador para a API PlugNotas e nunca passa pelo servidor da
+  ferramenta. No cartão da credencial, o ícone "?" ao lado de "Perfis salvos"
+  abre o popup "Como a API Key fica guardada" (com a orientação de não salvar
+  perfis em computador compartilhado), e o botão "Apagar todos os perfis" pede
+  confirmação. Apagar ou remover perfil também
+  tira do campo e da aba a chave que for de um perfil apagado; chave digitada
+  que não é de perfil fica.
 - Rodapé: "**Painel Técnico NFS-e · Consultoria Técnica NFS-e** · TecnoSpeed" e
   "Desenvolvido por Hugo Zuin" com menos destaque.
 
@@ -516,8 +521,10 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    e-mails. A lista de permitidos fica em `testes/sigilo.mjs`, cada valor com a
    fonte pública; valor novo só entra com fonte.
 3. **API Key.** Nunca enviar ao servidor da ferramenta, nunca registrar em log,
-   nunca incluir em exportação, nunca gravar no `localStorage` (só no
-   `sessionStorage` da aba; há teste). `X-API-KEY` só pode ir para a origem fixa
+   nunca incluir em exportação. No `localStorage`, só os perfis salvos pelo
+   consultor, gravados só por `js/credencial.js`; a chave digitada sem perfil,
+   o perfil ativo e a lista do Resolve ficam só no `sessionStorage` da aba (há
+   teste). `X-API-KEY` só pode ir para a origem fixa
    `ORIGEM_PLUGNOTAS` (`js/plugnotas.js`): `requisitar` recusa, sem chamar o
    `fetch`, qualquer outro destino com chave, e a `base` do `rotas.json` tem de
    ser igual a ela (teste de contrato). Nenhum código envia a chave por fora de
@@ -612,7 +619,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 | CSP só nas páginas, com `img-src 'self'` (sem `data:`) e sem liberar a Vercel Toolbar | Aprovado na rodada 1; nada do app usa `data:` e o repasse tem CSP própria |
 | Sem limitador por IP no código do repasse; limite pelo WAF da Vercel | Aprovado na rodada 1; contador em memória não protege e barraria lotes da equipe no mesmo IP |
 | Nome, logo, favicon e rodapé atuais | Identidade definida pelo Hugo |
-| API Key, perfis e lista do Resolve só na aba, sem "Manter a chave" | Aprovado na rodada 1: a API Key é informação Restrita pela política de dados |
+| Perfis de API Key no `localStorage`; chave digitada sem perfil, perfil ativo e lista do Resolve só na aba, sem "Manter a chave" | Pedido do Hugo em 29/09/2026, revendo a rodada 1 (tudo só na aba, porque a API Key é informação Restrita pela política de dados): os perfis precisam durar entre aberturas do site. Governança atualizada em `docs/governanca/` |
 | Consultas do Nacional sempre por POST, GET ainda aceito no repasse | Identificadores fora da URL e dos logs de acesso; contrato do repasse mantido |
 | Quicksand servida pelo próprio site | Um terceiro a menos recebendo o IP do consultor; CSP só `'self'` |
 | Código de cada tela carregado sob demanda | Orçamento de 49 KB com gzip para o JS da abertura (`teste-desempenho.mjs`) |

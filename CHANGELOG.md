@@ -4,6 +4,13 @@
 
 ### Mudanças visíveis
 
+- Os perfis de API Key ficam gravados no navegador (localStorage) e continuam
+  lá depois de fechar o site, até serem apagados na tela ou até a limpeza dos
+  dados do navegador. A chave digitada sem perfil, o perfil ativo e a lista
+  do Resolve continuam só na aba.
+- A explicação "Como a API Key fica guardada" deixou de ficar sempre visível
+  no cartão da credencial e abre ao passar o mouse no ícone "?" ao lado de
+  "Perfis salvos".
 - Máscara preenchida ao digitar no código de tributação da consulta de
   alíquota (`00.00.00.000`), nos campos de CPF e CNPJ e no código IBGE do CNC.
   Valor incompleto é recusado antes de chamar a API.
