@@ -58,7 +58,7 @@ conferir("telas e validador ficam fora da abertura", !modulos.some((arquivo) => 
 console.log("\n== de-para ==");
 const itensDePara = prepararItensDePara(ler("de-para-nacional").entradas);
 const filtros = ["", "e", "valor", "servico[].iss", "E0580", "tpRetISSQN"]
-  .map((consulta) => [`"${consulta}"`, medianaEmMs(() => filtrarDePara(itensDePara, consulta, "", false))]);
+  .map((consulta) => [`"${consulta}"`, medianaEmMs(() => filtrarDePara(itensDePara, consulta))]);
 conferir(`filtro do de-para abaixo de ${ORCAMENTOS.filtroDeParaMs} ms (mediana)`, pior(filtros) < ORCAMENTOS.filtroDeParaMs, descrever(filtros));
 
 console.log("\n== relação IBS e CBS ==");

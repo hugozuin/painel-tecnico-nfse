@@ -127,7 +127,14 @@ await digitar(busca, "tpRetISSQN");
 const primeiro = document.querySelector(".depara-item");
 conferir("busca pela tag traz a tag primeiro", primeiro?.querySelector(".tag-nome")?.textContent === "tpRetISSQN");
 conferir("tag com a referência do anexo", primeiro?.querySelector(".tag-titulo")?.textContent === "Tipo de retencao do ISSQN");
-conferir("lado do PlugNotas informado", primeiro?.textContent.includes("IssRetido") && primeiro?.textContent.includes("não identificado"));
+conferir("lado do PlugNotas informado com o campo do JSON e o selo de conversão",
+  primeiro?.textContent.includes("servico[].iss.retido") && primeiro?.textContent.includes("Convertido"), primeiro?.textContent);
+conferir("sem selos de confirmação da ligação",
+  !["Confirmada em", "Ligação inferida", "Pela documentação"].some((texto) => document.querySelector(".depara-lista").textContent.includes(texto)));
+conferir("cada selo explica o que significa ao passar o mouse",
+  [...document.querySelectorAll(".depara-selo")].every((selo) => selo.title.length > 20) && document.querySelectorAll(".depara-selo").length > 0,
+  [...document.querySelectorAll(".depara-selo")].map((selo) => `${selo.textContent}: ${selo.title}`).join(" | "));
+conferir("nome do TX2 fora da lista", !primeiro?.textContent.includes("IssRetido"));
 await digitar(busca, "E0580");
 conferir("busca por código de rejeição", [...document.querySelectorAll(".tag-nome")].some((t) => t.textContent === "tpRetISSQN"));
 await digitar(busca, "retencao do issqn");
@@ -139,6 +146,10 @@ evento("mouseover", icone);
 await esperar(30);
 conferir("popup abre ao passar o mouse", estadoDoPopup().aberto);
 conferir("popup traz as regras de negócio", estadoDoPopup().texto.includes("E0580") && estadoDoPopup().texto.includes("Regras de negócio"));
+conferir("popup traz a origem no PlugNotas com a tabela de conversão",
+  estadoDoPopup().texto.includes("No PlugNotas") && estadoDoPopup().texto.includes("TipoRetIss") && estadoDoPopup().texto.includes("verdadeiro"),
+  estadoDoPopup().texto.slice(0, 400));
+conferir("popup sem a contagem de notas em que o valor bateu", !estadoDoPopup().texto.includes("bateu em"));
 tecla("Shift");
 conferir("Shift fixa o popup", estadoDoPopup().fixado && document.querySelector(".info-popup").classList.contains("fixado"));
 evento("mouseout", icone, { relatedTarget: document.body });
@@ -155,13 +166,42 @@ evento("mouseout", icone, { relatedTarget: document.body });
 await esperar(260);
 conferir("sem fixar, fecha ao sair", !estadoDoPopup().aberto);
 
+await digitar(busca, "cMotivo");
+const comInconsistencia = document.querySelector(".depara-item");
+conferir("aviso discreto de inconsistência na tag", comInconsistencia?.querySelector(".depara-inconsistencia")?.title.includes("valide nos scripts"));
+
 await digitar(busca, "");
-const marcador = [...document.querySelectorAll('.tela input[type="checkbox"]')][0];
-marcador.checked = true;
-marcador.dispatchEvent(new dom.window.Event("change"));
-await esperar(50);
-const contagem = Number(document.querySelector(".tela .badge-neutral").textContent.split(" ")[0]);
-conferir("filtro de tags preenchidas pelo PlugNotas", contagem > 0 && contagem < 430, String(contagem));
+const seletorDeFiltros = document.querySelector(".seletor-multiplo");
+const resumoDosFiltros = () => seletorDeFiltros.querySelector("summary").textContent;
+const contarTags = () => Number(document.querySelector(".tela .table-toolbar .badge-neutral").textContent.split(" ")[0]);
+const alternarFiltro = async (valor) => {
+  const caixa = seletorDeFiltros.querySelector(`input[value="${valor}"]`);
+  caixa.checked = !caixa.checked;
+  caixa.dispatchEvent(new dom.window.Event("change", { bubbles: true }));
+  await esperar(50);
+};
+const todas = contarTags();
+conferir("um único seletor de filtros, sem o de inconsistência",
+  document.querySelectorAll(".tela select").length === 0 && resumoDosFiltros() === "Todas as tags"
+  && !seletorDeFiltros.textContent.includes("inconsistência") && seletorDeFiltros.querySelectorAll('input[type="checkbox"]').length > 2);
+await alternarFiltro("preenchidas");
+const preenchidas = contarTags();
+conferir("filtro de tags preenchidas pelo PlugNotas", preenchidas > 0 && preenchidas < todas && resumoDosFiltros() === "Preenchidas pelo PlugNotas", String(preenchidas));
+await alternarFiltro("conversao");
+const comConversao = contarTags();
+conferir("características do PlugNotas precisam valer todas", comConversao > 0 && comConversao <= preenchidas && resumoDosFiltros() === "2 filtros", String(comConversao));
+await alternarFiltro("DPS · prest");
+await alternarFiltro("DPS · toma");
+const caminhos = [...document.querySelectorAll(".depara-item")].map((item) => item.querySelector(".tag-caminho").textContent);
+conferir("grupos marcados somam as tags", caminhos.length > 0 && caminhos.length <= comConversao
+  && caminhos.every((caminho) => caminho.includes("/prest/") || caminho.includes("/toma/"))
+  && caminhos.some((caminho) => caminho.includes("/prest/")) && caminhos.some((caminho) => caminho.includes("/toma/")), String(caminhos.length));
+for (const valor of ["preenchidas", "conversao", "DPS · prest", "DPS · toma"]) await alternarFiltro(valor);
+conferir("sem filtros volta a mostrar todas", contarTags() === todas && resumoDosFiltros() === "Todas as tags");
+seletorDeFiltros.open = true;
+evento("click", document.querySelector(".cabecalho-pagina"));
+conferir("clique fora fecha o seletor", !seletorDeFiltros.open);
+conferir("tags da NFS-e marcadas como geradas pelo Nacional", [...document.querySelectorAll(".depara-item")].some((item) => item.textContent.includes("Gerada pelo Nacional")));
 
 console.log("\n== relação IBS e CBS ==");
 await abrir("ibscbs");

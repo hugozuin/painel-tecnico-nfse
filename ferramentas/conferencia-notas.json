@@ -1,0 +1,7744 @@
+{
+ "pares": 11,
+ "leiaute": {
+  "versaoDps": {
+   "1.01": 11
+  },
+  "verAplic": {
+   "TSPD_1.0.1": 11
+  }
+ },
+ "errosDaLib": {},
+ "caminhosSemTag": [],
+ "caminhosAproximados": {
+  "NFSe/infNFSe/DPS/infDPS/finNFSe": "NFSe/infNFSe/DPS/infDPS/IBSCBS/finNFSe"
+ },
+ "tags": {
+  "NFSe/infNFSe/DPS/infDPS/IBSCBS/cIndOp": {
+   "presente": 7,
+   "ligacoes": {
+    "json:servico[].ibscbs.codigoOperacao": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoOperacao": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/IBSCBS/indDest": {
+   "presente": 7,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/IBSCBS/indFinal": {
+   "presente": 7,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/IBSCBS/tpOper": {
+   "presente": 1,
+   "ligacoes": {
+    "json:parcelas[].numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/IBSCBS/valores/trib/gIBSCBS/CST": {
+   "presente": 7,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/IBSCBS/valores/trib/gIBSCBS/cClassTrib": {
+   "presente": 7,
+   "ligacoes": {
+    "json:parcelas[].numero": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.serie": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoServicoNacional": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].quantidade": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].responsavelRetencao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoTributacaoMunicipio": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoCST": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoRetIss": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/cLocEmi": {
+   "presente": 11,
+   "ligacoes": {
+    "json:cidadePrestacao.codigo": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:prestador.endereco.codigoCidade": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoCidadeIncidencia": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.endereco.codigoCidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.codigoCidade": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoCidadePrestador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoCidadeTomador": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/dCompet": {
+   "presente": 11,
+   "ligacoes": {
+    "json:prestador.endereco.codigoCidade": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.competencia": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.dataEmissao": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataFim": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataInicio": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataFimEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataInicioEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/dhEmi": {
+   "presente": 11,
+   "ligacoes": {
+    "json:prestador.endereco.codigoCidade": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.competencia": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.dataEmissao": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataFim": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataInicio": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataFimEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataInicioEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/finNFSe": {
+   "presente": 7,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/id": {
+   "presente": 11,
+   "ligacoes": {
+    "json:prestador.cpfCnpj": {
+     "ambos": 11,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:prestador.endereco.codigoCidade": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.numero": {
+     "ambos": 2,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.serie": {
+     "ambos": 6,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoCidadePrestador": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CpfCnpjPrestador": {
+     "ambos": 11,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/nDPS": {
+   "presente": 11,
+   "ligacoes": {
+    "json:idIntegracao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.numero": {
+     "ambos": 2,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/CNPJ": {
+   "presente": 11,
+   "ligacoes": {
+    "json:prestador.cpfCnpj": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CpfCnpjPrestador": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/CPF": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.cpfCnpj": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 11,
+     "trivial": true
+    },
+    "lib:CpfCnpjPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 11,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/IM": {
+   "presente": 3,
+   "ligacoes": {}
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/email": {
+   "presente": 11,
+   "ligacoes": {
+    "json:prestador.email": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:EmailPrestador": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/endExt/cEndPost": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.cep": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    },
+    "lib:CepPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/endExt/cPais": {
+   "presente": 0,
+   "ligacoes": {
+    "lib:PaisPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/endExt/xCidade": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.descricaoCidade": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:DescricaoCidadePrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/endExt/xEstProvReg": {
+   "presente": 0,
+   "ligacoes": {
+    "lib:RegiaoPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/endNac/CEP": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.cep": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    },
+    "lib:CepPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/endNac/cMun": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.codigoCidade": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    },
+    "lib:CodigoCidadePrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/nro": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.numero": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    },
+    "lib:NumeroPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/xBairro": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.bairro": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:BairroPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/xCpl": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.complemento": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:ComplementoPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/end/xLgr": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.endereco.logradouro": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    },
+    "lib:EnderecoPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/fone": {
+   "presente": 5,
+   "ligacoes": {
+    "json:prestador.telefone.numero": {
+     "ambos": 1,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TelefonePrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/regTrib/opSimpNac": {
+   "presente": 11,
+   "ligacoes": {
+    "json:parcelas[].numero": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:prestador.simplesNacional": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.serie": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].responsavelRetencao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/regTrib/regApTribSN": {
+   "presente": 5,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].codigoTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoTributacaoMunicipio": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/regTrib/regEspTrib": {
+   "presente": 11,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.detalhado.aliquota.estadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.vinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valorRetido": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoVinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/prest/xNome": {
+   "presente": 0,
+   "ligacoes": {
+    "json:prestador.razaoSocial": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    },
+    "lib:RazaoSocialPrestador": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serie": {
+   "presente": 11,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.serie": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/dtFim": {
+   "presente": 1,
+   "ligacoes": {
+    "json:rps.competencia": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.dataEmissao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataFim": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataInicio": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataFimEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataInicioEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/dtIni": {
+   "presente": 1,
+   "ligacoes": {
+    "json:rps.competencia": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:rps.dataEmissao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataFim": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.dataInicio": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataFimEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DataInicioEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/end/CEP": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].evento.endereco.cep": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:CepServicoEvento": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/end/endExt/xCidade": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].evento.endereco.descricaoCidade": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/end/nro": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].evento.endereco.numero": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/end/xBairro": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].evento.endereco.bairro": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/end/xLgr": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].evento.endereco.logradouro": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/idAtvEvt": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].codigo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.id": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoItemListaServico": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:IdEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/atvEvento/xNome": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].evento.descricao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DescricaoEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/cServ/cIntContrib": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].cnae": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoContribuinte": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoContribuinte": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/cServ/cNBS": {
+   "presente": 8,
+   "ligacoes": {
+    "json:servico[].codigoNbs": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoNbs": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/cServ/cTribMun": {
+   "presente": 2,
+   "ligacoes": {
+    "json:regimeApuracaoTributaria": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoTributacaoMunicipio": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoRetIss": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/cServ/cTribNac": {
+   "presente": 11,
+   "ligacoes": {
+    "json:servico[].codigo": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoServicoNacional": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.id": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoItemListaServico": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:IdEvento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/cServ/xDescServ": {
+   "presente": 11,
+   "ligacoes": {
+    "json:servico[].discriminacao": {
+     "ambos": 11,
+     "iguais": 10,
+     "semSinais": 6,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DiscriminacaoServico": {
+     "ambos": 11,
+     "iguais": 10,
+     "semSinais": 6,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/mdPrestacao": {
+   "presente": 1,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/mdic": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].infExterior.tipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.vinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoVinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/mecAFComexP": {
+   "presente": 1,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/mecAFComexT": {
+   "presente": 1,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/movTempBens": {
+   "presente": 1,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/tpMoeda": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].infExterior.tipoMoeda": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TipoMoedaEstrangeira": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/vServMoeda": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].infExterior.valorServicos": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:ValorServicosEstrangeiro": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/comExt/vincPrest": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].infExterior.tipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.vinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoVinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/infoCompl/xInfComp": {
+   "presente": 2,
+   "ligacoes": {
+    "json:informacoesComplementares": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/locPrest/cLocPrestacao": {
+   "presente": 11,
+   "ligacoes": {
+    "json:cidadePrestacao.codigo": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:prestador.endereco.codigoCidade": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoCidadeIncidencia": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].evento.endereco.codigoCidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.codigoCidade": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoCidadePrestador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoCidadeTomador": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/cObra": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].obra.codigo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoObra": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/CEP": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].obra.endereco.cep": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:CepObra": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/endExt/cEndPost": {
+   "presente": 0,
+   "ligacoes": {
+    "lib:CodigoEnderecoObra": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/endExt/xCidade": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].obra.endereco.descricaoCidade": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/endExt/xEstProvReg": {
+   "presente": 0,
+   "ligacoes": {
+    "lib:RegiaoObra": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/nro": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].obra.endereco.numero": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/xBairro": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].obra.endereco.bairro": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:BairroObra": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/xCpl": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].obra.endereco.complemento": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:ComplementoObra": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/serv/obra/end/xLgr": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].obra.endereco.logradouro": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:EnderecoObra": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/CNPJ": {
+   "presente": 4,
+   "ligacoes": {
+    "json:tomador.cpfCnpj": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 5,
+     "trivial": false
+    },
+    "lib:CpfCnpjTomador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 5,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/CPF": {
+   "presente": 4,
+   "ligacoes": {
+    "json:tomador.cpfCnpj": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 5,
+     "trivial": false
+    },
+    "lib:CpfCnpjTomador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 5,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/cNaoNIF": {
+   "presente": 1,
+   "ligacoes": {
+    "json:tomador.naoNif": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:NaoNifTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/email": {
+   "presente": 6,
+   "ligacoes": {
+    "json:tomador.email": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:EmailTomador": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/endExt/cEndPost": {
+   "presente": 1,
+   "ligacoes": {
+    "json:tomador.endereco.cep": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 8,
+     "trivial": false
+    },
+    "lib:CepTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 8,
+     "trivial": false
+    },
+    "lib:CodigoEnderecoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/endExt/cPais": {
+   "presente": 1,
+   "ligacoes": {
+    "json:tomador.endereco.codigoPais": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 3,
+     "trivial": true
+    },
+    "lib:PaisTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 3,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/endExt/xCidade": {
+   "presente": 1,
+   "ligacoes": {
+    "json:tomador.endereco.bairro": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.descricaoCidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 7,
+     "trivial": false
+    },
+    "lib:BairroTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DescricaoCidadeTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 7,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/endExt/xEstProvReg": {
+   "presente": 1,
+   "ligacoes": {
+    "json:tomador.endereco.estado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegiaoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 8,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/endNac/CEP": {
+   "presente": 8,
+   "ligacoes": {
+    "json:prestador.endereco.cep": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.cep": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "lib:CepPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CepTomador": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "lib:CodigoEnderecoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoEnderecoTomador": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/endNac/cMun": {
+   "presente": 8,
+   "ligacoes": {
+    "json:cidadePrestacao.codigo": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:prestador.endereco.codigoCidade": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].codigoCidadeIncidencia": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.codigoCidade": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "lib:CodigoCidadePrestador": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:CodigoCidadeTomador": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/nro": {
+   "presente": 9,
+   "ligacoes": {
+    "json:servico[].obra.endereco.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.endereco.numero": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:NumeroEndObra": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:NumeroTomador": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/xBairro": {
+   "presente": 9,
+   "ligacoes": {
+    "json:cidadePrestacao.bairro": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:prestador.endereco.bairro": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.bairro": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.descricaoCidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:BairroPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:BairroTomador": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:DescricaoCidadeTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/xCpl": {
+   "presente": 3,
+   "ligacoes": {
+    "json:tomador.endereco.complemento": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:ComplementoTomador": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/end/xLgr": {
+   "presente": 9,
+   "ligacoes": {
+    "json:prestador.endereco.logradouro": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.endereco.logradouro": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:EnderecoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:EnderecoTomador": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/fone": {
+   "presente": 6,
+   "ligacoes": {
+    "json:tomador.telefone.numero": {
+     "ambos": 6,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:TelefoneTomador": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/toma/xNome": {
+   "presente": 9,
+   "ligacoes": {
+    "json:tomador.nomeFantasia": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:tomador.razaoSocial": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:RazaoSocialTomador": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/tpAmb": {
+   "presente": 11,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].numero": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.serie": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].codigoTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].responsavelRetencao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoTributacaoMunicipio": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 10,
+     "iguais": 10,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 10,
+     "iguais": 10,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/tpEmit": {
+   "presente": 11,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].numero": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.serie": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].codigoTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].responsavelRetencao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoTributacaoMunicipio": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 10,
+     "iguais": 10,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 10,
+     "iguais": 10,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/totTrib/pTotTrib/pTotTribEst": {
+   "presente": 1,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/totTrib/pTotTrib/pTotTribFed": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/totTrib/pTotTrib/pTotTribMun": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/totTrib/vTotTrib/vTotTribEst": {
+   "presente": 10,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.detalhado.aliquota.estadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.vinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 10,
+     "iguais": 10,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valorRetido": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoVinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/totTrib/vTotTrib/vTotTribFed": {
+   "presente": 10,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.detalhado.aliquota.estadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.vinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valorRetido": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoVinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ValorTotalTribFed": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/totTrib/vTotTrib/vTotTribMun": {
+   "presente": 10,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.detalhado.aliquota.estadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.vinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valorRetido": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].quantidade": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoVinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ValorTotalTribMun": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/piscofins/CST": {
+   "presente": 8,
+   "ligacoes": {
+    "json:parcelas[].numero": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.detalhado.aliquota.estadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.vinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valorRetido": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].responsavelRetencao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 7,
+     "iguais": 7,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 6,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:versaoEsquema": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoVinculoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMDIC": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/piscofins/pAliqCofins": {
+   "presente": 5,
+   "ligacoes": {
+    "json:prestador.regimeTributario": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].apuracaoPropria.cofins.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 4,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 3,
+     "trivial": false
+    },
+    "lib:AliquotaCofins": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/piscofins/pAliqPis": {
+   "presente": 5,
+   "ligacoes": {
+    "json:servico[].apuracaoPropria.pis.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 4,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 3,
+     "trivial": false
+    },
+    "lib:AliquotaPis": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/piscofins/tpRetPisCofins": {
+   "presente": 7,
+   "ligacoes": {
+    "json:prestador.regimeTributarioEspecial": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].deducao.tipo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.detalhado.aliquota.estadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibpt.simplificado.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.destinatario.indicador": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.finalidadeNFSe": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.operacaoPessoal": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.cbsFederal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsEstadual.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.aliquotaEfetiva": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.resumo.ibsMunicipal.percentualReducao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.aliquota": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valor": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.valorRetido": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.aliquota": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.retido": {
+     "ambos": 1,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.aliquota": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.valor": {
+     "ambos": 2,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.inss.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.irrf.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.outrasRetencoes": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.aliquota": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.retido": {
+     "ambos": 1,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.tipoRetencaoPisCofinsCSLL": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.estadual.valorPercentual": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.federal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].tributacaoTotal.municipal.valorPercentual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.deducoes": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:versaoEsquema": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:FinalidadeNFSe": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:IndicadorDestinatario": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OperacaoPessoal": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:RegimeEspecialTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:SituacaoTributariaIbsCbs": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetPisCofins": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/piscofins/vBCPisCofins": {
+   "presente": 5,
+   "ligacoes": {
+    "json:parcelas[].valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].apuracaoPropria.baseCalculoPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "json:servico[].valor.baseCalculo": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].valor.servico": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:versaoEsquema": {
+     "ambos": 4,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "lib:ValorBCPisCofins": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:ValorServicos": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/piscofins/vCofins": {
+   "presente": 5,
+   "ligacoes": {
+    "json:servico[].apuracaoPropria.cofins.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:ValorCofins": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/piscofins/vPis": {
+   "presente": 5,
+   "ligacoes": {
+    "json:servico[].apuracaoPropria.pis.valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "lib:ValorPis": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/vRetCP": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].retencao.cpp.valor": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 2,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/vRetCSLL": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].retencao.cofins.valor": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.valor": {
+     "ambos": 1,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "json:servico[].retencao.pis.valor": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": true
+    },
+    "json:versaoEsquema": {
+     "ambos": 1,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 4,
+     "trivial": false
+    },
+    "lib:ValorCSLL": {
+     "ambos": 1,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribFed/vRetIRRF": {
+   "presente": 1,
+   "ligacoes": {
+    "json:servico[].retencao.irrf.valor": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 1,
+     "trivial": false
+    },
+    "lib:ValorIRRF": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/cPaisResult": {
+   "presente": 1,
+   "ligacoes": {
+    "json:tomador.endereco.codigoPais": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:PaisTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/exigSusp/tpSusp": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 10,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/pAliq": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].iss.aliquota": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 11,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/tpRetISSQN": {
+   "presente": 11,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].numero": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.serie": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].codigoTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.modoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].infExterior.tipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 8,
+     "iguais": 8,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.retido": {
+     "ambos": 11,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.tipoRetencao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.tipoTributacao": {
+     "ambos": 11,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoModoPrestacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoTributacaoMunicipio": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoPrestador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoFomentoTomador": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoMovimentacaoBens": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/tribISSQN": {
+   "presente": 11,
+   "ligacoes": {
+    "json:naturezaTributacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].numero": {
+     "ambos": 3,
+     "iguais": 3,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:parcelas[].tipoPagamento": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:regimeApuracaoTributaria": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.numero": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:rps.serie": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].apuracaoPropria.cstPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].codigoTributacao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.municipioIncidenciaIbsCbs": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.tipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].ibscbs.valores.tributacao.cct": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].iss.exigibilidade": {
+     "ambos": 10,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].quantidade": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].responsavelRetencao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.cofins.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.csll.aliquota": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:servico[].retencao.pis.cst": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "json:tomador.indicadorInscricaoEstadual": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:ClassificacaoTributariaIbsCbs": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:CodigoTributacaoMunicipio": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:OptanteSimplesNacional": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoCST": {
+     "ambos": 5,
+     "iguais": 5,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoOperacao": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoRetIss": {
+     "ambos": 9,
+     "iguais": 9,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    },
+    "lib:TipoTributacaoIss": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/vDescCondIncond/vDescCond": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].valor.descontoCondicionado": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 2,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/vDescCondIncond/vDescIncond": {
+   "presente": 0,
+   "ligacoes": {
+    "json:servico[].valor.descontoIncondicionado": {
+     "ambos": 0,
+     "iguais": 0,
+     "semSinais": 0,
+     "semTag": 3,
+     "trivial": true
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/valores/vServPrest/vServ": {
+   "presente": 11,
+   "ligacoes": {
+    "json:parcelas[].valor": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].apuracaoPropria.baseCalculoPisCofins": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.cofins.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].retencao.pis.baseCalculo": {
+     "ambos": 1,
+     "iguais": 1,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].valor.baseCalculo": {
+     "ambos": 4,
+     "iguais": 4,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].valor.liquido": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].valor.servico": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "json:servico[].valor.unitario": {
+     "ambos": 6,
+     "iguais": 6,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:ValorBCPisCofins": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    },
+    "lib:ValorServicos": {
+     "ambos": 11,
+     "iguais": 11,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  },
+  "NFSe/infNFSe/DPS/infDPS/verAplic": {
+   "presente": 11,
+   "ligacoes": {}
+  },
+  "NFSe/infNFSe/DPS/versao": {
+   "presente": 11,
+   "ligacoes": {
+    "json:versao": {
+     "ambos": 2,
+     "iguais": 2,
+     "semSinais": 0,
+     "semTag": 0,
+     "trivial": false
+    }
+   }
+  }
+ },
+ "geradoEm": "2026-09-29T17:30:46+00:00"
+}

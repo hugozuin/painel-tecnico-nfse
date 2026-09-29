@@ -1,0 +1,49 @@
+{
+  "openapi": "3.1.0",
+  "info": { "version": "9.9.9-teste" },
+  "components": {
+    "schemas": {
+      "telefone": {
+        "type": "object",
+        "properties": { "ddd": { "type": "string" }, "numero": { "type": "string" } }
+      },
+      "dadosNfseNacional": {
+        "type": "object",
+        "properties": {
+          "versaoEsquema": { "type": "string" },
+          "prestador": {
+            "type": "object",
+            "properties": {
+              "cpfCnpj": { "type": "string", "maxLength": 14 },
+              "telefone": { "$ref": "#/components/schemas/telefone" },
+              "regime": { "type": "integer", "description": "Regime do teste:\n * `1` - Primeiro\n * `2` - Segundo" }
+            }
+          },
+          "servico": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "codigo": { "type": "string", "maxLength": 9, "description": "Código do serviço, também conhecido como cTeste no XML." },
+                "data": { "type": "string" },
+                "modo": { "type": "integer", "enum": [1, 2] },
+                "valor": { "type": "object", "properties": { "servico": { "type": "number" } } },
+                "proprio": { "type": "object", "properties": { "valor": { "type": "number" } } },
+                "retido": {
+                  "type": "object",
+                  "properties": {
+                    "valor": { "type": "number" },
+                    "aliquota": { "type": "number" },
+                    "ativo": { "type": "boolean", "default": false },
+                    "a": { "type": "number" },
+                    "b": { "type": "number" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

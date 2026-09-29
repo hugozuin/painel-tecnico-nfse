@@ -32,6 +32,8 @@ export function criarContexto(dados) {
   });
   return {
     porChave, porJson, porJsonDireto, nomesDaLib, ibscbs: dados.ibscbs || null,
+    entradasComPlugNotas: entradas.filter((entrada) => entrada.plugnotas?.situacao === "preenchida"),
+    versaoDaDocumentacao: dados.dePara?.fontes?.api || "",
     regrasDeclarativas: dados.regras?.regras || [], apelidos: dados.regras?.apelidos || {}
   };
 }

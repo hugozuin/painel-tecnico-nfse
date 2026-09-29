@@ -8,7 +8,7 @@ responsável técnico; quem atribui a classificação é o responsável de negó
 
 | Informação | Onde aparece | Classe proposta |
 |---|---|---|
-| API Key do PlugNotas | Campo da tela; sessionStorage da aba (chave digitada e perfis) | Restrita |
+| API Key do PlugNotas | Campo da tela; localStorage do navegador (perfis salvos); sessionStorage da aba (chave digitada) | Restrita |
 | Chave privada e senha do A1 | Memória do navegador; chave e cadeia seguem ao repasse a cada consulta com certificado | Restrita |
 | Conteúdo das notas (tomador, CPF ou CNPJ, endereço, e-mail, valores) | Cartão Retorno, arquivos baixados e CSV exportado | Confidencial, com dados pessoais |
 | IDs de nota, chaves de acesso, protocolos, CNPJs | Listas das telas, sessionStorage do Resolve, corpo das consultas do Nacional, log da sessão | Confidencial |
@@ -22,13 +22,17 @@ responsável técnico; quem atribui a classificação é o responsável de negó
 |---|---|---|
 | Servidor (função do repasse) | Nada. A chave e a cadeia do A1 existem só durante a conexão, que é fechada ao fim da consulta | Não há |
 | Log do repasse (plataforma de hospedagem) | Método, status, domínio, rota sem identificadores, se levou certificado, código de erro e duração. Nunca corpo, URL com identificadores, chave ou certificado | Retenção da plataforma |
-| sessionStorage da aba | API Key digitada, perfis, perfil ativo e lista de IDs do Resolve | Até fechar a aba |
-| localStorage do navegador | Preferências sem dado sensível: tema, ambiente do Nacional, escolhas de tela, configuração do Resolve e nome declarado | Até o consultor limpar o navegador |
+| sessionStorage da aba | API Key digitada sem perfil, perfil ativo e lista de IDs do Resolve | Até fechar a aba |
+| localStorage do navegador | Perfis de API Key (apelido e chave), sem criptografia. Preferências: tema, ambiente do Nacional, escolhas de tela, configuração do Resolve e nome declarado | Até o consultor apagar os perfis na tela ou limpar os dados do navegador |
 | Memória da aba | Log da sessão, certificado carregado, resultados na tela | Até recarregar ou fechar |
 | Computador do consultor | Arquivos que ele baixa (XML, PDF, CSV, log exportado) | Responsabilidade do consultor, pela política de dados |
 
-Versões anteriores gravavam a API Key e os perfis no localStorage. Na abertura,
-a aplicação move esses dados para a aba e os apaga do navegador.
+Desde 29/09/2026, a pedido do Hugo, os perfis de API Key ficam no localStorage
+para durar entre aberturas do site; até então ficavam só na aba (decisão da
+rodada 1). A chave digitada sem perfil, o perfil ativo e a lista do Resolve
+continuam só na aba: se uma versão anterior os gravou no localStorage, a
+aplicação os move para a aba na abertura e os apaga do navegador. O aviso do
+cartão da credencial orienta a não salvar perfis em computador compartilhado.
 
 ## Dados pessoais
 
@@ -51,5 +55,6 @@ a aplicação move esses dados para a aba e os apaga do navegador.
 
 Não há base de dados. Na descontinuação: apagar o projeto da hospedagem e os
 logs da plataforma, arquivar o repositório e revogar tokens de deploy. O que
-fica no navegador de cada consultor some ao fechar a aba (credenciais) ou ao
-limpar os dados do site (preferências).
+fica no navegador de cada consultor some ao fechar a aba (chave digitada e
+lista do Resolve), ao apagar os perfis na tela ou ao limpar os dados do site
+(perfis e preferências).

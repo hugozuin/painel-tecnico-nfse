@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { analisarEmissao, derivarTipoRetencao, documentoValido, arredondar, truncar, resolverCaminho, significadoDoCodigo, CHAVES } from "../js/analise.js";
 import { normalizarItem, normalizarIndOp, buscarItens, buscarIndOp, agruparRelacoes } from "../js/telas/ibscbs.js";
-import { filtrarDePara, prepararItensDePara, grupoDoCaminho } from "../js/telas/depara.js";
+import { filtrarDePara, prepararItensDePara, grupoDoCaminho, FILTROS_DO_PLUGNOTAS } from "../js/telas/depara.js";
 import { ORIGEM_PLUGNOTAS } from "../js/plugnotas.js";
 import { varianteEscolhida } from "../js/telas/variantes.js";
 
@@ -38,12 +38,28 @@ conferir("todas as tags das regras existem no de-para", tagsDasRegras.every((c) 
 conferir("toda regra declarativa cita a fonte", regras.regras.every((r) => r.fonte));
 
 console.log("\n== de-para: ligação com o PlugNotas ==");
-conferir("tpRetISSQN lê IssRetido no script", tpRet.plugnotas.tx2.some((t) => t.campo === "IssRetido"));
-conferir("tpRetISSQN sem JSON confirmado", tpRet.plugnotas.json.length === 0);
+const origemDaLib = (entrada) => entrada.plugnotas.origens.find((origem) => origem.fonte === "lib");
+conferir("formato 3 do de-para", dePara.versao === 3 && dePara.fontes.api.startsWith("api.json") && dePara.fontes.conferencia.pares > 0);
+conferir("tpRetISSQN vem da chave TipoRetIss da lib, confirmada nas notas",
+  origemDaLib(tpRet)?.chave === "TipoRetIss" && origemDaLib(tpRet).ligacao === "conferencia" && tpRet.plugnotas.json.includes("servico[].iss.retido"));
+const conversaoDoRetido = origemDaLib(tpRet)?.tabelas.find((tabela) => tabela.json === "servico[].iss.retido");
+conferir("tabela de conversão do ISS retido", conversaoDoRetido?.valores.true === "2" && conversaoDoRetido?.valores.false === "1");
+conferir("tribISSQN pela conversão de tipoTributacao", origemDaLib(tag("tribISSQN"))?.tabelas.some((tabela) => tabela.json === "servico[].iss.tipoTributacao"));
 conferir("cTribNac vem de servico[].codigo", tag("cTribNac").plugnotas.json.includes("servico[].codigo"));
-conferir("CNPJ do tomador só de CpfCnpjTomador", JSON.stringify(tag("CNPJ", "/toma/").plugnotas.tx2.map((t) => t.campo)) === '["CpfCnpjTomador"]');
+conferir("CNPJ do tomador vem de tomador.cpfCnpj", tag("CNPJ", "/toma/").plugnotas.json.includes("tomador.cpfCnpj"));
 conferir("xDescServ com cópia direta", tag("xDescServ").plugnotas.jsonCopiaDireta.includes("servico[].discriminacao"));
-conferir("intermediário sem JSON (raiz não confirmada)", tag("CNPJ", "/interm/").plugnotas.json.length === 0);
+conferir("cópia direta nunca num campo que alimenta duas tags", !tag("CPF", "/prest/").plugnotas.jsonCopiaDireta.includes("prestador.cpfCnpj"));
+conferir("intermediário pela raiz documentada", tag("CNPJ", "/interm/").plugnotas.json.includes("intermediario.cpfCnpj"));
+conferir("IBS e CBS dentro do serviço", tag("cIndOp").plugnotas.json.includes("servico[].ibscbs.codigoOperacao"));
+conferir("tags da NFS-e sem lado do PlugNotas", dePara.entradas.filter((e) => !`${e.caminho}${e.tag}`.includes("/DPS/")).every((e) => !e.plugnotas));
+conferir("folhas da DPS com situação", dePara.entradas.filter((e) => e.plugnotas).every((e) => ["preenchida", "semCampoJson", "camposPrefeitura", "semOrigem"].includes(e.plugnotas.situacao)));
+conferir("finNFSe com o caminho do XML gerado e do leiaute anterior",
+  tag("finNFSe").plugnotas.caminhoNoXmlGerado === "DPS/infDPS/IBSCBS/finNFSe" && tag("finNFSe").leiauteAnterior?.[0]?.fonte === "NT 009, item 2.2");
+const inconsistencias = dePara.entradas.flatMap((e) => e.plugnotas?.inconsistencias || []);
+conferir("inconsistências com texto e fonte", inconsistencias.length > 0 && inconsistencias.every((item) => item.texto && item.fontes?.length));
+const textoDoDePara = JSON.stringify(dePara);
+conferir("de-para sem trecho de código", !["CampoTecno(", "=>", "formatRounding(", "require(", "module.exports"].some((marca) => textoDoDePara.includes(marca)));
+conferir("textos gerados sem travessão", !inconsistencias.some((item) => /[—–]/.test(item.texto)));
 
 console.log("\n== IBS e CBS: anexos VII e VIII ==");
 conferir("39 indOp", Object.keys(ibscbs.indOp).length === 39);
@@ -68,6 +84,13 @@ conferir("busca pelo código de rejeição", filtrarDePara(itens, "E0580").some(
 conferir("busca pela descrição sem acento", filtrarDePara(itens, "retencao do issqn").some((i) => i.entrada.tag === "tpRetISSQN"));
 conferir("busca pelo campo do JSON", filtrarDePara(itens, "servico[].iss.aliquota").some((i) => i.entrada.tag === "pAliq"));
 conferir("grupo pelo caminho", grupoDoCaminho("NFSe/infNFSe/DPS/infDPS/prest/") === "DPS · prest" && grupoDoCaminho("NFSe/infNFSe/") === "NFS-e");
+const doGrupo = (grupo) => filtrarDePara(itens, "", { grupos: [grupo] });
+const deDoisGrupos = filtrarDePara(itens, "", { grupos: ["DPS · prest", "DPS · toma"] });
+conferir("vários grupos somam as tags", deDoisGrupos.length > 0 && deDoisGrupos.length === doGrupo("DPS · prest").length + doGrupo("DPS · toma").length);
+const preenchidasComConversao = filtrarDePara(itens, "", { plugnotas: ["preenchidas", "conversao"] });
+conferir("características do PlugNotas precisam valer todas", preenchidasComConversao.length > 0
+  && preenchidasComConversao.every((item) => FILTROS_DO_PLUGNOTAS.preenchidas.aceita(item.entrada.plugnotas) && FILTROS_DO_PLUGNOTAS.conversao.aceita(item.entrada.plugnotas)));
+conferir("filtro de inconsistência removido", Object.keys(FILTROS_DO_PLUGNOTAS).join() === "preenchidas,conversao");
 
 console.log("\n== validador ==");
 conferir("CNPJ válido", documentoValido("29062609000177") && !documentoValido("29062609000178"));
@@ -110,13 +133,16 @@ conferir("sem afirmações sem fonte", !comErros.some((a) => /maioria|costuma|pr
 
 const comIbs = analisarEmissao({
   prestador: { cpfCnpj: "29062609000177" },
-  servico: [{ codigo: "010101", valor: { servico: 100 }, discriminacao: "x", iss: { aliquota: 2, tipoTributacao: 6 } }],
-  ibscbs: { codigoOperacao: "999999", valores: { tributacao: { cst: "000" } }, destinatario: { razaoSocial: "Y" } }
+  servico: [{
+    codigo: "010101", valor: { servico: 100 }, discriminacao: "x", iss: { aliquota: 2, tipoTributacao: 6 },
+    ibscbs: { codigoOperacao: "999999", valores: { tributacao: { cst: "000" } }, destinatario: { razaoSocial: "Y" } }
+  }]
 }, dados);
 conferir("indOp fora do anexo VII", tem(comIbs, "fora da tabela do anexo VII"));
 conferir("cClassTrib ausente", tem(comIbs, "cClassTrib do IBS e da CBS ausente"));
 conferir("destinatário sem identificação", tem(comIbs, "Destinatário do IBS e da CBS sem identificação"));
-const combinacao = (cct) => analisarEmissao({ ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct } } } }, dados);
+conferir("grupo ibscbs na raiz fora do lugar documentado", tem(analisarEmissao({ servico: [{}], ibscbs: { codigoOperacao: "100301" } }, dados), "fora do lugar documentado"));
+const combinacao = (cct) => analisarEmissao({ servico: [{ ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct } } } }] }, dados);
 conferir("combinação fora da correlação", tem(combinacao("999999"), "fora da correlação"));
 conferir("combinação presente na correlação", !tem(combinacao("000001"), "fora da correlação"));
 conferir("apelido confirmado pela lib", analisarEmissao({ prestador: { cpfcnpj: "1" } }, dados).some((a) => a.detalhe.includes("lê este dado com o nome cpfCnpj")));
@@ -127,9 +153,9 @@ const limpo = analisarEmissao({
   servico: [{
     codigo: "010101", valor: { servico: 1000 }, discriminacao: "Servico de consultoria",
     iss: { aliquota: 2, tipoTributacao: 6, exigibilidade: 1 },
-    retencao: { pis: { aliquota: 0.65, baseCalculo: 1000, valor: 6.5 } }
-  }],
-  ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct: "000001" } } }
+    retencao: { pis: { aliquota: 0.65, baseCalculo: 1000, valor: 6.5 } },
+    ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct: "000001" } } }
+  }]
 }, dados);
 const graves = limpo.filter((a) => a.severidade !== "informacao");
 conferir("JSON correto sem erro nem alerta", graves.length === 0, JSON.stringify(graves.map((a) => a.titulo)));
@@ -138,8 +164,10 @@ console.log("\n== validador: cada conferência em js/analise ==");
 const notaCorreta = () => ({
   prestador: { cpfCnpj: "29062609000177", endereco: { codigoCidade: "4115200", cep: "87010000" } },
   tomador: { cpfCnpj: "12345678909", razaoSocial: "Cliente", endereco: { codigoCidade: "4115200", cep: "87010000" } },
-  servico: [{ codigo: "010101", valor: { servico: 1000 }, discriminacao: "Consultoria", iss: { aliquota: 2, tipoTributacao: 6, exigibilidade: 1 } }],
-  ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct: "000001" } } }
+  servico: [{
+    codigo: "010101", valor: { servico: 1000 }, discriminacao: "Consultoria", iss: { aliquota: 2, tipoTributacao: 6, exigibilidade: 1 },
+    ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct: "000001" } } }
+  }]
 });
 const analisarVariacao = (mudar) => {
   const nota = notaCorreta();
@@ -162,7 +190,12 @@ const casosPorConferencia = [
   ["retenções: apuração própria com retenção", (n) => { n.servico[0].apuracaoPropria = true; n.servico[0].retencao = { pis: { aliquota: 0.65, baseCalculo: 1000, valor: 6.5 } }; }, "Apuração própria junto com retenção", "servico[0].apuracaoPropria"],
   ["ISS: serviço sem o grupo iss", (n) => { delete n.servico[0].iss; }, "Serviço sem o grupo iss", "servico[0].iss"],
   ["ISS: alíquota em fração", (n) => { n.servico[0].iss.aliquota = 0.05; }, "Alíquota de ISS possivelmente em fração", "servico[0].iss.aliquota"],
-  ["agregador: serviço como objeto", (n) => { n.servico = { ...n.servico[0], valor: { servico: -1 } }; }, "Valor negativo", "servico.valor.servico"]
+  ["agregador: serviço como objeto", (n) => { n.servico = { ...n.servico[0], valor: { servico: -1 } }; }, "Valor negativo", "servico.valor.servico"],
+  ["de-para: dois serviços", (n) => { n.servico.push({ ...n.servico[0] }); }, "Mais de um serviço na mesma nota", "servico"],
+  ["de-para: valor fora da documentação", (n) => { n.emitente = { tipo: 7 }; }, "Valor fora dos aceitos pela documentação da API", "emitente.tipo"],
+  ["de-para: número como texto", (n) => { n.servico[0].infExterior = { modoPrestacao: "1" }; }, "Número enviado como texto em campo que a lib só lê como número", "servico[0].infExterior.modoPrestacao"],
+  ["de-para: conversão de código", (n) => { n.servico[0].iss.tipoTributacao = 1; }, "Conversão de tipoTributacao para tribISSQN", "servico[0].iss.tipoTributacao"],
+  ["de-para: campo documentado que a lib não lê", (n) => { n.intermediario = { codigoNif: "1" }; }, "Campo documentado que a lib do Nacional não lê", "intermediario.codigoNif"]
 ];
 for (const [titulo, mudar, achadoEsperado, campo] of casosPorConferencia) {
   const achados = analisarVariacao(mudar);
