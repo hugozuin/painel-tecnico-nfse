@@ -242,10 +242,16 @@ painel usa a cópia publicada. O teste de segurança cobra essa ligação.
 ## Arquivos gerados
 
 `de-para-nacional.json` e `ibscbs.json` saem de
-`ferramentas/gerar_definicoes.py`, a partir dos anexos em `fontes/nacional` e
-dos insumos internos do PlugNotas. A próxima geração sobrescreve qualquer
-edição manual: para corrigir um conteúdo, corrija a fonte e gere de novo. Veja
-o [README das ferramentas](../ferramentas/README.md).
+`ferramentas/gerar_definicoes.py`, a partir dos anexos e da NT 009 em
+`fontes/nacional`, da documentação pública da API, dos insumos internos do
+PlugNotas e da conferência de notas reais. A próxima geração sobrescreve
+qualquer edição manual: para corrigir um conteúdo, corrija a fonte e gere de
+novo. O de-para está no formato 3 (lado do PlugNotas com origens, conversões,
+condições, documentação e inconsistências); o formato está descrito no
+[README das ferramentas](../ferramentas/README.md).
+
+As regras de IBS e CBS de `regras-validacao.json` usam `servico[].ibscbs`, o
+lugar que a documentação da API dá ao grupo.
 
 ## Checklist antes de publicar
 

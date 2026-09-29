@@ -8,6 +8,7 @@ import { analisarValores } from "./analise/valores.js";
 import { analisarRetencoes } from "./analise/retencoes.js";
 import { analisarIss } from "./analise/iss.js";
 import { analisarIbsCbs } from "./analise/ibscbs.js";
+import { analisarPeloDePara } from "./analise/de-para.js";
 
 export { CHAVES, significadoDoCodigo } from "./analise/contexto.js";
 export { resolverCaminho } from "./analise/caminhos.js";
@@ -16,7 +17,8 @@ export { arredondar, truncar } from "./analise/valores.js";
 export { derivarTipoRetencao } from "./analise/retencoes.js";
 
 const CONFERENCIAS_DA_NOTA = [
-  aplicarRegrasDeclarativas, analisarTextos, analisarNomesDeCampo, analisarTiposTrocados, analisarDocumentosFiscais, analisarLeiaute
+  aplicarRegrasDeclarativas, analisarTextos, analisarNomesDeCampo, analisarTiposTrocados, analisarDocumentosFiscais, analisarLeiaute,
+  analisarPeloDePara
 ];
 const CONFERENCIAS_DO_SERVICO = [analisarValores, analisarRetencoes, analisarIss, analisarDescricao];
 const ORDEM_DA_SEVERIDADE = { erro: 0, alerta: 1, informacao: 2 };

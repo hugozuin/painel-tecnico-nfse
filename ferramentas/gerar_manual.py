@@ -175,17 +175,30 @@ def construir():
     h.append(Paragraph("5.1 Busca", subsecao))
     h.append(Paragraph("A busca aceita o nome da tag, parte da descrição (com ou sem acento), o caminho no XML, o código "
                        "de rejeição e o campo do JSON. Digitar E0580 traz a tag que tem essa regra, o que ajuda quando o "
-                       "cliente manda só o código da rejeição. O filtro de grupo separa as tags da DPS e da NFS-e.", corpo))
+                       "cliente manda só o código da rejeição. O seletor de filtros aceita mais de uma escolha: em No "
+                       "PlugNotas, as tags preenchidas pelo PlugNotas e as que têm conversão de valores, que precisam "
+                       "valer juntas; em Grupo, os grupos da DPS e da NFS-e, que se somam.", corpo))
     h.append(Paragraph("5.2 Ícone de informação", subsecao))
-    h.append(Paragraph("Passar o mouse no ícone abre as regras de negócio da tag com código, aplicação, efeito, nível, "
-                       "texto da regra e mensagem de erro, seguidas da descrição completa e das notas explicativas. Com o "
+    h.append(Paragraph("Passar o mouse no ícone abre, primeiro, como o PlugNotas preenche a tag (ver 5.3) e depois as "
+                       "regras de negócio com código, aplicação, efeito, nível, texto da regra e mensagem de erro, "
+                       "seguidas da descrição completa e das notas explicativas. Com o "
                        "popup aberto, a tecla Shift ou um clique no ícone o deixam fixo para rolar, selecionar e copiar. "
                        "Esc, clique fora ou o botão de fechar soltam o popup.", corpo))
     h.append(Paragraph("5.3 Lado do PlugNotas", subsecao))
-    h.append(Paragraph("Quando a ligação fecha nos arquivos analisados, a tag mostra o campo do JSON e o campo do TX2 "
-                       "que a preenchem. A ligação segue quatro elos: lib do PlugNotas, script do Nacional, arquivo de "
-                       "mapeamento e anexo VI. Se algum elo não fecha, a tela mostra o campo do TX2 lido pelo script e "
-                       "informa que o campo do JSON não foi identificado, sem supor.", corpo))
+    h.append(Paragraph("Cada tag da DPS mostra o campo do JSON que a preenche e selos curtos: Convertido, quando a lib "
+                       "muda o valor (tabela de códigos, arredondamento, data, concatenação ou soma); Condicional, quando "
+                       "a tag só é gravada em certas condições; e Muda no RTC007. Passar o mouse no selo mostra o que ele "
+                       "significa. As tags da NFS-e "
+                       "aparecem como geradas pelo Nacional na autorização.", corpo))
+    h.append(Paragraph("A ligação tem três origens, nesta ordem de força: conferência de notas reais do Nacional (o valor "
+                       "do XML bateu com o JSON ou com a saída da lib), documentação pública da API e, por último, "
+                       "inferência pelos nomes do script e do mapeamento do componente, usados só como apoio. Quando a "
+                       "ligação não vem da conferência, o popup diz de onde veio. O "
+                       "popup mostra a tabela de conversão, as condições, o que a documentação da API diz do campo, o "
+                       "caminho da tag no XML gerado hoje e no anexo VI anterior (NT 009) e as fontes com arquivo e linha.", corpo))
+    h.append(Paragraph("Quando as fontes discordam (por exemplo, a lib lê um campo que a documentação não traz), a tag "
+                       "mostra o aviso discreto Inconsistências nas fontes. O popup lista cada uma; para uma informação "
+                       "precisa, valide nos scripts.", corpo))
 
     h.append(Paragraph("6. Relação IBS e CBS", secao))
     h.append(Paragraph("Escolha pesquisar por item da LC 116 ou por código de operação (indOp). Pelo item, a tela lista os "
@@ -204,8 +217,11 @@ def construir():
         ["Tamanho e tipo dos campos copiados sem conversão", "Anexo VI, leiaute da tag"],
         ["Alíquota de ISS acima de 5%", "Anexo VI, regra E0595 de pAliq, citada literalmente"],
         ["Soma das contribuições em vRetCSLL e código de tpRetPisCofins", "Lib do PlugNotas, script do Nacional e anexo VI"],
-        ["Grupo IBSCBS ausente", "Anexo VI, notas de tpRetPisCofins e do grupo IBSCBS"],
+        ["Grupo IBSCBS ausente ou fora de servico[]", "Anexo VI e documentação da API"],
         ["indOp e combinação com cClassTrib", "Anexos VII e VIII"],
+        ["Valores e tamanhos aceitos pela documentação da API", "Documentação da API do PlugNotas"],
+        ["Conversão de código pela lib, número enviado como texto e campo documentado que a lib não lê", "Lib do PlugNotas"],
+        ["Mais de um serviço na mesma nota", "Anexo VI, grupo serv"],
         ["Dígito verificador, retenções e deduções", "Cálculo sobre os valores do JSON"],
     ], [235, 230])))
     h.append(Spacer(1, 6))
@@ -220,10 +236,12 @@ def construir():
                        "PlugNotas por um gerador que acompanha o projeto. Nada desse conteúdo é escrito à mão.", corpo))
 
     h.append(Paragraph("9. Limitações", secao))
-    h.append(item("A lib e o script do Nacional usam nomes de TX2 diferentes em alguns campos. Nesses casos o campo do "
-                  "JSON aparece como não identificado."))
-    h.append(item("O arquivo de mapeamento do componente é da v1.01 e alguns caminhos dele não existem no leiaute RTC do "
-                  "anexo VI. Essas tags aparecem sem o lado do PlugNotas."))
+    h.append(item("O código que monta o XML a partir das chaves da lib não está entre as fontes. A ligação de cada "
+                  "chave com a tag vem da conferência de notas, da documentação ou dos nomes do componente, e o popup "
+                  "diz qual."))
+    h.append(item("O XML gerado hoje segue o leiaute anterior à NT 009. Quando o caminho muda, o popup mostra os dois."))
+    h.append(item("A API completa dados do prestador pelo cadastro e calcula valores antes da lib; nesses casos a "
+                  "conferência de notas não compara o campo."))
     h.append(item("O validador não confere regras que dependem de parametrização municipal ou de cadastro no ADN; elas "
                   "ficam visíveis no popup de cada tag."))
     h.append(item("Com a conferência do resolve desligada, o resultado reflete só a resposta HTTP."))

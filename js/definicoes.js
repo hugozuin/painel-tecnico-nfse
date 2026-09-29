@@ -28,9 +28,12 @@ const validadores = {
   },
   "de-para-nacional": (dados) => {
     if (!dados || !Array.isArray(dados.entradas)) return "estrutura fora do formato";
-    return dados.entradas.some((entrada) => !entrada.tag || typeof entrada.caminho !== "string" || !Array.isArray(entrada.regras))
-      ? "entrada sem tag, caminho ou regras"
-      : "";
+    if (dados.entradas.some((entrada) => !entrada.tag || typeof entrada.caminho !== "string" || !Array.isArray(entrada.regras))) {
+      return "entrada sem tag, caminho ou regras";
+    }
+    const invalida = dados.entradas.find((entrada) => entrada.plugnotas && (typeof entrada.plugnotas.situacao !== "string"
+      || !Array.isArray(entrada.plugnotas.origens) || !Array.isArray(entrada.plugnotas.json)));
+    return invalida ? `lado do PlugNotas fora do formato em ${invalida.tag}` : "";
   },
   ibscbs: (dados) => {
     if (!dados || typeof dados.indOp !== "object" || typeof dados.itens !== "object" || !Array.isArray(dados.relacoes)) {

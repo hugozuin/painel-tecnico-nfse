@@ -11,6 +11,7 @@ import { arredondar, truncar, analisarValores } from "../js/analise/valores.js";
 import { derivarTipoRetencao, analisarRetencoes } from "../js/analise/retencoes.js";
 import { analisarIss } from "../js/analise/iss.js";
 import { analisarIbsCbs } from "../js/analise/ibscbs.js";
+import { analisarPeloDePara } from "../js/analise/de-para.js";
 
 let falhas = 0;
 const conferir = (titulo, condicao, extra = "") => {
@@ -41,10 +42,9 @@ const servicoLimpo = {
 const notaLimpa = {
   prestador: { cpfCnpj: "29062609000177", endereco: { codigoCidade: "4115200", cep: "87010000" } },
   tomador: { cpfCnpj: "12345678909", email: "cliente@exemplo.com.br", endereco: { codigoCidade: "4115200", cep: "87010000" } },
-  servico: [servicoLimpo],
-  ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct: "000001" } } }
+  servico: [{ ...servicoLimpo, ibscbs: { codigoOperacao: "100301", valores: { tributacao: { cst: "000", cct: "000001" } } } }]
 };
-const notaLimpaSemIbsCbs = { ...notaLimpa, ibscbs: undefined };
+const notaLimpaSemIbsCbs = { ...notaLimpa, servico: [servicoLimpo] };
 
 console.log("\n== achado e caminhos ==");
 conferir("achado monta o formato comum", JSON.stringify(achado("erro", "T", "c", "d", FONTES.calculo, ["x"]))
@@ -92,6 +92,8 @@ console.log("\n== leiaute ==");
 const leiaute = daNota(analisarLeiaute, { tomador: { email: `${"a".repeat(90)}@x.com` } });
 conferir("tamanho fora do leiaute", tem(leiaute, "alerta", "Tamanho fora do leiaute de email", "tomador.email"), resumo(leiaute));
 conferir("leiaute limpo sem achado", daNota(analisarLeiaute, notaLimpa).length === 0);
+const decimal = daNota(analisarLeiaute, { servico: [{ retencao: { pis: { aliquota: 0.65, valor: 6.5 } } }] });
+conferir("número decimal do JSON não é conteúdo não numérico", !decimal.some((item) => item.titulo.startsWith("Conteúdo não numérico")), resumo(decimal));
 
 console.log("\n== valores ==");
 conferir("arredondar e truncar em duas casas", arredondar(6.505) === 6.51 && truncar(6.509) === 6.5);
@@ -111,15 +113,34 @@ conferir("alíquota acima do anexo VI", tem(iss, "erro", "Alíquota de ISS acima
 conferir("ISS limpo sem achado", doServico(analisarIss, servicoLimpo).length === 0);
 
 console.log("\n== IBS e CBS ==");
-conferir("sem grupo ibscbs", tem(daNota(analisarIbsCbs, { servico: [servicoLimpo] }), "alerta", "JSON sem o grupo ibscbs", "ibscbs"));
-const ibscbs = daNota(analisarIbsCbs, { ibscbs: { codigoOperacao: "999999", valores: { tributacao: { cst: "000" } }, destinatario: { razaoSocial: "Y" } } });
+conferir("sem grupo ibscbs", tem(daNota(analisarIbsCbs, { servico: [servicoLimpo] }), "alerta", "JSON sem o grupo ibscbs", "servico[0].ibscbs"));
+const ibscbs = daNota(analisarIbsCbs, { servico: [{ ibscbs: { codigoOperacao: "999999", valores: { tributacao: { cst: "000" } }, destinatario: { razaoSocial: "Y" } } }] });
 conferir("indOp fora do anexo VII, cClassTrib ausente e destinatário sem identificação",
-  tem(ibscbs, "alerta", "indOp fora da tabela do anexo VII", "ibscbs.codigoOperacao") && tem(ibscbs, "erro", "cClassTrib do IBS e da CBS ausente", "ibscbs.valores.tributacao.cct")
-  && tem(ibscbs, "alerta", "Destinatário do IBS e da CBS sem identificação", "ibscbs.destinatario"), resumo(ibscbs));
+  tem(ibscbs, "alerta", "indOp fora da tabela do anexo VII", "servico[0].ibscbs.codigoOperacao")
+  && tem(ibscbs, "erro", "cClassTrib do IBS e da CBS ausente", "servico[0].ibscbs.valores.tributacao.cct")
+  && tem(ibscbs, "alerta", "Destinatário do IBS e da CBS sem identificação", "servico[0].ibscbs.destinatario"), resumo(ibscbs));
+const naRaiz = daNota(analisarIbsCbs, { servico: [servicoLimpo], ibscbs: { codigoOperacao: "999999" } });
+conferir("grupo ibscbs na raiz: aviso de lugar e conferência do conteúdo",
+  tem(naRaiz, "alerta", "Grupo ibscbs fora do lugar documentado", "ibscbs") && tem(naRaiz, "alerta", "indOp fora da tabela do anexo VII", "ibscbs.codigoOperacao"), resumo(naRaiz));
 conferir("IBS e CBS da correlação sem achado", daNota(analisarIbsCbs, notaLimpa).length === 0, resumo(daNota(analisarIbsCbs, notaLimpa)));
 
+console.log("\n== conferências tiradas do de-para ==");
+conferir("nota limpa sem alerta do de-para", daNota(analisarPeloDePara, notaLimpa).filter((item) => item.severidade !== "informacao").length === 0,
+  resumo(daNota(analisarPeloDePara, notaLimpa)));
+const pelaOrigem = daNota(analisarPeloDePara, {
+  servico: [{ ...servicoLimpo, iss: { ...servicoLimpo.iss, tipoTributacao: 1 }, infExterior: { modoPrestacao: "2" } }, servicoLimpo],
+  intermediario: { codigoNif: "1" }
+});
+conferir("dois serviços, conversão, número como texto e campo documentado não lido",
+  tem(pelaOrigem, "alerta", "Mais de um serviço na mesma nota", "servico")
+  && tem(pelaOrigem, "informacao", "Conversão de tipoTributacao para tribISSQN", "servico[0].iss.tipoTributacao")
+  && tem(pelaOrigem, "alerta", "Número enviado como texto em campo que a lib só lê como número", "servico[0].infExterior.modoPrestacao")
+  && tem(pelaOrigem, "alerta", "Campo documentado que a lib do Nacional não lê", "intermediario.codigoNif"), resumo(pelaOrigem));
+const conversao = pelaOrigem.find((item) => item.titulo === "Conversão de tipoTributacao para tribISSQN");
+conferir("conversão cita o significado do anexo e a sondagem da lib", conversao?.detalhe.includes("Não Incidência") && conversao?.fonte.includes("sondagem"), conversao?.detalhe);
+
 console.log("\n== formato dos achados ==");
-const todos = [...declarativas, ...textos, ...nomes, ...tipos, ...documentos, ...leiaute, ...valores, ...retencoes, ...iss, ...ibscbs];
+const todos = [...declarativas, ...textos, ...nomes, ...tipos, ...documentos, ...leiaute, ...valores, ...retencoes, ...iss, ...ibscbs, ...pelaOrigem];
 conferir("todo achado de cada módulo traz fonte, detalhe e lista de tags", todos.length > 0 && bemFormados(todos));
 
 console.log(falhas === 0 ? "\nTeste dos módulos do validador passou." : `\n${falhas} teste(s) falharam.`);

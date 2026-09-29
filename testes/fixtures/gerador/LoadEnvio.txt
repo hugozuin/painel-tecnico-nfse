@@ -1,0 +1,13 @@
+begin
+  _ValorCampo := Trim(CampoTecno('TipoTeste'));
+  if (_Informado) or (_ValorCampo <> '') then
+  begin
+    case AnsiIndexText(_ValorCampo, ['X', 'XX',
+      'Y', 'YY']) of
+      0, 1: SetarCampoValor('CSTTeste', 'A1');
+      2, 3: SetarCampoValor('CSTTeste', 'B2');
+    end;
+  end;
+
+  SetarCampoValorTamanho('xNomeTeste', CampoTecno('NomeTeste'), 60);
+end.

@@ -1,0 +1,10 @@
+[
+  {
+    "prestador": { "cpfCnpj": "DOCUMENTO-FICTICIO", "telefone": { "ddd": "44", "numero": "39990000" }, "regime": 1 },
+    "servico": [{ "codigo": "987601", "discriminacao": "Linha um\nlinha dois", "valor": { "servico": 150.5 }, "retido": { "ativo": true, "valor": 3, "aliquota": 2 } }]
+  },
+  {
+    "prestador": { "cpfCnpj": "OUTRO-DOCUMENTO" },
+    "servico": [{ "codigo": "987699" }]
+  }
+]

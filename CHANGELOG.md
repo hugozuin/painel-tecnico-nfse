@@ -10,6 +10,48 @@
 - A tela do certificado informa que as consultas do Nacional exigem
   certificado digital. Sem ele, o repasse passa a orientar a carregar o A1 em
   vez de devolver só o erro técnico do TLS.
+- De-para do Nacional refeito a partir das props da lib do PlugNotas:
+  - A tag mostra o campo do JSON, com os selos Convertido, Condicional e Muda
+    no RTC007. Passar o mouse no selo mostra o que ele significa.
+  - O popup traz a tabela de conversão, as condições, o que a documentação da
+    API diz do campo, o caminho no XML gerado hoje e no anexo VI anterior e as
+    fontes com arquivo e linha.
+  - Os nomes do TX2 saíram da lista e da busca e ficam só como apoio no popup.
+  - Filtros num seletor só, com mais de uma escolha: grupos da tag,
+    preenchidas pelo PlugNotas e com conversão de valores.
+  - Tag com fontes em desacordo mostra o aviso discreto "Inconsistências nas
+    fontes".
+  - Tags da NFS-e aparecem como geradas pelo Nacional.
+- Cobertura do de-para: de 103 para 196 tags da DPS com campo do JSON.
+  Destas, 68 foram confirmadas na conferência de 11 notas reais, 125 foram
+  inferidas pelo componente (apoio) e 3 pelo nome e pelos códigos da tag.
+- Validador:
+  - O grupo IBS/CBS passa a ser lido em `servico[].ibscbs`, como na
+    documentação da API. O grupo na raiz ganha o alerta "fora do lugar
+    documentado".
+  - Novas conferências:
+    - valores e tamanhos aceitos pela documentação;
+    - conversão de código pela lib;
+    - número enviado como texto em campo que a lib só lê como número;
+    - campo documentado que a lib do Nacional não lê;
+    - mais de um serviço na mesma nota.
+  - O número decimal do JSON deixa de ser acusado como conteúdo não numérico.
+
+### Ferramentas e testes
+
+- Gerador com novas fontes:
+  - documentação pública da API (`--api`);
+  - sondagem das props executadas no Node (`--lib`);
+  - `getRps.js` como fonte secundária (`--rps`);
+  - conferência de notas (`--notas`).
+- Script e mapeamento do componente passam a ser só apoio. A leitura do
+  script aceita cabeçalhos em várias linhas e compara nomes sem diferenciar
+  maiúsculas.
+- Equivalência de caminhos entre o anexo VI 1.03 e o 1.04 pelos itens da
+  NT 009, que entraram em `fontes/nacional` junto com o anexo 1.03.
+- `testes/teste_gerador.py` com fixtures sintéticas e
+  `testes/conferir_fixtures.py`, que prova que as fixtures não copiam os
+  insumos internos.
 
 ### Documentação
 

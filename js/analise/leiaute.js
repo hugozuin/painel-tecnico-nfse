@@ -19,7 +19,8 @@ export function analisarLeiaute(nota, contexto, registrar) {
             `O anexo VI define ${entrada.tag} com tamanho ${entrada.tamanho}. O valor informado tem ${texto.length} caractere(s).`, fonte, [chave]));
         }
       }
-      if (entrada.tipo === "N" && /\D/.test(texto)) {
+      const comDecimais = /V\d+/.test(String(entrada.tamanho));
+      if (entrada.tipo === "N" && typeof valor === "string" && (comDecimais ? !/^\d+(\.\d+)?$/.test(texto) : /\D/.test(texto))) {
         registrar(achado("alerta", `Conteúdo não numérico em ${entrada.tag}`, caminho,
           `O anexo VI define ${entrada.tag} como numérico (tipo N), e o valor informado tem caracteres que não são dígitos.`, fonte, [chave]));
       }

@@ -176,7 +176,7 @@
     },
     {
       "id": "ibscbs-indop-digitos",
-      "campo": "ibscbs.codigoOperacao",
+      "campo": "servico[].ibscbs.codigoOperacao",
       "tipo": "digitos",
       "quantidade": 6,
       "severidade": "alerta",
@@ -187,7 +187,7 @@
     },
     {
       "id": "ibscbs-cst-digitos",
-      "campo": "ibscbs.valores.tributacao.cst",
+      "campo": "servico[].ibscbs.valores.tributacao.cst",
       "tipo": "digitos",
       "quantidade": 3,
       "severidade": "alerta",
@@ -198,7 +198,7 @@
     },
     {
       "id": "ibscbs-cct-digitos",
-      "campo": "ibscbs.valores.tributacao.cct",
+      "campo": "servico[].ibscbs.valores.tributacao.cct",
       "tipo": "digitos",
       "quantidade": 6,
       "severidade": "alerta",
