@@ -120,7 +120,8 @@ cliente final.
 
 ### Recursos da interface
 
-- Tema claro e escuro, com a identidade da marca.
+- Padrão visual do design system da TecnoSpeed, com tema claro e escuro e a cor
+  da marca. No celular, o menu vira gaveta aberta por um botão flutuante.
 - Painel de **Logs** da sessão, com identificação do consultor e exportação em
   TXT.
 - Perfis de API Key por apelido, para alternar entre contas sem trocar de aba.
