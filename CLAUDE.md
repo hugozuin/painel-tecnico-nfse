@@ -430,8 +430,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   de como a chave é guardada e o botão "Apagar todos os perfis" (com
   confirmação). Apagar ou remover perfil também tira do campo e da aba a chave
   que for de um perfil apagado; chave digitada que não é de perfil fica.
-- Rodapé: "**Painel Técnico NFS-e · Consultoria Técnica NFS-e** · TecnoSpeed" e
-  "Desenvolvido por Hugo Zuin" com menos destaque.
+- Sem rodapé: o nome do painel fica no cabeçalho.
 - Estrutura: menu lateral fixo com o gradiente da marca e o logo no topo (no
   tema escuro mantém as cores do claro) e cabeçalho branco com linha da marca.
   Até 768px o menu vira gaveta, aberta pelo botão flutuante `#alternarMenu` e
@@ -523,7 +522,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   de estado usa o tom da mesma família que passa no AA. O `styles.css` é um
   arquivo só, sem comentários, na ordem: fontes (`@font-face`), tokens e temas, base, componentes
   (botões, campos, interruptor, badges, abas, cartões), estrutura (casca,
-  cabeçalho, menu lateral, rodapé), tabelas e progresso, telas de rota e
+  cabeçalho, menu lateral), tabelas e progresso, telas de rota e
   Retorno, popup de informação, painel de logs, modal, avisos e as telas
   específicas (validador, de-para, IBS e CBS, certificado). Regra nova entra no
   bloco do seu componente. `[hidden] { display: none !important }` faz o
@@ -568,7 +567,7 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 | Validador só com regras de fonte documentada | Rigor: nada de conhecimento geral sem fonte |
 | CSP só nas páginas, com `img-src 'self'` (sem `data:`) e sem liberar a Vercel Toolbar | Aprovado na rodada 1; nada do app usa `data:` e o repasse tem CSP própria |
 | Sem limitador por IP no código do repasse; limite pelo WAF da Vercel | Aprovado na rodada 1; contador em memória não protege e barraria lotes da equipe no mesmo IP |
-| Nome, logo, favicon e rodapé atuais | Identidade definida pelo Hugo |
+| Nome, logo e favicon atuais, sem rodapé | Identidade definida pelo Hugo; o rodapé saiu a pedido dele em outubro de 2026 |
 | API Key, perfis e lista do Resolve só na aba, sem "Manter a chave" | Aprovado na rodada 1: a API Key é informação Restrita pela política de dados |
 | Consultas do Nacional sempre por POST, GET ainda aceito no repasse | Identificadores fora da URL e dos logs de acesso; contrato do repasse mantido |
 | Quicksand servida pelo próprio site | Um terceiro a menos recebendo o IP do consultor; CSP só `'self'` |

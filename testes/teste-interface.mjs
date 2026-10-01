@@ -55,11 +55,7 @@ conferir("nome novo no cabeçalho", document.querySelector(".header-titles h1").
 conferir("título da aba do navegador", document.title.includes("Painel Técnico NFS-e"), document.title);
 conferir("logo nova", document.querySelector(".marca-logo").getAttribute("src") === "assets/logo.svg");
 conferir("favicon novo", document.querySelector('link[rel="icon"]').getAttribute("href") === "assets/favicon.svg");
-const rodape = document.querySelector(".app-footer").textContent;
-conferir("rodapé com Consultoria Técnica NFS-e e autoria", rodape.includes("Consultoria Técnica NFS-e") && rodape.includes("Desenvolvido por Hugo Zuin"));
-conferir("rodapé com destaque no nome", document.querySelector(".app-footer strong")?.textContent === "Painel Técnico NFS-e · Consultoria Técnica NFS-e");
-conferir("autoria com menos destaque", document.querySelector(".app-footer .assinatura")?.textContent === "Desenvolvido por Hugo Zuin");
-conferir("rodapé sem a origem das definições", !rodape.includes("Definições") && !document.getElementById("rodapeDefinicoes"));
+conferir("sem rodapé", !document.querySelector("footer, .app-footer"));
 const total = ler("rotas").rotas.filter((r) => !r.oculta).length + ler("rotas-nacional").rotas.length + 3;
 conferir("botão Repositório oculto pela configuração entregue", document.getElementById("linkRepositorio").hidden);
 conferir("menu com a aba de IBS e CBS", document.querySelectorAll(".menu-item").length === total, String(document.querySelectorAll(".menu-item").length));

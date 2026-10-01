@@ -10,6 +10,7 @@
   abas sublinhadas, tabelas zebradas e contraste AA nos dois temas. A cor da
   marca continua índigo e a fonte continua Quicksand.
 - No celular, o menu abre por um botão flutuante e fecha ao clicar fora.
+- Rodapé removido.
 - Confirmação de ação sensível com ícone de alerta e botão Confirmar amarelo.
 - Avisos no canto superior direito, com botão de fechar; o de erro em vermelho.
 - O interruptor de tema mostra sol ou lua e informa o estado ao leitor de tela.

@@ -359,8 +359,6 @@ body {
 
 body { padding-left: 16rem; }
 
-.app-shell { min-height: calc(100vh - 140px); }
-
 .app-main {
   max-width: 96rem;
   margin: 0 auto;
@@ -375,20 +373,6 @@ body { padding-left: 16rem; }
 .cabecalho-pagina h1 { font-size: 1.875rem; font-weight: 600; line-height: 1.2; color: var(--text-strong); }
 .cabecalho-pagina p { font-size: 1rem; line-height: 1.5; color: var(--text-soft); max-width: 54rem; }
 .tela { display: flex; flex-direction: column; gap: 1.25rem; }
-
-.app-footer {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 0.25rem 0.75rem;
-  flex-wrap: wrap;
-  text-align: center;
-  font-size: 0.875rem;
-  color: var(--text-soft);
-  padding: 1.5rem 1rem;
-}
-.rodape-destaque { font-weight: 600; color: var(--text-strong); }
-.app-footer .assinatura { font-size: 0.75rem; }
 
 @media (max-width: 768px) {
   body { padding-left: 0; }
