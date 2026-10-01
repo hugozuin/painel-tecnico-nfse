@@ -180,7 +180,7 @@ vercel.json             cabeçalhos HTTP
 
 Tamanho atual dos módulos maiores: `telas/resolve.js` 494 linhas, `fluxo-resolve.js`
 270, `api/proxy.js` 230, `telas/lote/retorno.js` 224, `analise/retencoes.js` 111,
-`styles.css` 1018.
+`styles.css` 1082.
 
 ## 5. Arquitetura e fluxos
 
