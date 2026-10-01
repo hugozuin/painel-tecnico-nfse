@@ -16,6 +16,7 @@
 }
 
 :root {
+  color-scheme: light;
   --indigo-900: #221f6b;
   --indigo-700: #2d2a8c;
   --indigo-500: #4a44c4;
@@ -60,6 +61,7 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
   --indigo-900: #4a44c4;
   --indigo-700: #8b84f0;
   --indigo-500: #6c63e0;
@@ -512,7 +514,7 @@ body { padding-left: 16rem; }
 .menu-item:hover { background: color-mix(in srgb, var(--indigo-900) 60%, transparent); }
 .menu-item.ativo { background: var(--indigo-900); font-weight: 600; }
 .menu-item:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
-.menu-item-titulo { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu-item-titulo { line-height: 1.25; }
 
 .menu-marca {
   flex-shrink: 0;
