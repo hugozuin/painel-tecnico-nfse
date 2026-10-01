@@ -23,7 +23,7 @@ const telasFixas = [
   }
 ];
 
-const ordemGrupos = ["Notas", "Arquivos", "Ciclo de vida", "Empresa", "Nacional", "Ferramentas"];
+const ordemGrupos = ["Notas", "Empresa", "Nacional", "Ferramentas"];
 
 let catalogo = [];
 let navegacao = 0;

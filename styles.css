@@ -466,17 +466,20 @@ body { padding-left: 16rem; }
   padding: 0.5rem 1rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
   scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
 }
 
 .menu-grupo { display: flex; flex-direction: column; gap: 0.5rem; }
+.menu-grupo + .menu-grupo { padding-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
 
 .menu-grupo-titulo {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  padding: 0 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-inverso);
+  padding: 0 0.75rem 0.25rem;
 }
 
 .menu-item {

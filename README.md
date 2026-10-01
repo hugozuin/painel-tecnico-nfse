@@ -78,9 +78,7 @@ cliente final.
 
 | Grupo | Telas |
 |---|---|
-| **Notas** | Resolve em lote (situação conferida antes e depois); consulta por ID, idIntegracao ou período, com consulta completa pelo ID |
-| **Arquivos** | Download de XML e PDF, regeração de PDF, reenvio por e-mail |
-| **Ciclo de vida** | Cancelamento e status do cancelamento, eventos, sincronização e interrupção |
+| **Notas** | Resolve em lote (situação conferida antes e depois); consulta por ID, idIntegracao ou período, com consulta completa pelo ID; download de XML e PDF, regeração de PDF e reenvio por e-mail; cancelamento e status do cancelamento, eventos, sincronização e interrupção |
 | **Empresa** | Cadastro (por CNPJ, todas da conta e logotipo), webhook da empresa ou da organização (com envio de teste) e certificados |
 
 - Listas de IDs coladas, digitadas ou importadas de CSV ou TXT, com os
@@ -247,7 +245,7 @@ Uma rota nova entra no catálogo, sem código novo:
 ```json
 {
   "id": "email",
-  "grupo": "Arquivos",
+  "grupo": "Notas",
   "titulo": "Envio de e-mail",
   "metodo": "POST",
   "caminho": "/nfse/email/{item}",

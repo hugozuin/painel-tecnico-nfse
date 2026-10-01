@@ -180,7 +180,7 @@ servem às telas agrupadas.
 ```json
 {
   "id": "email",
-  "grupo": "Arquivos",
+  "grupo": "Notas",
   "titulo": "Envio de e-mail",
   "resumo": "Reenvia a nota por e-mail para os destinatários informados.",
   "metodo": "POST",
@@ -194,7 +194,7 @@ servem às telas agrupadas.
   "resultado": { "tipo": "mensagem" },
   "confirmar": "Um e-mail será enviado para os destinatários informados, com a nota de cada id da lista.",
   "sensivel": true,
-  "ordem": 4
+  "ordem": 6
 }
 ```
 

@@ -11,6 +11,8 @@
   marca continua índigo e a fonte continua Quicksand.
 - No celular, o menu abre por um botão flutuante e fecha ao clicar fora.
 - Mais espaço entre as opções do menu lateral e entre o menu e o conteúdo.
+- Menu com quatro seções em destaque: Notas, Empresa, Nacional e Ferramentas.
+  As telas de Arquivos e Ciclo de vida passam para Notas.
 - Rodapé removido.
 - Confirmação de ação sensível com ícone de alerta e botão Confirmar amarelo.
 - Avisos no canto superior direito, com botão de fechar; o de erro em vermelho.

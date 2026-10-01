@@ -96,7 +96,7 @@ await abrir("xml");
 const cabecalho = document.querySelector(".cabecalho-pagina");
 conferir("título da tela visível", cabecalho?.querySelector("h1")?.textContent === "Download de XML");
 conferir("legenda da tela", cabecalho?.querySelector("p")?.textContent === ler("rotas").rotas.find((r) => r.id === "xml").resumo);
-conferir("grupo acima do título", cabecalho?.querySelector(".cabecalho-grupo")?.textContent === "Arquivos");
+conferir("grupo acima do título", cabecalho?.querySelector(".cabecalho-grupo")?.textContent === "Notas");
 conferir("cartão sem repetir o título", document.querySelector(".tela .card-header h2")?.textContent === "Requisição");
 
 console.log("\n== guarda da API Key ==");
@@ -135,7 +135,11 @@ conferir("volta ao ID lembrando a escolha completa", endereco().endsWith("/nfse/
 conferir("cartão de retorno presente na subtela", Boolean(document.querySelector(".cartao-retorno")));
 
 console.log("\n== grupo Empresa ==");
-conferir("grupos do menu na ordem", [...document.querySelectorAll(".menu-grupo-titulo")].map((g) => g.textContent).join(",") === "Notas,Arquivos,Ciclo de vida,Empresa,Nacional,Ferramentas",
+const itensDeNotas = [...document.querySelectorAll(".menu-grupo")].find((grupo) => grupo.firstElementChild.textContent === "Notas")?.querySelectorAll(".menu-item");
+conferir("arquivos e ciclo de vida dentro de Notas, nessa ordem",
+  [...(itensDeNotas || [])].map((item) => item.dataset.rota).join(",") === "resolve,consulta,xml,pdf,pdf-regerar,email,cancelar,cancelar-status,eventos,sincronizar,interromper",
+  [...(itensDeNotas || [])].map((item) => item.dataset.rota).join(","));
+conferir("grupos do menu na ordem", [...document.querySelectorAll(".menu-grupo-titulo")].map((g) => g.textContent).join(",") === "Notas,Empresa,Nacional,Ferramentas",
   [...document.querySelectorAll(".menu-grupo-titulo")].map((g) => g.textContent).join(","));
 conferir("três telas de Empresa no menu, sem relatório", ["empresa", "webhook", "certificado"].every((id) => document.querySelector(`.menu-item[data-rota="${id}"]`)) && !document.querySelector('.menu-item[data-rota="relatorio"]'));
 await abrir("empresa");

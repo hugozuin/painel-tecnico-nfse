@@ -41,7 +41,7 @@ Cada item de `rotas` em `rotas.json` vira um item de menu e uma tela.
 ```json
 {
   "id": "email",
-  "grupo": "Arquivos",
+  "grupo": "Notas",
   "titulo": "Envio de e-mail",
   "resumo": "Reenvia a nota por e-mail para os destinatários informados.",
   "metodo": "POST",
@@ -55,7 +55,7 @@ Cada item de `rotas` em `rotas.json` vira um item de menu e uma tela.
   "resultado": { "tipo": "mensagem" },
   "confirmar": "Um e-mail será enviado para os destinatários informados, com a nota de cada id da lista.",
   "sensivel": true,
-  "ordem": 4
+  "ordem": 6
 }
 ```
 
@@ -66,7 +66,7 @@ Cada item de `rotas` em `rotas.json` vira um item de menu e uma tela.
 | `id` | Sim | Identificador único; vira o endereço da tela (`#email`) |
 | `titulo` | Sim | Nome no menu e no topo da tela |
 | `caminho` | Sim* | Caminho na API, com `{item}` e `{campo}` a substituir. *Dispensado nas telas com `tela` |
-| `grupo` | Não | Grupo do menu (Notas, Arquivos, Ciclo de vida, Empresa) |
+| `grupo` | Não | Grupo do menu (Notas ou Empresa) |
 | `resumo` | Não | Legenda exibida abaixo do título |
 | `metodo` | Não | `GET` (padrão) ou `POST` |
 | `entrada` | Não | Como a lista de itens é lida (abaixo) |

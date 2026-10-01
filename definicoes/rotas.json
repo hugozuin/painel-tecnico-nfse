@@ -204,7 +204,7 @@
     },
     {
       "id": "xml",
-      "grupo": "Arquivos",
+      "grupo": "Notas",
       "titulo": "Download de XML",
       "resumo": "Baixa o XML autorizado de cada nota informada.",
       "metodo": "GET",
@@ -219,11 +219,11 @@
         "extensao": "xml",
         "prefixo": "nfse"
       },
-      "ordem": 1
+      "ordem": 3
     },
     {
       "id": "pdf",
-      "grupo": "Arquivos",
+      "grupo": "Notas",
       "titulo": "Download de PDF",
       "resumo": "Baixa o PDF da nota. Aceita id da nota ou protocolo.",
       "metodo": "GET",
@@ -238,11 +238,11 @@
         "extensao": "pdf",
         "prefixo": "nfse"
       },
-      "ordem": 2
+      "ordem": 4
     },
     {
       "id": "pdf-regerar",
-      "grupo": "Arquivos",
+      "grupo": "Notas",
       "titulo": "Regerar PDF",
       "resumo": "Solicita a geração de um novo PDF quando o arquivo saiu com dados desatualizados.",
       "metodo": "POST",
@@ -256,11 +256,11 @@
         "tipo": "mensagem"
       },
       "confirmar": "O PDF das notas informadas será gerado novamente.",
-      "ordem": 3
+      "ordem": 5
     },
     {
       "id": "email",
-      "grupo": "Arquivos",
+      "grupo": "Notas",
       "titulo": "Envio de e-mail",
       "resumo": "Reenvia a nota por e-mail para os destinatários informados.",
       "metodo": "POST",
@@ -292,11 +292,11 @@
       },
       "confirmar": "Um e-mail será enviado para os destinatários informados, com a nota de cada id da lista.",
       "sensivel": true,
-      "ordem": 4
+      "ordem": 6
     },
     {
       "id": "cancelar",
-      "grupo": "Ciclo de vida",
+      "grupo": "Notas",
       "titulo": "Cancelamento",
       "resumo": "Solicita o cancelamento das notas e devolve o protocolo para acompanhamento.",
       "metodo": "POST",
@@ -342,11 +342,11 @@
       },
       "confirmar": "O cancelamento é definitivo na prefeitura. Confirme que os ids estão corretos antes de continuar.",
       "sensivel": true,
-      "ordem": 1
+      "ordem": 7
     },
     {
       "id": "cancelar-status",
-      "grupo": "Ciclo de vida",
+      "grupo": "Notas",
       "titulo": "Status do cancelamento",
       "resumo": "Consulta o andamento do cancelamento pelo protocolo devolvido na solicitação.",
       "metodo": "GET",
@@ -370,11 +370,11 @@
           }
         ]
       },
-      "ordem": 2
+      "ordem": 8
     },
     {
       "id": "eventos",
-      "grupo": "Ciclo de vida",
+      "grupo": "Notas",
       "titulo": "Eventos do Nacional",
       "resumo": "Envia ou consulta eventos de manifestação no ambiente Nacional.",
       "metodo": "POST",
@@ -426,11 +426,11 @@
       },
       "confirmar": "Eventos de envio alteram a nota no ambiente Nacional.",
       "sensivel": true,
-      "ordem": 3
+      "ordem": 9
     },
     {
       "id": "sincronizar",
-      "grupo": "Ciclo de vida",
+      "grupo": "Notas",
       "titulo": "Sincronização",
       "resumo": "Envia a lista inteira em uma única chamada para a rota de sincronização.",
       "metodo": "POST",
@@ -445,11 +445,11 @@
       },
       "confirmar": "Todos os ids serão enviados de uma vez para a sincronização.",
       "sensivel": true,
-      "ordem": 4
+      "ordem": 10
     },
     {
       "id": "interromper",
-      "grupo": "Ciclo de vida",
+      "grupo": "Notas",
       "titulo": "Interrupção",
       "resumo": "Interrompe o processamento das notas informadas.",
       "metodo": "POST",
@@ -464,7 +464,7 @@
       },
       "confirmar": "As notas informadas param de ser processadas. A ação não tem volta.",
       "sensivel": true,
-      "ordem": 5
+      "ordem": 11
     },
     {
       "id": "empresa",
