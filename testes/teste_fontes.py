@@ -112,9 +112,26 @@ conferir("todas as regras da planilha estão no de-para", regras_planilha <= reg
          f"faltam {len(regras_planilha - regras_json)}")
 conferir("nenhuma regra inventada", regras_json <= regras_planilha, f"sobram {len(regras_json - regras_planilha)}")
 
+print("\n== anexo VI 1.03 e NT 009, leiaute anterior ==")
+livro = openpyxl.load_workbook(BASE / "anexovi-leiautesrn_rtc_ibscbs-v1-03-00-2013-nt007.xlsx")
+aba = next(livro[nome] for nome in livro.sheetnames if nome.startswith("LEIAUTE DPS_NFS-e"))
+ler = mapa_de_mesclagens(aba)
+caminhos_anteriores = set()
+for linha in range(2, aba.max_row + 1):
+    campo = limpo(ler(linha, 3))
+    if campo and campo != "-":
+        chave = limpo(ler(linha, 2)).replace(" ", "")
+        caminhos_anteriores.add((chave if chave.endswith("/") else chave + "/") + campo)
+anteriores = [item for e in de_para["entradas"] for item in e.get("leiauteAnterior", [])]
+conferir("tags com caminho no leiaute anterior", len(anteriores) > 0, str(len(anteriores)))
+conferir("todo caminho anterior existe no anexo VI 1.03", all(item["caminho"] in caminhos_anteriores for item in anteriores),
+         str([item["caminho"] for item in anteriores if item["caminho"] not in caminhos_anteriores][:5]))
+conferir("toda equivalência cita um item da NT 009", all(re.fullmatch(r"NT 009, item 2\.\d", item["fonte"]) for item in anteriores))
+conferir("NT 009 presente nas fontes", (BASE / "nt-009-se-cgnfse-v1-0-1.pdf").exists())
+
 texto_json = (RAIZ / "definicoes" / "de-para-nacional.json").read_text(encoding="utf-8")
 conferir("sem trecho de código no de-para publicado",
-         not any(marca in texto_json for marca in ("CampoTecno(", "SetarCampo", "=>", "formatRounding(")))
+         not any(marca in texto_json for marca in ("CampoTecno(", "SetarCampo", "=>", "formatRounding(", "require(", "module.exports")))
 
 print("\nConferência contra as planilhas passou." if falhas == 0 else f"\n{falhas} conferência(s) falharam.")
 sys.exit(1 if falhas else 0)

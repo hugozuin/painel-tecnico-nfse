@@ -1,0 +1,15 @@
+<DPS xmlns="http://exemplo.invalid/dps-de-teste" versao="1.01">
+  <infDPS Id="DPSTESTE">
+    <verAplic>TESTE_1</verAplic>
+    <prest>
+      <CNPJ>DOCUMENTO-FICTICIO</CNPJ>
+      <fone>4439990000</fone>
+      <regTrib><regEspTrib>3</regEspTrib></regTrib>
+    </prest>
+    <serv><cServ><cTeste>987601</cTeste><xDescServ>Linha um; linha dois!</xDescServ></cServ></serv>
+    <valores>
+      <vServPrest><vServ>150.50</vServ></vServPrest>
+      <trib><tribMun><tpRetISSQN>2</tpRetISSQN></tribMun></trib>
+    </valores>
+  </infDPS>
+</DPS>

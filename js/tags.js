@@ -1,6 +1,7 @@
 import { criar } from "./shared.js";
 import { iconeInfo, conteudoDoPopup, secaoDoPopup, fonteDoPopup } from "./info.js";
 import { definicoes } from "./definicoes.js";
+import { secoesDoPlugNotas } from "./origem-plugnotas.js";
 
 let indice = null;
 
@@ -18,9 +19,19 @@ export function entradaPorChave(chave) {
   return indice.get(chave) || null;
 }
 
+export function textoDasFontes(fontes) {
+  if (!fontes) return "anexo VI";
+  const conferencia = fontes.conferencia?.pares
+    ? `conferência de ${fontes.conferencia.pares} notas${fontes.conferencia.data ? ` em ${fontes.conferencia.data.split("-").reverse().join("/")}` : ""}`
+    : "";
+  return [fontes.leiaute || "anexo VI", fontes.api ? `documentação da API (${fontes.api})` : "", fontes.lib ? `lib do PlugNotas (${fontes.lib})` : "",
+    fontes.notaTecnica ? `NT 009 (${fontes.notaTecnica})` : "", conferencia].filter(Boolean).join("; ");
+}
+
 function conteudoDaTag(entrada) {
   const regras = entrada.regras || [];
   const blocos = [
+    ...secoesDoPlugNotas(entrada),
     criar("h4", { texto: regras.length ? `Regras de negócio (${regras.length})` : "Regras de negócio" })
   ];
 
@@ -46,7 +57,7 @@ function conteudoDaTag(entrada) {
 
   if (entrada.descricao) blocos.push(...secaoDoPopup("Descrição", entrada.descricao));
   if (entrada.notas) blocos.push(...secaoDoPopup("Notas explicativas", entrada.notas));
-  blocos.push(fonteDoPopup(definicoes.dePara?.fontes?.leiaute || "anexo VI"));
+  blocos.push(fonteDoPopup(textoDasFontes(definicoes.dePara?.fontes)));
   return conteudoDoPopup([criar("code", { texto: entrada.tag }), ` ${entrada.titulo}`], blocos);
 }
 
@@ -55,7 +66,7 @@ export function iconeDaTag(entrada) {
   return iconeInfo(
     `tag:${chaveDaTag(entrada)}`,
     () => conteudoDaTag(entrada),
-    `Regras de negócio de ${entrada.tag}`,
+    `Regras de negócio e origem no PlugNotas de ${entrada.tag}`,
     quantidade ? String(quantidade) : ""
   );
 }

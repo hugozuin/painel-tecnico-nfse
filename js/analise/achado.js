@@ -5,6 +5,7 @@ export const FONTES = {
   calculo: "Cálculo sobre os valores do JSON",
   digito: "Cálculo dos dígitos verificadores",
   retencaoLib: "Lib do PlugNotas (getRetencaoProps.js)",
+  documentacaoApi: "Documentação da API do PlugNotas",
   anexoVII: "Anexo VII, tabela de indOp",
   anexoVIII: "Anexo VIII, tabela de correlação"
 };

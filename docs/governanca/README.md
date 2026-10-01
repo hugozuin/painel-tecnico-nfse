@@ -130,7 +130,7 @@ crítica.
 | Testes de segurança e desempenho | OK | `teste-seguranca.mjs`, `teste-desempenho.mjs` e `verificar-csp.mjs` no navegador real |
 | Banco homologado ou justificativa | N/A | Não há banco nem persistência no servidor |
 | Criptografia em trânsito | OK | HTTPS em todos os destinos |
-| Criptografia em repouso | N/A | Nada é gravado no servidor; no navegador, a API Key fica só na aba (sessionStorage) |
+| Criptografia em repouso | A avaliar por SI | Nada é gravado no servidor. No navegador, os perfis de API Key ficam no localStorage sem criptografia (pedido do Hugo em 29/09/2026); a chave digitada sem perfil fica só na aba (sessionStorage) |
 | Segredos fora do código | OK | Sem segredo da aplicação; certificados de teste gerados na execução, fora do Git |
 | CI/CD configurado | Parcial | Gancho `pre-push` versionado roda o `npm test` antes de cada push (controle compensatório); o pipeline entra com o GitLab |
 | Aceite formal da área de negócio | Pendente | |

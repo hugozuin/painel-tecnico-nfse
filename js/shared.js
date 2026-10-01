@@ -43,7 +43,7 @@ export const CHAVES_ARMAZENAMENTO = {
 
 export const chaveDaVariante = (idTela) => `${CHAVES_ARMAZENAMENTO.variantes}:${idTela}`;
 
-const GUARDADOS_SO_NA_ABA = ["apiKey", "perfis", "perfilAtivo", "idsResolve"].map((nome) => CHAVES_ARMAZENAMENTO[nome]);
+const GUARDADOS_SO_NA_ABA = ["apiKey", "perfilAtivo", "idsResolve"].map((nome) => CHAVES_ARMAZENAMENTO[nome]);
 
 export function levarDadosSensiveisParaAba() {
   const gravados = GUARDADOS_SO_NA_ABA.filter((chave) => localStorage.getItem(chave) !== null);

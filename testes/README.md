@@ -1,8 +1,8 @@
 # Testes
 
-Suítes automatizadas do Painel Técnico NFS-e: cerca de 650 verificações em 13
-suítes Node, mais a conferência dos dados contra as planilhas dos anexos e a
-verificação de CSP num navegador real.
+Suítes automatizadas do Painel Técnico NFS-e: cerca de 670 verificações em 13
+suítes Node, mais o teste das ferramentas do de-para, a conferência dos dados
+contra as planilhas dos anexos e a verificação de CSP num navegador real.
 
 ## Comandos
 
@@ -15,8 +15,20 @@ npm run verificar:csp       # CSP e SRI num Chrome ou Edge real (fora do npm tes
 ```
 
 ```bash
-python testes/teste_fontes.py     # na raiz; exige Python 3.10+ e openpyxl
+python testes/teste_fontes.py      # na raiz; exige Python 3.10+ e openpyxl
+python testes/teste_gerador.py     # na raiz; ferramentas do de-para com fixtures sintéticas; exige Node
+python testes/conferir_fixtures.py --insumos <pasta dos insumos internos>   # só para quem tem os insumos
 ```
+
+`teste_gerador.py` cobre a leitura da documentação da API, a sondagem das
+props, a conferência de notas, a leitura do getRps, o script e o mapeamento do
+componente, a equivalência da NT 009 e as regras de decisão. Usa só as fixtures
+de `fixtures/gerador/`, escritas do zero: props mínimas, uma especificação
+reduzida, um getRps, um script Pascal inventado, um mapeamento e um par de nota
+fictício. `conferir_fixtures.py` prova isso: falha se alguma linha
+significativa das fixtures aparecer nos insumos (inclusive dentro dos zips) ou
+se algum valor das notas reais aparecer nelas, e mostra só o arquivo e a linha
+da fixture.
 
 Para o `git push` rodar o `npm test` antes de enviar, ative o gancho uma vez por
 clone, na raiz do repositório:

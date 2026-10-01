@@ -65,7 +65,8 @@ cliente final.
 **Princípios do projeto**
 
 - **A API Key não passa pelo servidor.** O navegador chama a API PlugNotas
-  direto, e a chave fica só na aba aberta.
+  direto. Só os perfis salvos ficam gravados no navegador; a chave digitada
+  sem perfil fica só na aba aberta.
 - **Nada é afirmado sem fonte.** Toda regra, limite ou mensagem vem de um
   documento: anexos do Nacional, documentação do PlugNotas, lib, script ou
   cálculo sobre o JSON.
@@ -122,7 +123,8 @@ cliente final.
   da marca. No celular, o menu vira gaveta aberta por um botão flutuante.
 - Painel de **Logs** da sessão, com identificação do consultor e exportação em
   TXT.
-- Perfis de API Key por apelido, para alternar entre contas sem trocar de aba.
+- Perfis de API Key por apelido, gravados no navegador, para alternar entre
+  contas sem digitar a chave de novo.
 - Manual de uso em PDF no botão **Documentação**.
 
 ## Arquitetura
@@ -314,7 +316,7 @@ O procedimento de recuperação está em
 
 | Tema | Controle |
 |---|---|
-| **API Key** | Vai só para `https://api.plugnotas.com.br`; outro destino é recusado antes do `fetch`. Fica só no `sessionStorage` da aba e some ao fechá-la |
+| **API Key** | Vai só para `https://api.plugnotas.com.br`; outro destino é recusado antes do `fetch`. Os perfis ficam no `localStorage` até serem apagados na tela ou até a limpeza dos dados do navegador; a chave digitada sem perfil fica só no `sessionStorage` da aba |
 | **Certificado A1** | Lido no navegador; a senha nunca sai dele e é apagada do campo depois de cada leitura. Nada é persistido |
 | **Repasse** | Só `https`, só os domínios do ADN e da Sefin na porta padrão, corpo até 64 KB, PEM conferido, prazo de 30 s, resposta até 4 MB. Toda resposta sai com CSP `sandbox`, `nosniff` e `no-store` |
 | **Log** | Uma linha JSON por consulta ao repasse, sem corpo, identificadores, chave ou certificado |

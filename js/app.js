@@ -183,8 +183,8 @@ async function iniciar() {
   ligarLogs();
   atualizarRotuloUsuario();
   if (levarDadosSensiveisParaAba() > 0) {
-    registrarLog("API Key, perfis ou lista do Resolve gravados no navegador por versão anterior foram movidos para esta aba e apagados do navegador.", "warn");
-    mostrarAviso("A API Key e os perfis agora ficam só nesta aba.", "info");
+    registrarLog("API Key digitada, perfil ativo ou lista do Resolve gravados no navegador por versão anterior foram movidos para esta aba e apagados do navegador.", "warn");
+    mostrarAviso("A API Key digitada sem perfil agora fica só nesta aba.", "info");
   }
   ligarNavegacao();
   await carregarDefinicoes();

@@ -1,0 +1,4 @@
+[DPS]
+CstTeste=DPS/infDPS/trib/CST
+xNomeTeste=DPS/infDPS/prest/xNome
+fimTeste=DPS/infDPS/IBSCBS/finNFSe

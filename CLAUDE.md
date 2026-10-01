@@ -60,23 +60,31 @@ curl -s https://<domínio>/api/saude && curl -sI https://<domínio>/
 # conferência dos dados contra as planilhas dos anexos (Python 3.10+ e openpyxl)
 python testes/teste_fontes.py
 
+# ferramentas do de-para com fixtures sintéticas (Python e Node)
+python testes/teste_gerador.py
+
+# prova de que as fixtures não copiam os insumos internos (só na máquina com os insumos)
+python testes/conferir_fixtures.py --insumos <pasta dos insumos>
+
 # servidor local estático (as consultas do Nacional não funcionam: dependem da função api/proxy)
 npx serve -l 3500 .
 
 # servidor local com a função do repasse (exige login e vínculo na CLI da Vercel)
 npx vercel dev
 
-# regenerar de-para e tabelas do IBS e da CBS
-python ferramentas/gerar_definicoes.py --anexos fontes/nacional \
-  --script <LoadEnvio.txt> --mapeamento <Mapping.txt> --lib <pasta props> --saida definicoes
+# regenerar de-para e tabelas do IBS e da CBS (Node precisa estar instalado)
+python ferramentas/gerar_definicoes.py --anexos fontes/nacional --api <api.json> \
+  --lib <pasta props> --rps <getRps.js> --script <LoadEnvio.txt> --mapeamento <Mapping.txt> \
+  --notas <pasta com pares de notas> --saida definicoes
 
 # regenerar o manual em PDF (reportlab e svglib)
 python ferramentas/gerar_manual.py
 ```
 
 `iniciar.bat` sobe o servidor estático no Windows e fica fora do Git
-(`.gitignore`). Sem `--script`, `--mapeamento` e `--lib`, o gerador produz só o
-lado do Nacional.
+(`.gitignore`). Sem `--lib`, o gerador produz só o lado do Nacional. Sem
+`--notas`, vale o último `ferramentas/conferencia-notas.json`. O `api.json` é
+público: baixar de `https://docs.plugnotas.com.br/api.json`.
 
 ## 3. Stack e dependências
 
@@ -101,8 +109,9 @@ lado do Nacional.
   `quicksand-v37-OFL.txt`, declarada no topo do `styles.css` e pré-carregada no
   `index.html`. Nada vem do Google Fonts.
 - **Dados:** JSON versionados em `definicoes/`. Sem banco de dados.
-- **Ferramentas Python (fora do site):** openpyxl no gerador; reportlab e svglib
-  no manual.
+- **Ferramentas (fora do site):** Python com openpyxl no gerador, que também
+  chama o Node para executar as props da lib (`executar_lib.cjs`); reportlab e
+  svglib no manual.
 - **Testes:** Node com jsdom 30.1.0 e node-forge 1.4.0 (`testes/package.json`);
   Python com openpyxl em `testes/teste_fontes.py`.
 - **Hospedagem:** Vercel, Framework Preset "Other", sem comando de build e sem
@@ -132,9 +141,10 @@ js/certificado.js       leitura do A1 no navegador (forge) e cartão do certific
 js/mascaras.js          máscaras dos campos do catálogo (campos[].mascara): formatação, tamanho e preenchimento completo
 js/info.js              ícone de informação com popup (passar o mouse, Shift ou clique fixa, Esc fecha)
 js/tags.js              conteúdo do popup de cada tag do anexo VI
+js/origem-plugnotas.js  lado do PlugNotas de cada tag: resumo na lista do de-para e seções do popup
 js/analise.js           agregador do validador: analisarEmissao e a API pública (reexports)
 js/analise/             uma conferência por módulo: achado, caminhos, contexto, regras-declarativas, texto,
-                        campos, documentos, leiaute, valores, retencoes, iss, ibscbs
+                        campos, documentos, leiaute, valores, retencoes, iss, ibscbs, de-para
 js/fluxo-resolve.js     regras e orquestração do Resolve, sem DOM (executarLoteResolve)
 js/componentes.js       montarCartao e montarInterruptor, usados por todas as telas
 js/telas/lote.js        motor genérico das telas de rota: liga Requisição, execução e Retorno
@@ -143,16 +153,20 @@ js/telas/lote/          entrada.js (cartão Requisição e leitura dos campos), 
 js/telas/variantes.js   telas agrupadas: seletor e toggle dentro do cartão Requisição
 js/telas/resolve.js     tela do Resolve: cartões, tabela e andamento por callbacks
 js/telas/nacional.js    telas do Nacional pelo repasse, com o certificado A1
-js/telas/depara.js      de-para por tag, com busca e popup de regras
+js/telas/depara.js      de-para por tag, com busca, seletor de filtros múltiplos e popup de origem e regras
 js/telas/ibscbs.js      relação item LC 116, NBS, indOp e cClassTrib
 js/telas/validador.js   tela do validador
 api/proxy.js            repasse GET ou POST, com certificado, só para domínios do gov.br da lista
 api/saude.js            verificação de saúde: situação e versão
 definicoes/             rotas.json, rotas-nacional.json, regras-validacao.json, config.json (manuais)
                         de-para-nacional.json, ibscbs.json (gerados, não editar à mão)
-fontes/nacional/        anexos VI (v1.04, NT009), VII (v1.02) e VIII (v1.01), públicos
-ferramentas/            gerar_definicoes.py, gerar_manual.py, relatorio-geracao.json, README.md (heurísticas do gerador)
-testes/                 suítes Node (guia em testes/README.md), executar.mjs, teste_fontes.py, sigilo.mjs
+fontes/nacional/        anexos VI (v1.04, NT009, e v1.03, NT007, o leiaute do XML gerado hoje), VII (v1.02) e
+                        VIII (v1.01) e a NT 009, públicos
+ferramentas/            gerar_definicoes.py, documentacao_api.py, sondar_lib.py, executar_lib.cjs,
+                        leitura_getrps.py, conferir_notas.py, gerar_manual.py, relatorio-geracao.json,
+                        conferencia-notas.json (só nomes e contagens), README.md (cadeia e regras do gerador)
+testes/                 suítes Node (guia em testes/README.md), executar.mjs, teste_fontes.py, teste_gerador.py,
+                        conferir_fixtures.py, fixtures/gerador/ (fixtures sintéticas do gerador), sigilo.mjs
                         (varredura de dados sensíveis), verificar-csp.mjs (CSP e SRI no navegador, fora do
                         npm test), gerar-certificados.mjs (certificados de teste em testes/certificados/, fora do Git)
 docs/governanca/        ficha, checklist, dados e LGPD, operação e exceções (políticas corporativas)
@@ -377,17 +391,51 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 
 ### 5.7 De-para e gerador
 
-- `ferramentas/gerar_definicoes.py` liga quatro elos: lib do PlugNotas (JSON
-  para TX2), script do Nacional (TX2 para dataset), `Mapping.txt` (dataset para
-  caminho XML) e anexo VI (caminho para tag). Se um elo não fecha, a tela diz
-  "campo do JSON não identificado nas fontes analisadas" em vez de supor.
-- `jsonCopiaDireta` marca campos copiados sem conversão; só eles recebem a
-  conferência de tamanho e tipo do anexo VI no validador.
+- Escopo: JSON do PlugNotas para o XML do Nacional. A fonte principal são as
+  props de `buildTx2/padrao-NACIONAL` da lib. O componente TecnoNFSe (script
+  `LoadEnvio.txt`, `Mapping.txt` e dataset TecnoNFSe) é só apoio: a conferência
+  de 11 notas reais (setembro de 2026) mostrou `verAplic` `TSPD_1.0.1`, diferente
+  do valor fixo do script, e tags iguais a chaves da lib que o script não lê
+  (`TipoRetIss`, `ValorIRRF`, telefone com DDD).
+- Cadeia do gerador (detalhes em `ferramentas/README.md`):
+  1. documentação pública da API (`api.json`, esquema `dadosNfseNacional`):
+     campos, tipos, valores, tamanhos e tags citadas;
+  2. sondagem das props (`sondar_lib.py` e `executar_lib.cjs`): notas
+     sintéticas com sentinelas, variando um campo por vez, sem e com RTC007.
+     Dá origem, modo (cópia, arredondamento, data, concatenação, soma),
+     tabelas de conversão, condições e campos que só valem como número;
+  3. `getRps.js`, lido sem executar, só onde as props não cobrem;
+  4. ponte da chave para a tag: conferência de notas, depois documentação,
+     depois nomes do componente e, para chaves com tabela, nome e códigos da
+     tag;
+  5. conferência de notas (`conferir_notas.py`), que compara só quando o campo
+     de origem está no JSON (a API completa o prestador pelo cadastro e
+     calcula valores antes da lib);
+  6. equivalência de caminhos do anexo VI 1.03 (leiaute do XML gerado hoje)
+     para o 1.04 pelos itens 2.2, 2.3, 2.6 e 2.7 da NT 009.
+- A convenção de chamada das props (raiz de cada função) é suposta, porque o
+  `index.js` de `padrao-NACIONAL` não está nos insumos; `formatRounding` e
+  `formatDate` são substituídos na execução, e o arredondamento aparece como
+  "regra não confirmada".
+- Formato 3: cada tag da DPS tem `plugnotas` com `situacao`, `json`,
+  `jsonCopiaDireta`, `origens`, `documentacao`, `inconsistencias`,
+  `caminhoNoXmlGerado` e `apoio`; a entrada pode ter `leiauteAnterior`.
+  Tags da NFS-e não têm `plugnotas`.
+- `jsonCopiaDireta` só quando a lib copia o campo sem conversão e o campo
+  alimenta uma única tag; só eles recebem a conferência de tamanho e tipo do
+  anexo VI no validador.
+- Inconsistências geradas: divergência nas notas, campo lido fora da
+  documentação (com o par documentado, quando a descrição bate com o título da
+  tag), fontes que leem campos diferentes, valor da lib ou da documentação fora
+  dos códigos do anexo e tamanho da documentação acima do anexo.
 - Regras cujo caminho difere entre as abas do anexo VI são associadas por
   semelhança e marcadas com `caminhoNaAbaDeRegras`.
-- Volume atual: 430 tags e 579 regras (anexo VI); 39 indOp, 208 itens, 731 NBS,
-  28 cClassTrib e 1.514 relações (anexos VII e VIII).
-- `ferramentas/relatorio-geracao.json` lista as lacunas da última geração.
+- Volume atual: 430 tags e 579 regras (anexo VI); 196 das 252 folhas da DPS com
+  campo do JSON (68 confirmadas em notas), 22 com inconsistência; 39 indOp,
+  208 itens, 731 NBS, 28 cClassTrib e 1.514 relações (anexos VII e VIII).
+- `ferramentas/relatorio-geracao.json` traz a cobertura e as lacunas da última
+  geração; `ferramentas/conferencia-notas.json`, o resultado agregado da
+  conferência.
 - A tela de IBS e CBS junta as linhas da correlação que só diferem no
   cClassTrib e mostra os cClassTrib juntos (`agruparRelacoes`).
 
@@ -395,8 +443,8 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 
 - `js/analise.js` é o agregador: `analisarEmissao` roda as conferências da nota
   (regras declarativas, texto, nomes de campo, tipos trocados, documentos,
-  leiaute), as de cada serviço (valores, retenções, ISS, descrição) e a de IBS e
-  CBS, nessa ordem, e reexporta a API pública. Cada conferência fica num módulo
+  leiaute e as tiradas do de-para), as de cada serviço (valores, retenções,
+  ISS, descrição) e a de IBS e CBS, nessa ordem, e reexporta a API pública. Cada conferência fica num módulo
   de `js/analise/`, sem DOM e sem `definicoes.js`: os dados chegam por
   parâmetro. A ordem importa, porque decide empates no mesmo campo e severidade.
 - Conferências calculadas em `js/analise/` e regras declarativas em
@@ -409,9 +457,18 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   entra no repositório (seção 6.1).
 - Tipos de regra: `obrigatorio`, `digitos` (número ou lista), `formato`,
   `tamanho`, `faixa`, `enumerado`, `condicional` e `umDeles`.
-- Todo achado tem `fonte`: anexo VI, VII ou VIII, lib do PlugNotas, script do
-  Nacional ou cálculo sobre o JSON. Regras sem fonte nos documentos foram
-  removidas; não reintroduza.
+- Todo achado tem `fonte`: anexo VI, VII ou VIII, documentação da API, lib do
+  PlugNotas, script do Nacional ou cálculo sobre o JSON. Regras sem fonte nos
+  documentos foram removidas; não reintroduza.
+- O grupo IBS/CBS é lido em `servico[].ibscbs`, o lugar documentado; na raiz,
+  gera o alerta "fora do lugar documentado" e o conteúdo ainda é conferido.
+- `js/analise/de-para.js` confere pelo de-para gerado:
+  - valores e tamanhos aceitos pela documentação (pula campos que já têm
+    regra declarativa);
+  - campo documentado que a lib não lê;
+  - número enviado como texto em campo que a lib só lê como número;
+  - conversão de código em que a lib grava o valor padrão da tabela;
+  - mais de um serviço na mesma nota (anexo VI, grupo `serv`).
 
 ### 5.9 Interface transversal
 
@@ -421,16 +478,20 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   cabeçalho, com contador. Traz Identificar-se, Exportar (TXT) e Limpar.
 - Identificação: nome declarado, só para rastreabilidade nos logs exportados.
   Não há login.
-- API Key: a chave digitada, os perfis, o perfil ativo e a lista de IDs do
-  Resolve ficam só no `sessionStorage` da aba e somem ao fechá-la; não há opção
-  de manter a chave no navegador. Na abertura, `levarDadosSensiveisParaAba`
-  (`js/shared.js`) move para a aba e apaga do `localStorage` o que versões
-  anteriores gravaram. A chave vai direto do navegador para a API PlugNotas e
-  nunca passa pelo servidor da ferramenta. O rótulo "Perfis salvos" traz o
-  ícone "?", que mostra no popup como a chave é guardada (texto em
-  `#tplGuardaChave`, no `index.html`), e o cartão traz o botão "Apagar todos os perfis" (com
-  confirmação). Apagar ou remover perfil também tira do campo e da aba a chave
-  que for de um perfil apagado; chave digitada que não é de perfil fica.
+- API Key: os perfis (apelido e chave) ficam no `localStorage` e duram até o
+  consultor apagá-los na tela ou limpar os dados do navegador. A chave digitada
+  sem perfil, o perfil ativo e a lista de IDs do Resolve ficam só no
+  `sessionStorage` da aba e somem ao fechá-la; não há opção de manter a chave
+  digitada no navegador. Na abertura, `levarDadosSensiveisParaAba`
+  (`js/shared.js`) move para a aba e apaga do `localStorage` a chave, o perfil
+  ativo e a lista que versões anteriores gravaram; os perfis ficam. A chave vai
+  direto do navegador para a API PlugNotas e nunca passa pelo servidor da
+  ferramenta. No cartão da credencial, o ícone "?" ao lado de "Perfis salvos"
+  abre o popup "Como a API Key fica guardada" (com a orientação de não salvar
+  perfis em computador compartilhado), e o botão "Apagar todos os perfis" pede
+  confirmação. Apagar ou remover perfil também
+  tira do campo e da aba a chave que for de um perfil apagado; chave digitada
+  que não é de perfil fica.
 - Sem rodapé: o nome do painel fica no cabeçalho.
 - Estrutura: menu lateral fixo com o gradiente da marca e o logo no topo (no
   tema escuro mantém as cores do claro) e cabeçalho branco com linha da marca.
@@ -450,9 +511,15 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    do PlugNotas nunca entram no repositório nem no site: coleções do Postman,
    `LoadEnvio.txt` e demais scripts TX2/Pascal, `Mapping.txt`, a lib
    `buildTx2/padrao-NACIONAL`, executáveis e projetos de demonstração. O
-   gerador os recebe por parâmetro. O JSON publicado guarda nomes de campo e
-   números de linha, nunca trechos de código (há teste para isso). As
-   informações exibidas no site podem ser públicas; o código não.
+   gerador os recebe por parâmetro. O JSON publicado guarda nomes de campo,
+   números de linha e tabelas de valores, nunca trechos de código (há teste
+   para isso). As informações exibidas no site podem ser públicas; o código
+   não. As notas reais usadas na conferência (pares de JSON e XML) são
+   extremamente sensíveis: ficam fora do repositório, nunca aparecem em
+   respostas, fixtures ou relatórios, e o `conferencia-notas.json` guarda só
+   nomes de tag, nomes de campo documentados ou lidos pela lib, versão da DPS,
+   `verAplic` e contagens. As fixtures do gerador são escritas do zero, e
+   `testes/conferir_fixtures.py` prova isso.
 2. **Dados de clientes e credenciais.** Os insumos internos contêm credenciais e
    dados reais de clientes. Nunca copie deles IDs, CNPJs, chaves de acesso,
    protocolos ou API Keys para código, catálogos, exemplos, testes ou
@@ -464,8 +531,10 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
    e-mails. A lista de permitidos fica em `testes/sigilo.mjs`, cada valor com a
    fonte pública; valor novo só entra com fonte.
 3. **API Key.** Nunca enviar ao servidor da ferramenta, nunca registrar em log,
-   nunca incluir em exportação, nunca gravar no `localStorage` (só no
-   `sessionStorage` da aba; há teste). `X-API-KEY` só pode ir para a origem fixa
+   nunca incluir em exportação. No `localStorage`, só os perfis salvos pelo
+   consultor, gravados só por `js/credencial.js`; a chave digitada sem perfil,
+   o perfil ativo e a lista do Resolve ficam só no `sessionStorage` da aba (há
+   teste). `X-API-KEY` só pode ir para a origem fixa
    `ORIGEM_PLUGNOTAS` (`js/plugnotas.js`): `requisitar` recusa, sem chamar o
    `fetch`, qualquer outro destino com chave, e a `base` do `rotas.json` tem de
    ser igual a ela (teste de contrato). Nenhum código envia a chave por fora de
@@ -569,12 +638,21 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 | CSP só nas páginas, com `img-src 'self'` (sem `data:`) e sem liberar a Vercel Toolbar | Aprovado na rodada 1; nada do app usa `data:` e o repasse tem CSP própria |
 | Sem limitador por IP no código do repasse; limite pelo WAF da Vercel | Aprovado na rodada 1; contador em memória não protege e barraria lotes da equipe no mesmo IP |
 | Nome, logo e favicon atuais, sem rodapé | Identidade definida pelo Hugo; o rodapé saiu a pedido dele em outubro de 2026 |
-| API Key, perfis e lista do Resolve só na aba, sem "Manter a chave" | Aprovado na rodada 1: a API Key é informação Restrita pela política de dados |
+| Perfis de API Key no `localStorage`; chave digitada sem perfil, perfil ativo e lista do Resolve só na aba, sem "Manter a chave" | Pedido do Hugo em 29/09/2026, revendo a rodada 1 (tudo só na aba, porque a API Key é informação Restrita pela política de dados): os perfis precisam durar entre aberturas do site. Governança atualizada em `docs/governanca/` |
 | Consultas do Nacional sempre por POST, GET ainda aceito no repasse | Identificadores fora da URL e dos logs de acesso; contrato do repasse mantido |
 | Quicksand servida pelo próprio site | Um terceiro a menos recebendo o IP do consultor; CSP só `'self'` |
 | Padrão visual do design system da TecnoSpeed, com marca índigo e Quicksand | Aprovado em outubro de 2026: o design system prevê cor por produto; a Visby Round CF exigiria licença web para site aberto; menu colorido com o logo e cabeçalho branco; confirmação em amarelo para todas as ações sensíveis |
 | Código de cada tela carregado sob demanda | Orçamento de 49 KB com gzip para o JS da abertura (`teste-desempenho.mjs`) |
 | Classificação como Aplicação crítica | Políticas corporativas (ação fiscal em produção, exposição externa, credenciais de clientes) |
+| De-para só do JSON do PlugNotas para o XML do Nacional; props da lib como fonte principal e componente (script e Mapping) só como apoio | Pedido do Hugo em 29/09/2026; a conferência de notas mostrou que o XML não sai do script do componente |
+| Conferência de notas reais como fonte do de-para, com relatório só de nomes e contagens | Aprovado em 29/09/2026; as notas ficam fora do repositório |
+| Documentação pública da API (`api.json`) como fonte do de-para e do validador | Aprovado em 29/09/2026 |
+| Tabelas de conversão e listas de valores da lib publicadas no de-para | Aprovado em 29/09/2026: são comportamento, não código |
+| Inconsistências entre fontes entram no de-para com aviso discreto: "Há inconsistências entre as fontes desta tag. Para uma informação precisa, valide nos scripts." | Pedido do Hugo em 29/09/2026 |
+| Nomes do TX2 e linhas do script só no popup, como apoio | Aprovado em 29/09/2026 |
+| Tags sem campo próprio no JSON indicadas como enviáveis por `camposPrefeitura` (linhas `@` do TX2) | Confirmação do Hugo em 29/09/2026; o formato do campo no JSON não está documentado |
+| Anexo VI 1.03 e NT 009 em `fontes/nacional`, com a equivalência de caminhos pelos itens da NT | Aprovado em 29/09/2026; o XML gerado hoje segue o 1.03 |
+| `versaoEsquema` RTC007 vem da tag do JSON | Informação do Hugo em 29/09/2026 (em outros produtos, o cliente preenche no TX2) |
 
 As três primeiras decisões da tabela (repositório pessoal, site aberto na
 Vercel e Standard Protection sem login) conflitam com as políticas
@@ -598,14 +676,18 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
 
 ## 9. Pendências e limitações conhecidas
 
-- Nomes de TX2 divergentes entre a lib e o script do Nacional (ex.: lib gera
-  `ValorIRRF`, `ValorCP`, `TipoRetIss`, `TipoTributacaoIss`; script lê
-  `ValorIR`, `ValorCPP`, `IssRetido`, `ExigibilidadeISS`). Nesses campos o JSON
-  aparece como não identificado. Falta analisar o código que grava o TX2 a
-  partir das props (`buildTx2/padrao-NACIONAL/index.js`), que é interno.
-- O `Mapping.txt` do componente é da v1.01; alguns caminhos não existem no
-  leiaute RTC do anexo VI (ex.: `vDedRed`).
-- Raízes do JSON como a do intermediário não estão confirmadas.
+- O código que liga as chaves das props ao XML (`buildTx2/padrao-NACIONAL/index.js`
+  e o que vem depois) e o `utils.js` (`formatRounding`) não estão nos insumos, e
+  o Hugo não tem acesso. Sem nota que exercite a tag, a ligação vem dos nomes do
+  componente (125 tags) ou do nome e códigos da tag (3). Mais notas com
+  dedução, IBS/CBS com destinatário e imóvel, tomador no exterior, evento,
+  obra, pedágio e retenções confirmariam essas ligações: basta gerar de novo
+  com `--notas`.
+- `camposPrefeitura` via `@`: o formato do campo no JSON não está na
+  documentação; o de-para mostra o nome do campo do dataset.
+- Tags do anexo VI 1.03 sem equivalente no 1.04 pela NT 009 ficam em
+  `relatorio-geracao.json` (`leiauteAnteriorSemEquivalente`), assim como os
+  campos renomeados que a NT não lista um a um (ex.: `vDR` e `pDR`).
 - Regra de rate limit do WAF da Vercel para `/api/proxy` ainda não criada no
   painel (seção 5.5). Ao criar, registrar aqui a janela, o limite e a ação.
 - A documentação traz status de sincronização e de interrupção por protocolo e
