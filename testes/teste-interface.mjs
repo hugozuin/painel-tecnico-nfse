@@ -55,21 +55,48 @@ conferir("nome novo no cabeçalho", document.querySelector(".header-titles h1").
 conferir("título da aba do navegador", document.title.includes("Painel Técnico NFS-e"), document.title);
 conferir("logo nova", document.querySelector(".marca-logo").getAttribute("src") === "assets/logo.svg");
 conferir("favicon novo", document.querySelector('link[rel="icon"]').getAttribute("href") === "assets/favicon.svg");
-const rodape = document.querySelector(".app-footer").textContent;
-conferir("rodapé com Consultoria Técnica NFS-e e autoria", rodape.includes("Consultoria Técnica NFS-e") && rodape.includes("Desenvolvido por Hugo Zuin"));
-conferir("rodapé com destaque no nome", document.querySelector(".app-footer strong")?.textContent === "Painel Técnico NFS-e · Consultoria Técnica NFS-e");
-conferir("autoria com menos destaque", document.querySelector(".app-footer .assinatura")?.textContent === "Desenvolvido por Hugo Zuin");
-conferir("rodapé sem a origem das definições", !rodape.includes("Definições") && !document.getElementById("rodapeDefinicoes"));
+conferir("sem rodapé", !document.querySelector("footer, .app-footer"));
 const total = ler("rotas").rotas.filter((r) => !r.oculta).length + ler("rotas-nacional").rotas.length + 3;
 conferir("botão Repositório oculto pela configuração entregue", document.getElementById("linkRepositorio").hidden);
 conferir("menu com a aba de IBS e CBS", document.querySelectorAll(".menu-item").length === total, String(document.querySelectorAll(".menu-item").length));
+
+console.log("\n== tema e menu lateral ==");
+const botaoTema = document.getElementById("themeToggle");
+const iconeDoTema = () => ["iconeSol", "iconeLua"].filter((id) => !document.getElementById(id).hasAttribute("hidden")).join(",");
+conferir("tema começa claro e o botão informa o estado", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false" && iconeDoTema() === "iconeSol", iconeDoTema());
+botaoTema.click();
+conferir("botão liga o tema escuro, informa o estado e mostra a lua", document.documentElement.dataset.theme === "dark" && botaoTema.getAttribute("aria-pressed") === "true" && iconeDoTema() === "iconeLua", iconeDoTema());
+botaoTema.click();
+conferir("segundo clique volta ao tema claro", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false" && iconeDoTema() === "iconeSol", iconeDoTema());
+conferir("logo no topo do menu lateral", Boolean(document.querySelector(".barra-lateral .marca-logo")) && Boolean(document.querySelector(".barra-lateral #menuLateral")));
+const casca = document.querySelector(".app-shell");
+document.getElementById("alternarMenu").click();
+conferir("botão abre o menu do celular", casca.classList.contains("menu-aberto"));
+evento("click", document.querySelector(".barra-lateral-marca"));
+conferir("clique dentro do menu não fecha", casca.classList.contains("menu-aberto"));
+evento("click", document.getElementById("conteudo"));
+conferir("clique fora fecha o menu", !casca.classList.contains("menu-aberto"));
+
+console.log("\n== avisos ==");
+const { mostrarAviso } = await import("../js/shared.js");
+const acharAviso = (texto) => [...document.querySelectorAll(".toast")].find((aviso) => aviso.textContent.includes(texto));
+mostrarAviso("Aviso que some sozinho", "success", 20);
+const avisoTemporario = acharAviso("Aviso que some sozinho");
+conferir("aviso aparece", Boolean(avisoTemporario));
+await aguardarAte(() => !avisoTemporario?.isConnected, 2000);
+conferir("aviso some sozinho, sem depender do fim da animação", avisoTemporario && !avisoTemporario.isConnected);
+mostrarAviso("Aviso para fechar", "error", 60000);
+const avisoComFechar = acharAviso("Aviso para fechar");
+avisoComFechar?.querySelector(".toast-fechar")?.click();
+await aguardarAte(() => !avisoComFechar?.isConnected, 2000);
+conferir("botão fecha o aviso", avisoComFechar && !avisoComFechar.isConnected);
 
 console.log("\n== título de cada tela ==");
 await abrir("xml");
 const cabecalho = document.querySelector(".cabecalho-pagina");
 conferir("título da tela visível", cabecalho?.querySelector("h1")?.textContent === "Download de XML");
 conferir("legenda da tela", cabecalho?.querySelector("p")?.textContent === ler("rotas").rotas.find((r) => r.id === "xml").resumo);
-conferir("grupo acima do título", cabecalho?.querySelector(".cabecalho-grupo")?.textContent === "Arquivos");
+conferir("grupo acima do título", cabecalho?.querySelector(".cabecalho-grupo")?.textContent === "Notas");
 conferir("cartão sem repetir o título", document.querySelector(".tela .card-header h2")?.textContent === "Requisição");
 
 console.log("\n== consulta de notas agrupada ==");
@@ -98,7 +125,11 @@ conferir("volta ao ID lembrando a escolha completa", endereco().endsWith("/nfse/
 conferir("cartão de retorno presente na subtela", Boolean(document.querySelector(".cartao-retorno")));
 
 console.log("\n== grupo Empresa ==");
-conferir("grupos do menu na ordem", [...document.querySelectorAll(".menu-grupo-titulo")].map((g) => g.textContent).join(",") === "Notas,Arquivos,Ciclo de vida,Empresa,Nacional,Ferramentas",
+const itensDeNotas = [...document.querySelectorAll(".menu-grupo")].find((grupo) => grupo.firstElementChild.textContent === "Notas")?.querySelectorAll(".menu-item");
+conferir("arquivos e ciclo de vida dentro de Notas, nessa ordem",
+  [...(itensDeNotas || [])].map((item) => item.dataset.rota).join(",") === "resolve,consulta,xml,pdf,pdf-regerar,email,cancelar,cancelar-status,eventos,sincronizar,interromper",
+  [...(itensDeNotas || [])].map((item) => item.dataset.rota).join(","));
+conferir("grupos do menu na ordem", [...document.querySelectorAll(".menu-grupo-titulo")].map((g) => g.textContent).join(",") === "Notas,Empresa,Nacional,Ferramentas",
   [...document.querySelectorAll(".menu-grupo-titulo")].map((g) => g.textContent).join(","));
 conferir("três telas de Empresa no menu, sem relatório", ["empresa", "webhook", "certificado"].every((id) => document.querySelector(`.menu-item[data-rota="${id}"]`)) && !document.querySelector('.menu-item[data-rota="relatorio"]'));
 await abrir("empresa");

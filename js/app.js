@@ -23,7 +23,7 @@ const telasFixas = [
   }
 ];
 
-const ordemGrupos = ["Notas", "Arquivos", "Ciclo de vida", "Empresa", "Nacional", "Ferramentas"];
+const ordemGrupos = ["Notas", "Empresa", "Nacional", "Ferramentas"];
 
 let catalogo = [];
 let navegacao = 0;
@@ -170,6 +170,10 @@ function ligarNavegacao() {
   });
   elemento("alternarMenu").addEventListener("click", () => {
     document.querySelector(".app-shell")?.classList.toggle("menu-aberto");
+  });
+  document.addEventListener("click", (evento) => {
+    const casca = document.querySelector(".app-shell.menu-aberto");
+    if (casca && !evento.target.closest(".barra-lateral, #alternarMenu")) casca.classList.remove("menu-aberto");
   });
 }
 

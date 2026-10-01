@@ -117,7 +117,7 @@ def construir():
                        "API tem a sua tela, escolhida no menu da esquerda, e cada tela abre com o título e uma legenda "
                        "do que ela faz. Tudo roda no navegador do consultor: as chamadas ao PlugNotas saem do seu "
                        "computador direto para a API, com a API Key informada na tela.", corpo))
-    h.append(Paragraph("O menu agrupa as telas em Notas, Arquivos, Ciclo de vida, Nacional e Ferramentas. Telas que "
+    h.append(Paragraph("O menu agrupa as telas em Notas, Empresa, Nacional e Ferramentas. Telas que "
                        "alteram ou apagam dado aparecem marcadas como sensíveis e pedem confirmação antes de executar.", corpo))
 
     h.append(Paragraph("2. Credencial", secao))

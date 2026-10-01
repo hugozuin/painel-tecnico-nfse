@@ -11,6 +11,21 @@
 - A explicação "Como a API Key fica guardada" deixou de ficar sempre visível
   no cartão da credencial e abre ao passar o mouse no ícone "?" ao lado de
   "Perfis salvos".
+- Novo padrão visual, alinhado ao design system da TecnoSpeed: menu lateral
+  com o gradiente da marca e o logo no topo, cabeçalho branco com linha da
+  marca, cinzas neutros, raio e sombras do padrão, botões e campos de 48px,
+  abas sublinhadas, tabelas zebradas e contraste AA nos dois temas. A cor da
+  marca continua índigo e a fonte continua Quicksand.
+- No celular, o menu abre por um botão flutuante e fecha ao clicar fora.
+- Mais espaço entre as opções do menu lateral e entre o menu e o conteúdo.
+- Menu com quatro seções em destaque: Notas, Empresa, Nacional e Ferramentas.
+  As telas de Arquivos e Ciclo de vida passam para Notas.
+- Rodapé removido.
+- Confirmação de ação sensível com ícone de alerta e botão Confirmar amarelo.
+- Avisos no canto superior direito, com botão de fechar; o de erro em vermelho.
+- O interruptor de tema mostra sol ou lua e informa o estado ao leitor de tela.
+- Com as animações desligadas no sistema, os avisos não sumiam e se acumulavam
+  na tela. Agora saem pelo tempo.
 - Máscara preenchida ao digitar no código de tributação da consulta de
   alíquota (`00.00.00.000`), nos campos de CPF e CNPJ e no código IBGE do CNC.
   Valor incompleto é recusado antes de chamar a API.
@@ -59,11 +74,14 @@
 - `testes/teste_gerador.py` com fixtures sintéticas e
   `testes/conferir_fixtures.py`, que prova que as fixtures não copiam os
   insumos internos.
+- Testes do tema, do menu do celular e da saída dos avisos; o da saída falhava
+  no código anterior.
 
 ### Documentação
 
 - READMEs reescritos: principal, definições, ferramentas, testes e governança.
 - Validação da produção registrada no CLAUDE.md.
+- Padrão visual, tokens novos e a decisão registrados no CLAUDE.md.
 
 ## 4.1.0 (setembro de 2026): rodada 1 de revisão, refatoração e testes
 

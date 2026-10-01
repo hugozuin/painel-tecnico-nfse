@@ -126,8 +126,8 @@ deploy simples na web; backend só o mínimo necessário (hoje, o repasse).
 ## 4. Estrutura do repositório
 
 ```
-index.html              estrutura, cabeçalho (Logs, Documentação, tema), menu lateral, modais, painel de logs
-styles.css              tema claro e escuro com tokens da marca (índigo, Quicksand)
+index.html              estrutura, cabeçalho (Logs, Documentação, tema), menu lateral com o logo, modais, painel de logs
+styles.css              padrão visual do design system da TecnoSpeed: tema claro e escuro com tokens da marca (índigo, Quicksand)
 assets/                 logo.svg e logoicon.svg (brancos), favicon.svg (fundo índigo); logoicon.svg não é usado
                         pelo site e fica como arquivo-fonte da identidade
 assets/vendor/          forge-1.4.0.min.js, quicksand-v37-*.woff2 e as licenças, todos com a versão no nome
@@ -180,7 +180,7 @@ vercel.json             cabeçalhos HTTP
 
 Tamanho atual dos módulos maiores: `telas/resolve.js` 494 linhas, `fluxo-resolve.js`
 270, `api/proxy.js` 230, `telas/lote/retorno.js` 224, `analise/retencoes.js` 111,
-`styles.css` 915.
+`styles.css` 1082.
 
 ## 5. Arquitetura e fluxos
 
@@ -194,7 +194,7 @@ servem às telas agrupadas.
 ```json
 {
   "id": "email",
-  "grupo": "Arquivos",
+  "grupo": "Notas",
   "titulo": "Envio de e-mail",
   "resumo": "Reenvia a nota por e-mail para os destinatários informados.",
   "metodo": "POST",
@@ -208,7 +208,7 @@ servem às telas agrupadas.
   "resultado": { "tipo": "mensagem" },
   "confirmar": "Um e-mail será enviado para os destinatários informados, com a nota de cada id da lista.",
   "sensivel": true,
-  "ordem": 4
+  "ordem": 6
 }
 ```
 
@@ -492,8 +492,18 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   confirmação. Apagar ou remover perfil também
   tira do campo e da aba a chave que for de um perfil apagado; chave digitada
   que não é de perfil fica.
-- Rodapé: "**Painel Técnico NFS-e · Consultoria Técnica NFS-e** · TecnoSpeed" e
-  "Desenvolvido por Hugo Zuin" com menos destaque.
+- Sem rodapé: o nome do painel fica no cabeçalho.
+- Estrutura: menu lateral fixo com o gradiente da marca e o logo no topo (no
+  tema escuro mantém as cores do claro) e cabeçalho branco com linha da marca.
+  Até 768px o menu vira gaveta, aberta pelo botão flutuante `#alternarMenu` e
+  fechada ao escolher uma tela ou clicar fora.
+- Tema: interruptor com sol e lua; `aria-pressed` informa se o escuro está
+  ligado e os ícones alternam pelo atributo `hidden`.
+- Confirmação de ação sensível: modal de alerta, Confirmar em amarelo com texto
+  escuro e antes de Cancelar.
+- Avisos (`mostrarAviso`): canto superior direito, erro em vermelho sólido,
+  botão de fechar. Saem pelo tempo, sem depender do fim da animação, que a
+  regra de movimento reduzido anula.
 
 ## 6. Requisitos de segurança (obrigatórios)
 
@@ -570,10 +580,19 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 - Sem framework e sem build. Módulos ES nativos.
 - Comportamento novo de tela entra de preferência pelo catálogo em `definicoes/`.
 - CSS com os tokens existentes (`--indigo-*`, `--bg-*`, `--text-*`, `--border*`,
-  `--font-mono`), funcionando nos temas claro e escuro. O `styles.css` é um
+  `--trilha`, `--fundo-sobreposicao`, `--warning-solido`, `--radius*`,
+  `--altura-controle`, `--font-mono`), funcionando nos temas claro e escuro. O
+  padrão visual segue o design system da TecnoSpeed: marca em três papéis
+  (`--indigo-500` marca, `--bg-destaque` média e `--indigo-900` escura, que
+  formam o gradiente do botão primário e do menu; `--indigo-700` é o texto da
+  marca), cinzas neutros, raio de 0,65rem (`--radius`; 0,3rem em chips,
+  `--radius-sm`), controles com `--altura-controle` (48px, 64px até 768px),
+  texto em 0,75, 0,875, 1, 1,25, 1,5 ou 1,875rem e foco com contorno de 2px na
+  cor da marca. Todo par de texto e fundo tem 4,5:1 ou mais nos dois temas; cor
+  de estado usa o tom da mesma família que passa no AA. O `styles.css` é um
   arquivo só, sem comentários, na ordem: fontes (`@font-face`), tokens e temas, base, componentes
   (botões, campos, interruptor, badges, abas, cartões), estrutura (casca,
-  cabeçalho, menu lateral, rodapé), tabelas e progresso, telas de rota e
+  cabeçalho, menu lateral), tabelas e progresso, telas de rota e
   Retorno, popup de informação, painel de logs, modal, avisos e as telas
   específicas (validador, de-para, IBS e CBS, certificado). Regra nova entra no
   bloco do seu componente. `[hidden] { display: none !important }` faz o
@@ -618,10 +637,11 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
 | Validador só com regras de fonte documentada | Rigor: nada de conhecimento geral sem fonte |
 | CSP só nas páginas, com `img-src 'self'` (sem `data:`) e sem liberar a Vercel Toolbar | Aprovado na rodada 1; nada do app usa `data:` e o repasse tem CSP própria |
 | Sem limitador por IP no código do repasse; limite pelo WAF da Vercel | Aprovado na rodada 1; contador em memória não protege e barraria lotes da equipe no mesmo IP |
-| Nome, logo, favicon e rodapé atuais | Identidade definida pelo Hugo |
+| Nome, logo e favicon atuais, sem rodapé | Identidade definida pelo Hugo; o rodapé saiu a pedido dele em outubro de 2026 |
 | Perfis de API Key no `localStorage`; chave digitada sem perfil, perfil ativo e lista do Resolve só na aba, sem "Manter a chave" | Pedido do Hugo em 29/09/2026, revendo a rodada 1 (tudo só na aba, porque a API Key é informação Restrita pela política de dados): os perfis precisam durar entre aberturas do site. Governança atualizada em `docs/governanca/` |
 | Consultas do Nacional sempre por POST, GET ainda aceito no repasse | Identificadores fora da URL e dos logs de acesso; contrato do repasse mantido |
 | Quicksand servida pelo próprio site | Um terceiro a menos recebendo o IP do consultor; CSP só `'self'` |
+| Padrão visual do design system da TecnoSpeed, com marca índigo e Quicksand | Aprovado em outubro de 2026: o design system prevê cor por produto; a Visby Round CF exigiria licença web para site aberto; menu colorido com o logo e cabeçalho branco; confirmação em amarelo para todas as ações sensíveis |
 | Código de cada tela carregado sob demanda | Orçamento de 49 KB com gzip para o JS da abertura (`teste-desempenho.mjs`) |
 | Classificação como Aplicação crítica | Políticas corporativas (ação fiscal em produção, exposição externa, credenciais de clientes) |
 | De-para só do JSON do PlugNotas para o XML do Nacional; props da lib como fonte principal e componente (script e Mapping) só como apoio | Pedido do Hugo em 29/09/2026; a conferência de notas mostrou que o XML não sai do script do componente |
@@ -673,6 +693,9 @@ GET  /certificado   GET /certificado/{idCertificadoOrCpfCnpj}
 - A documentação traz status de sincronização e de interrupção por protocolo e
   regeração de PDF por idIntegracao; oferecidos, ainda não decididos.
 - O anexo VI tem regras com código provisório (`EXXX`); são exibidas como estão.
+- Do design system ficaram para outra rodada: erro de preenchimento sob o campo
+  em vez de aviso, título da tela dentro do cabeçalho e vermelho nas
+  confirmações irreversíveis (exige campo no catálogo e a indicação das rotas).
 - Conformidade com as políticas corporativas (plano aprovado na rodada 1):
   - Onda 0, com o Hugo e o gestor: registrar no TecnoApps como Aplicação
     crítica, formalizar responsável de negócio e revisor independente, obter o

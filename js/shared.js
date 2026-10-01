@@ -84,17 +84,21 @@ export function temSegmentoDePonto(valores) {
   return valores.some((valor) => valor === "." || valor === "..");
 }
 
+const SAIDA_DO_AVISO_MS = 300;
+
 export function mostrarAviso(mensagem, tipo = "info", duracao = 4000) {
   const container = elemento("toastContainer");
   if (!container) return;
-  const aviso = document.createElement("div");
-  aviso.className = `toast ${tipo}`;
-  aviso.textContent = mensagem;
-  container.appendChild(aviso);
-  setTimeout(() => {
+  const botaoFechar = criar("button", { type: "button", class: "toast-fechar", texto: "×" });
+  botaoFechar.setAttribute("aria-label", "Fechar aviso");
+  const aviso = criar("div", { class: `toast ${tipo}` }, [criar("span", { texto: mensagem }), botaoFechar]);
+  const fechar = () => {
     aviso.classList.add("leaving");
-    aviso.addEventListener("animationend", () => aviso.remove(), { once: true });
-  }, duracao);
+    setTimeout(() => aviso.remove(), SAIDA_DO_AVISO_MS);
+  };
+  botaoFechar.addEventListener("click", fechar);
+  container.appendChild(aviso);
+  setTimeout(fechar, duracao);
 }
 
 export function pedirConfirmacao(titulo, mensagem) {
@@ -169,11 +173,18 @@ export function textoDosLogs() {
 }
 
 export function iniciarTema() {
-  const salvo = localStorage.getItem(CHAVES_ARMAZENAMENTO.tema);
-  if (salvo) document.documentElement.dataset.theme = salvo;
-  elemento("themeToggle").addEventListener("click", () => {
+  const botao = elemento("themeToggle");
+  const aplicar = (tema) => {
+    const escuro = tema === "dark";
+    document.documentElement.dataset.theme = tema;
+    botao.setAttribute("aria-pressed", String(escuro));
+    elemento("iconeSol").toggleAttribute("hidden", escuro);
+    elemento("iconeLua").toggleAttribute("hidden", !escuro);
+  };
+  aplicar(localStorage.getItem(CHAVES_ARMAZENAMENTO.tema) || document.documentElement.dataset.theme || "light");
+  botao.addEventListener("click", () => {
     const proximo = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = proximo;
+    aplicar(proximo);
     localStorage.setItem(CHAVES_ARMAZENAMENTO.tema, proximo);
   });
 }
