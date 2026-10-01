@@ -1,4 +1,8 @@
 import { elemento, CHAVES_ARMAZENAMENTO, mostrarAviso, pedirConfirmacao, registrarLog } from "./shared.js";
+import { conteudoDoPopup, iconeInfo } from "./info.js";
+
+const TITULO_DA_GUARDA = "Como a API Key fica guardada";
+const conteudoDaGuarda = () => conteudoDoPopup(TITULO_DA_GUARDA, [elemento("tplGuardaChave").content.cloneNode(true)]);
 
 let campoChave;
 let seletorPerfil;
@@ -76,6 +80,7 @@ export function iniciarCredencial() {
 
   campoChave.value = sessionStorage.getItem(CHAVES_ARMAZENAMENTO.apiKey) || "";
   desenharPerfis(sessionStorage.getItem(CHAVES_ARMAZENAMENTO.perfilAtivo) || "");
+  elemento("rotuloPerfis").appendChild(iconeInfo("guardaChave", conteudoDaGuarda, TITULO_DA_GUARDA, "", "?"));
 
   elemento("toggleApiKey").addEventListener("click", () => {
     campoChave.type = campoChave.type === "password" ? "text" : "password";

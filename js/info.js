@@ -15,10 +15,10 @@ export function fonteDoPopup(fonte) {
   return criar("p", { class: "popup-fonte", texto: `Fonte: ${fonte}` });
 }
 
-export function iconeInfo(chave, construir, rotulo = "Ver detalhes", contador = "") {
+export function iconeInfo(chave, construir, rotulo = "Ver detalhes", contador = "", letra = "i") {
   construtores.set(chave, construir);
   const icone = criar("button", { type: "button", class: "info-icone", dados: { info: chave } }, [
-    criar("span", { class: "info-letra", texto: "i" }),
+    criar("span", { class: "info-letra", texto: letra }),
     contador ? criar("span", { class: "info-contador", texto: contador }) : null
   ]);
   icone.setAttribute("aria-label", rotulo);

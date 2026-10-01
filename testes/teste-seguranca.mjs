@@ -453,7 +453,9 @@ await esperar(120);
 const campoApiKey = document.getElementById("apiKeyInput");
 const seletorDePerfis = document.getElementById("perfilSelect");
 const botaoApagarPerfis = document.getElementById("apagarPerfisBtn");
+document.querySelector('[data-info="guardaChave"]')?.dispatchEvent(new domApp.window.MouseEvent("mouseover", { bubbles: true }));
 const avisoDeGuarda = document.getElementById("avisoGuardaChave")?.textContent.replace(/\s+/g, " ") || "";
+document.dispatchEvent(new domApp.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
 conferir("aviso explica que chave e perfis ficam só na aba e não passam pelo servidor",
   ["só nesta aba (sessionStorage)", "somem quando ela é fechada", "Nada fica gravado no navegador", "nunca passa pelo servidor desta ferramenta"]
     .every((trecho) => avisoDeGuarda.includes(trecho)) && !/localStorage|Manter a chave/.test(avisoDeGuarda), avisoDeGuarda);

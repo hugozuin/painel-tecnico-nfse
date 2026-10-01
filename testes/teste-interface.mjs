@@ -99,6 +99,16 @@ conferir("legenda da tela", cabecalho?.querySelector("p")?.textContent === ler("
 conferir("grupo acima do título", cabecalho?.querySelector(".cabecalho-grupo")?.textContent === "Arquivos");
 conferir("cartão sem repetir o título", document.querySelector(".tela .card-header h2")?.textContent === "Requisição");
 
+console.log("\n== guarda da API Key ==");
+const iconeGuarda = document.querySelector('#rotuloPerfis [data-info="guardaChave"]');
+conferir("rótulo Perfis salvos com o ícone ? ao lado", document.querySelector('label[for="perfilSelect"]')?.textContent === "Perfis salvos" && iconeGuarda?.textContent === "?");
+conferir("explicação da guarda não fica sempre aparente no cartão", !document.querySelector(".card-credencial #avisoGuardaChave, .card-credencial .aviso-caixa"));
+evento("mouseover", iconeGuarda);
+await esperar(30);
+conferir("passar o mouse no ? mostra como a chave fica guardada",
+  estadoDoPopup().aberto && estadoDoPopup().texto.includes("Como a API Key fica guardada") && estadoDoPopup().texto.includes("só nesta aba (sessionStorage)"));
+tecla("Escape");
+
 console.log("\n== consulta de notas agrupada ==");
 conferir("menu sem as rotas internas", !document.querySelector('.menu-item[data-rota="consulta-id"]') && !document.querySelector('.menu-item[data-rota="consulta-periodo"]'));
 await abrir("consulta");

@@ -166,7 +166,7 @@ vercel.json             cabeçalhos HTTP
 
 Tamanho atual dos módulos maiores: `telas/resolve.js` 494 linhas, `fluxo-resolve.js`
 270, `api/proxy.js` 230, `telas/lote/retorno.js` 224, `analise/retencoes.js` 111,
-`styles.css` 1033.
+`styles.css` 1018.
 
 ## 5. Arquitetura e fluxos
 
@@ -426,8 +426,9 @@ Tempo limite das chamadas ao PlugNotas: `TEMPO_LIMITE_MS` = 120 s.
   de manter a chave no navegador. Na abertura, `levarDadosSensiveisParaAba`
   (`js/shared.js`) move para a aba e apaga do `localStorage` o que versões
   anteriores gravaram. A chave vai direto do navegador para a API PlugNotas e
-  nunca passa pelo servidor da ferramenta. O cartão da credencial traz o aviso
-  de como a chave é guardada e o botão "Apagar todos os perfis" (com
+  nunca passa pelo servidor da ferramenta. O rótulo "Perfis salvos" traz o
+  ícone "?", que mostra no popup como a chave é guardada (texto em
+  `#tplGuardaChave`, no `index.html`), e o cartão traz o botão "Apagar todos os perfis" (com
   confirmação). Apagar ou remover perfil também tira do campo e da aba a chave
   que for de um perfil apagado; chave digitada que não é de perfil fica.
 - Sem rodapé: o nome do painel fica no cabeçalho.

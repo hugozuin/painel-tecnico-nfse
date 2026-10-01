@@ -17,7 +17,8 @@
 - O interruptor de tema mostra sol ou lua e informa o estado ao leitor de tela.
 - Com as animações desligadas no sistema, os avisos não sumiam e se acumulavam
   na tela. Agora saem pelo tempo.
-
+- A explicação de como a API Key fica guardada sai do cartão da credencial e
+  abre no ícone "?" ao lado de "Perfis salvos", antes "Perfis desta aba".
 - Máscara preenchida ao digitar no código de tributação da consulta de
   alíquota (`00.00.00.000`), nos campos de CPF e CNPJ e no código IBGE do CNC.
   Valor incompleto é recusado antes de chamar a API.

@@ -127,7 +127,9 @@
         </div>
         <div class="config-row">
           <div class="config-field">
-            <label class="field-label" for="perfilSelect">Perfis desta aba</label>
+            <div class="rotulo-com-ajuda" id="rotuloPerfis">
+              <label class="field-label" for="perfilSelect">Perfis salvos</label>
+            </div>
             <select id="perfilSelect" class="text-input select-input">
               <option value="">Chave digitada agora</option>
             </select>
@@ -141,19 +143,19 @@
             </div>
           </div>
         </div>
-        <div class="aviso-caixa" id="avisoGuardaChave">
-          <strong>Como a API Key fica guardada</strong>
-          <ul class="aviso-lista">
-            <li><strong>Chave digitada e perfis:</strong> ficam só nesta aba (sessionStorage) e somem quando ela é fechada. Nada fica gravado no navegador.</li>
-            <li><strong>Perfis:</strong> servem para alternar entre contas enquanto a aba estiver aberta. Depois de fechá-la, informe a chave de novo.</li>
-            <li>A chave nunca passa pelo servidor desta ferramenta: vai direto do seu navegador para a API PlugNotas.</li>
-          </ul>
-        </div>
         <div class="card-actions">
           <button type="button" id="apagarPerfisBtn" class="btn btn-danger btn-sm">Apagar todos os perfis</button>
         </div>
       </div>
     </section>
+  </template>
+
+  <template id="tplGuardaChave">
+    <ul class="aviso-lista" id="avisoGuardaChave">
+      <li><strong>Chave digitada e perfis:</strong> ficam só nesta aba (sessionStorage) e somem quando ela é fechada. Nada fica gravado no navegador.</li>
+      <li><strong>Perfis:</strong> servem para alternar entre contas enquanto a aba estiver aberta. Depois de fechá-la, informe a chave de novo.</li>
+      <li>A chave nunca passa pelo servidor desta ferramenta: vai direto do seu navegador para a API PlugNotas.</li>
+    </ul>
   </template>
 
 
