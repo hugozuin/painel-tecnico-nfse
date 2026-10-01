@@ -169,11 +169,15 @@ export function textoDosLogs() {
 }
 
 export function iniciarTema() {
-  const salvo = localStorage.getItem(CHAVES_ARMAZENAMENTO.tema);
-  if (salvo) document.documentElement.dataset.theme = salvo;
-  elemento("themeToggle").addEventListener("click", () => {
+  const botao = elemento("themeToggle");
+  const aplicar = (tema) => {
+    document.documentElement.dataset.theme = tema;
+    botao.setAttribute("aria-pressed", String(tema === "dark"));
+  };
+  aplicar(localStorage.getItem(CHAVES_ARMAZENAMENTO.tema) || document.documentElement.dataset.theme || "light");
+  botao.addEventListener("click", () => {
     const proximo = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = proximo;
+    aplicar(proximo);
     localStorage.setItem(CHAVES_ARMAZENAMENTO.tema, proximo);
   });
 }

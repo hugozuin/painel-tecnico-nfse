@@ -64,6 +64,22 @@ const total = ler("rotas").rotas.filter((r) => !r.oculta).length + ler("rotas-na
 conferir("botão Repositório oculto pela configuração entregue", document.getElementById("linkRepositorio").hidden);
 conferir("menu com a aba de IBS e CBS", document.querySelectorAll(".menu-item").length === total, String(document.querySelectorAll(".menu-item").length));
 
+console.log("\n== tema e menu lateral ==");
+const botaoTema = document.getElementById("themeToggle");
+conferir("tema começa claro e o botão informa o estado", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false");
+botaoTema.click();
+conferir("botão liga o tema escuro e informa o estado", document.documentElement.dataset.theme === "dark" && botaoTema.getAttribute("aria-pressed") === "true");
+botaoTema.click();
+conferir("segundo clique volta ao tema claro", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false");
+conferir("logo no topo do menu lateral", Boolean(document.querySelector(".barra-lateral .marca-logo")) && Boolean(document.querySelector(".barra-lateral #menuLateral")));
+const casca = document.querySelector(".app-shell");
+document.getElementById("alternarMenu").click();
+conferir("botão abre o menu do celular", casca.classList.contains("menu-aberto"));
+evento("click", document.querySelector(".barra-lateral-marca"));
+conferir("clique dentro do menu não fecha", casca.classList.contains("menu-aberto"));
+evento("click", document.getElementById("conteudo"));
+conferir("clique fora fecha o menu", !casca.classList.contains("menu-aberto"));
+
 console.log("\n== título de cada tela ==");
 await abrir("xml");
 const cabecalho = document.querySelector(".cabecalho-pagina");
