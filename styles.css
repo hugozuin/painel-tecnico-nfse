@@ -455,11 +455,8 @@ body { padding-left: 16rem; }
   transition: transform 0.2s ease;
 }
 .theme-toggle-thumb svg { width: 0.75rem; height: 0.75rem; }
-.icone-lua { display: none; }
 [data-theme="dark"] .theme-toggle { background: var(--indigo-500); }
 [data-theme="dark"] .theme-toggle-thumb { transform: translateX(1.25rem); color: #1f2937; }
-[data-theme="dark"] .icone-sol { display: none; }
-[data-theme="dark"] .icone-lua { display: block; }
 
 .barra-lateral {
   position: fixed;

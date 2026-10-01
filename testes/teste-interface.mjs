@@ -66,11 +66,12 @@ conferir("menu com a aba de IBS e CBS", document.querySelectorAll(".menu-item").
 
 console.log("\n== tema e menu lateral ==");
 const botaoTema = document.getElementById("themeToggle");
-conferir("tema começa claro e o botão informa o estado", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false");
+const iconeDoTema = () => ["iconeSol", "iconeLua"].filter((id) => !document.getElementById(id).hasAttribute("hidden")).join(",");
+conferir("tema começa claro e o botão informa o estado", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false" && iconeDoTema() === "iconeSol", iconeDoTema());
 botaoTema.click();
-conferir("botão liga o tema escuro e informa o estado", document.documentElement.dataset.theme === "dark" && botaoTema.getAttribute("aria-pressed") === "true");
+conferir("botão liga o tema escuro, informa o estado e mostra a lua", document.documentElement.dataset.theme === "dark" && botaoTema.getAttribute("aria-pressed") === "true" && iconeDoTema() === "iconeLua", iconeDoTema());
 botaoTema.click();
-conferir("segundo clique volta ao tema claro", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false");
+conferir("segundo clique volta ao tema claro", document.documentElement.dataset.theme === "light" && botaoTema.getAttribute("aria-pressed") === "false" && iconeDoTema() === "iconeSol", iconeDoTema());
 conferir("logo no topo do menu lateral", Boolean(document.querySelector(".barra-lateral .marca-logo")) && Boolean(document.querySelector(".barra-lateral #menuLateral")));
 const casca = document.querySelector(".app-shell");
 document.getElementById("alternarMenu").click();

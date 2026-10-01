@@ -175,8 +175,11 @@ export function textoDosLogs() {
 export function iniciarTema() {
   const botao = elemento("themeToggle");
   const aplicar = (tema) => {
+    const escuro = tema === "dark";
     document.documentElement.dataset.theme = tema;
-    botao.setAttribute("aria-pressed", String(tema === "dark"));
+    botao.setAttribute("aria-pressed", String(escuro));
+    elemento("iconeSol").toggleAttribute("hidden", escuro);
+    elemento("iconeLua").toggleAttribute("hidden", !escuro);
   };
   aplicar(localStorage.getItem(CHAVES_ARMAZENAMENTO.tema) || document.documentElement.dataset.theme || "light");
   botao.addEventListener("click", () => {
