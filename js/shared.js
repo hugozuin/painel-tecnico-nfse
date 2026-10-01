@@ -84,17 +84,21 @@ export function temSegmentoDePonto(valores) {
   return valores.some((valor) => valor === "." || valor === "..");
 }
 
+const SAIDA_DO_AVISO_MS = 300;
+
 export function mostrarAviso(mensagem, tipo = "info", duracao = 4000) {
   const container = elemento("toastContainer");
   if (!container) return;
-  const aviso = document.createElement("div");
-  aviso.className = `toast ${tipo}`;
-  aviso.textContent = mensagem;
-  container.appendChild(aviso);
-  setTimeout(() => {
+  const botaoFechar = criar("button", { type: "button", class: "toast-fechar", texto: "×" });
+  botaoFechar.setAttribute("aria-label", "Fechar aviso");
+  const aviso = criar("div", { class: `toast ${tipo}` }, [criar("span", { texto: mensagem }), botaoFechar]);
+  const fechar = () => {
     aviso.classList.add("leaving");
-    aviso.addEventListener("animationend", () => aviso.remove(), { once: true });
-  }, duracao);
+    setTimeout(() => aviso.remove(), SAIDA_DO_AVISO_MS);
+  };
+  botaoFechar.addEventListener("click", fechar);
+  container.appendChild(aviso);
+  setTimeout(fechar, duracao);
 }
 
 export function pedirConfirmacao(titulo, mensagem) {

@@ -80,6 +80,20 @@ conferir("clique dentro do menu não fecha", casca.classList.contains("menu-aber
 evento("click", document.getElementById("conteudo"));
 conferir("clique fora fecha o menu", !casca.classList.contains("menu-aberto"));
 
+console.log("\n== avisos ==");
+const { mostrarAviso } = await import("../js/shared.js");
+const acharAviso = (texto) => [...document.querySelectorAll(".toast")].find((aviso) => aviso.textContent.includes(texto));
+mostrarAviso("Aviso que some sozinho", "success", 20);
+const avisoTemporario = acharAviso("Aviso que some sozinho");
+conferir("aviso aparece", Boolean(avisoTemporario));
+await aguardarAte(() => !avisoTemporario?.isConnected, 2000);
+conferir("aviso some sozinho, sem depender do fim da animação", avisoTemporario && !avisoTemporario.isConnected);
+mostrarAviso("Aviso para fechar", "error", 60000);
+const avisoComFechar = acharAviso("Aviso para fechar");
+avisoComFechar?.querySelector(".toast-fechar")?.click();
+await aguardarAte(() => !avisoComFechar?.isConnected, 2000);
+conferir("botão fecha o aviso", avisoComFechar && !avisoComFechar.isConnected);
+
 console.log("\n== título de cada tela ==");
 await abrir("xml");
 const cabecalho = document.querySelector(".cabecalho-pagina");

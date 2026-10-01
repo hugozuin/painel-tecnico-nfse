@@ -88,12 +88,15 @@
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <div class="modal-backdrop" id="confirmModal" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal modal-alerta" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <span class="modal-icone" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </span>
       <h3 id="confirmTitle">Confirmar ação</h3>
       <p id="confirmMessage">Tem certeza?</p>
       <div class="modal-actions">
-        <button type="button" id="confirmCancel" class="btn btn-ghost">Cancelar</button>
-        <button type="button" id="confirmOk" class="btn btn-primary">Confirmar</button>
+        <button type="button" id="confirmCancel" class="btn btn-outline">Cancelar</button>
+        <button type="button" id="confirmOk" class="btn btn-alerta">Confirmar</button>
       </div>
     </div>
   </div>
@@ -104,7 +107,7 @@
       <p>Informe seu usuário da TecnoSpeed. Ele aparece no cabeçalho dos logs exportados e nos resumos copiados para o ticket.</p>
       <input type="text" id="usuarioInput" class="text-input" placeholder="hugo.zuin" spellcheck="false" autocomplete="off" />
       <div class="modal-actions">
-        <button type="button" id="usuarioCancel" class="btn btn-ghost">Cancelar</button>
+        <button type="button" id="usuarioCancel" class="btn btn-outline">Cancelar</button>
         <button type="button" id="usuarioOk" class="btn btn-primary">Salvar identificação</button>
       </div>
     </div>
